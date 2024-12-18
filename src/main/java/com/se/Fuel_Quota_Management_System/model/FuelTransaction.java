@@ -3,6 +3,8 @@ package com.se.Fuel_Quota_Management_System.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 public class FuelTransaction {
@@ -14,9 +16,15 @@ public class FuelTransaction {
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
-    private double litersPumped;
+    private double pumpedLiters;
 
     private double amount;
 
-    private String transactionDate;
+    private double remainingQuota;
+
+    private LocalDateTime transactionDate;
+
+    @ManyToOne
+    @JoinColumn(name = "station_id")
+    private FuelStation station;
 }
