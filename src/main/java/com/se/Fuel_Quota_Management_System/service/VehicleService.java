@@ -1,5 +1,7 @@
 package com.se.Fuel_Quota_Management_System.service;
 
+import com.se.Fuel_Quota_Management_System.exception.VehicleAlreadyRegisteredException;
+import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
 import com.se.Fuel_Quota_Management_System.model.DmtVehicle;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.se.Fuel_Quota_Management_System.repository.DmtVehicleRepository;
@@ -25,7 +27,7 @@ public class VehicleService {
         // Validate the vehicle details in the Department of Motor Traffic (DMT) mock database
         DmtVehicle dmtVehicle = dmtVehicleRepository
                 .findByVehicleNumber(vehicle.getVehicleNumber())
-                .orElseThrow(() -> new RuntimeException("Vehicle details not found in the Department of Motor Traffic database"));
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle details not found in the Department of Motor Traffic database"));
 
         // Verify that the owner name matches the DMT record
         if (!dmtVehicle.getOwnerName().equals(vehicle.getOwnerName())) {
@@ -35,7 +37,7 @@ public class VehicleService {
         // Ensure the vehicle is not already registered in the system
         Optional<Vehicle> existingVehicle = vehicleRepository.findByVehicleNumber(vehicle.getVehicleNumber());
         if (existingVehicle.isPresent()) {
-            throw new RuntimeException("Vehicle already registered");
+            throw new VehicleAlreadyRegisteredException("Vehicle already registered");
         }
 
         // Assign the fuel quota based on the vehicle type
@@ -56,7 +58,6 @@ public class VehicleService {
 
     // Retrieves a vehicle by its vehicle number from the repository.
     // @return The vehicle details if found; otherwise, throws an exception.
-
     public Vehicle getVehicleByNumber(String vehicleNumber) {
         // Find the vehicle by its number or throw an exception if not found
         return vehicleRepository.findByVehicleNumber(vehicleNumber)
@@ -65,7 +66,6 @@ public class VehicleService {
 
     // Determines the fuel quota based on the type of vehicle.
     // @return The fuel quota for the given vehicle type.
-
     private double calculateFuelQuota(String vehicleType) {
         // Assign fuel quota based on vehicle type
         switch (vehicleType.toLowerCase()) {
@@ -96,12 +96,45 @@ public class VehicleService {
         }
     }
 
-
-    //Generates a QR code string containing the vehicle number and fuel quota.
+    // Generates a QR code string containing the vehicle number and fuel quota.
     // @return The formatted QR code string.
-
     private String generateQrCode(String vehicleNumber, double fuelQuota) {
         // Format the QR code to include vehicle number and fuel quota
         return String.format("QR|VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
+    }
+
+    // Update vehicle details in the system
+    public Vehicle updateVehicle(Vehicle vehicle) {
+        // Fetch the existing vehicle from the database
+        Optional<Vehicle> existingVehicleOpt = vehicleRepository.findByVehicleNumber(vehicle.getVehicleNumber());
+
+        if (!existingVehicleOpt.isPresent()) {
+            throw new RuntimeException("Vehicle not found with number: " + vehicle.getVehicleNumber());
+        }
+
+        // Fetch the DmtVehicle details to validate and update
+        DmtVehicle dmtVehicle = dmtVehicleRepository.findByVehicleNumber(vehicle.getVehicleNumber())
+                .orElseThrow(() -> new RuntimeException("Vehicle not found in DMT database"));
+
+        // Check if the owner name matches the DMT record
+        if (!dmtVehicle.getOwnerName().equals(vehicle.getOwnerName())) {
+            throw new RuntimeException("Owner details do not match the DMT record");
+        }
+
+        // Get the existing vehicle object
+        Vehicle existingVehicle = existingVehicleOpt.get();
+
+        // Update the existing vehicle with new details
+        existingVehicle.setOwnerName(vehicle.getOwnerName());
+        existingVehicle.setFuelType(vehicle.getFuelType());
+        existingVehicle.setFuelQuota(vehicle.getFuelQuota());
+        existingVehicle.setVehicleType(vehicle.getVehicleType());
+        existingVehicle.setChassisNumber(vehicle.getChassisNumber());
+        existingVehicle.setQrCode(vehicle.getQrCode());
+        existingVehicle.setNotificationType(vehicle.getNotificationType());
+        // Update additional fields as needed
+
+        // Save the updated vehicle
+        return vehicleRepository.save(existingVehicle);
     }
 }
