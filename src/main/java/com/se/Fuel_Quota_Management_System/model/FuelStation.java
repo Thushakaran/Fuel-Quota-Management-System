@@ -22,6 +22,10 @@ public class FuelStation {
     @OneToMany(mappedBy = "fuelStation")
     private List<Vehicle> vehicles;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private FuelStationOwner owner;
+
     @ElementCollection
     @CollectionTable(name = "fuel_station_inventory", joinColumns = @JoinColumn(name = "fuel_station_id"))
     @MapKeyColumn(name = "fuel_type")
