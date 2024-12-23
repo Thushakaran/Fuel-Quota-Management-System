@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { registerVehicle } from "../api/vehicleApi";
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
-// import '../../css/VehicleRegistration.css';  // Import custom CSS globally
-
 
 const VehicleRegistration = () => {
   const [formData, setFormData] = useState({
