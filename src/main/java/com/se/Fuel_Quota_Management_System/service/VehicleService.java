@@ -34,6 +34,22 @@ public class VehicleService {
             throw new RuntimeException("Owner details do not match");
         }
 
+        if(!dmtVehicle.getOwnerIcNumber().equals((vehicle.getOwnerIcNumber()))){
+            throw new RuntimeException("Owner IC Number do not match");
+        }
+
+        if(!dmtVehicle.getChassisNumber().equals((vehicle.getChassisNumber()))){
+            throw new RuntimeException("Vehicle Chassis Number do not match");
+        }
+
+        if(!dmtVehicle.getVehicleType().equals((vehicle.getVehicleType()))){
+            throw new RuntimeException("Vehicle type do not match");
+        }
+
+        if(!dmtVehicle.getFuelType().equals((vehicle.getFuelType()))){
+            throw new RuntimeException("Vehicle Fuel type do not match");
+        }
+
         // Ensure the vehicle is not already registered in the system
         Optional<Vehicle> existingVehicle = vehicleRepository.findByVehicleNumber(vehicle.getVehicleNumber());
         if (existingVehicle.isPresent()) {
@@ -69,25 +85,28 @@ public class VehicleService {
     private double calculateFuelQuota(String vehicleType) {
         // Assign fuel quota based on vehicle type
         switch (vehicleType.toLowerCase()) {
-            case "motorcycle", "two-wheeler" -> {
+            case "motorcycle" -> {
                 return 15.0;
             }
             case "taxi" -> {
                 return 40.0;
             }
-            case "three-wheeler", "rickshaw" -> {
+            case "three-wheeler" -> {
                 return 30.0;
             }
-            case "bus" -> {
+            case "heavy vehicles" -> {
                 return 200.0;
             }
             case "commercial vehicle" -> {
                 return 100.0;
             }
-            case "van", "minivan" -> {
+            case "special vehicle" -> {
+                return 150.0;
+            }
+            case "van" -> {
                 return 60.0;
             }
-            case "car", "four-wheeler" -> {
+            case "car" -> {
                 return 50.0;
             }
             default -> {
