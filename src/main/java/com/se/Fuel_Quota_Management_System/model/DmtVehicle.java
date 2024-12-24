@@ -79,14 +79,5 @@ public class DmtVehicle {
         return vehicleType;
     }
 
-//    public DmtVehicle(Long id, String vehicleNumber, String chassisNumber, String vehicleType, String ownerName, String ownerIcNumber, String fuelType) {
-//        this.id = id;
-//        this.vehicleNumber = vehicleNumber;
-//        this.chassisNumber = chassisNumber;
-//        this.vehicleType = vehicleType;
-//        this.ownerName = ownerName;
-//        this.ownerIcNumber = ownerIcNumber;
-//        this.fuelType = fuelType;
-//    }
 
 }
