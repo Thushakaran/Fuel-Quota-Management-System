@@ -19,6 +19,9 @@ public class FuelStation {
 
     private String location;
 
+    @ManyToOne
+    private FuelStationOwner owner;
+
     @OneToMany(mappedBy = "fuelStation")
     private List<Vehicle> vehicles;
 
