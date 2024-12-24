@@ -44,6 +44,7 @@ public class VehicleService {
         double fuelQuota = calculateFuelQuota(dmtVehicle.getVehicleType());
         vehicle.setFuelQuota(fuelQuota);
 
+
         // Generate a QR code that includes vehicle number and fuel quota
         String qrCode = generateQrCode(vehicle.getVehicleNumber(), fuelQuota);
         vehicle.setQrCode(qrCode);
