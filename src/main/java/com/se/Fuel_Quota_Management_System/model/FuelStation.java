@@ -20,10 +20,8 @@ public class FuelStation {
     private String location;
 
     @ManyToOne
+    @JoinColumn(name = "owner_id")
     private FuelStationOwner owner;
-
-    @OneToMany(mappedBy = "fuelStation")
-    private List<Vehicle> vehicles;
 
     @ElementCollection
     @CollectionTable(name = "fuel_station_inventory", joinColumns = @JoinColumn(name = "fuel_station_id"))
