@@ -1,5 +1,9 @@
 package com.se.Fuel_Quota_Management_System.service;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import com.se.Fuel_Quota_Management_System.exception.VehicleAlreadyRegisteredException;
 import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
 import com.se.Fuel_Quota_Management_System.model.DmtVehicle;
@@ -9,6 +13,8 @@ import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -29,31 +35,16 @@ public class VehicleService {
                 .findByVehicleNumber(vehicle.getVehicleNumber())
                 .orElseThrow(() -> new VehicleNotFoundException("Vehicle details not found in the Department of Motor Traffic database"));
 
-        // Verify that the owner name matches the DMT record
-        if (!dmtVehicle.getOwnerName().equals(vehicle.getOwnerName())) {
-            throw new RuntimeException("Owner details do not match");
-        }
-
-        if(!dmtVehicle.getOwnerIcNumber().equals((vehicle.getOwnerIcNumber()))){
-            throw new RuntimeException("Owner IC Number do not match");
-        }
-
-        if(!dmtVehicle.getChassisNumber().equals((vehicle.getChassisNumber()))){
-            throw new RuntimeException("Vehicle Chassis Number do not match");
-        }
-
-        if(!dmtVehicle.getVehicleType().equals((vehicle.getVehicleType()))){
-            throw new RuntimeException("Vehicle type do not match");
-        }
-
-        if(!dmtVehicle.getFuelType().equals((vehicle.getFuelType()))){
-            throw new RuntimeException("Vehicle Fuel type do not match");
-        }
 
         // Ensure the vehicle is not already registered in the system
         Optional<Vehicle> existingVehicle = vehicleRepository.findByVehicleNumber(vehicle.getVehicleNumber());
         if (existingVehicle.isPresent()) {
             throw new VehicleAlreadyRegisteredException("Vehicle already registered");
+        }
+
+        // Verify that the owner name matches the DMT record
+        if (!dmtVehicle.getOwnerName().equals(vehicle.getOwnerName())) {
+            throw new RuntimeException("Owner details do not match");
         }
 
         // Assign the fuel quota based on the vehicle type
@@ -85,28 +76,25 @@ public class VehicleService {
     private double calculateFuelQuota(String vehicleType) {
         // Assign fuel quota based on vehicle type
         switch (vehicleType.toLowerCase()) {
-            case "motorcycle" -> {
+            case "motorcycle", "two-wheeler" -> {
                 return 15.0;
             }
             case "taxi" -> {
                 return 40.0;
             }
-            case "three-wheeler" -> {
+            case "three-wheeler", "rickshaw" -> {
                 return 30.0;
             }
-            case "heavy vehicles" -> {
+            case "bus" -> {
                 return 200.0;
             }
             case "commercial vehicle" -> {
                 return 100.0;
             }
-            case "special vehicle" -> {
-                return 150.0;
-            }
-            case "van" -> {
+            case "van", "minivan" -> {
                 return 60.0;
             }
-            case "car" -> {
+            case "car", "four-wheeler" -> {
                 return 50.0;
             }
             default -> {
@@ -117,10 +105,23 @@ public class VehicleService {
 
     // Generates a QR code string containing the vehicle number and fuel quota.
     // @return The formatted QR code string.
+//    private String generateQrCode(String vehicleNumber, double fuelQuota) {
+//        // Format the QR code to include vehicle number and fuel quota
+//        return String.format("QR|VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
+//    }
+
     private String generateQrCode(String vehicleNumber, double fuelQuota) {
-        // Format the QR code to include vehicle number and fuel quota
-        return String.format("QR|VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
+        try {
+            String qrContent = String.format("VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            BitMatrix matrix = new MultiFormatWriter().encode(qrContent, BarcodeFormat.QR_CODE, 200, 200);
+            MatrixToImageWriter.writeToStream(matrix, "PNG", baos);
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating QR Code", e);
+        }
     }
+
 
     // Update vehicle details in the system
     public Vehicle updateVehicle(Vehicle vehicle) {
