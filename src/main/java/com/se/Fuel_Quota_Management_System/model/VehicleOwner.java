@@ -26,6 +26,7 @@ public class VehicleOwner {
 
     private int phoneNumber;
 
+    @Column(unique = true)
     private String email;
 
     @OneToMany(mappedBy = "vehicleOwner")

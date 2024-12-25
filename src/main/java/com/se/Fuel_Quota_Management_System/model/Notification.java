@@ -3,6 +3,8 @@ package com.se.Fuel_Quota_Management_System.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 public class Notification {
@@ -16,5 +18,5 @@ public class Notification {
 
     private String message;
 
-    private String notificationDate;
+    private LocalDateTime notificationDate;
 }

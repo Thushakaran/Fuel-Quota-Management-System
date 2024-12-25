@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 
 @Data
 @Entity
@@ -18,7 +20,7 @@ public class AdminLog {
 
     private String Password;
 
-    private String timestamp;
+    private LocalDateTime timestamp;
 
     private String role; // Role of the admin (e.g., "super admin", "fuel station manager").
 }
