@@ -19,7 +19,7 @@ public class FuelStationController {
     //Registering the fuel Staion by checking it alredy registerd or not
     @PostMapping("/register")
     public String registerFuelStation(@RequestBody FuelStation fuelStation) {
-        if (findFuelStationByRegisNumById_Registering(fuelStation.getRegistrationNumber())) {
+        if (findByRegisNumById_Registering(fuelStation.getRegistrationNumber())) {
             return "This Registration Number: " + fuelStation.getRegistrationNumber() + " is already registered";
         } else {
             FuelStation registeredFuelStation = fuelStationService.registerFuelStation(fuelStation);
@@ -28,14 +28,22 @@ public class FuelStationController {
     }
 
     @GetMapping("{regnum}")
-    public boolean findFuelStationByRegisNumById_Registering(@PathVariable("regnum") String registrationNumber) {
-        Optional<FuelStation> fuelStation = fuelStationService.findFuelStationByRegistrationNumber(registrationNumber);
+    public boolean findByRegisNumById_Registering(@PathVariable("regnum") String registrationNumber) {
+        Optional<FuelStation> fuelStation = fuelStationService.findByRegistrationNumber(registrationNumber);
         return fuelStation.isPresent();
     }
 
-    @GetMapping("/f-stations")
+    // for admin get all the refistered fuelstations
+    @GetMapping
     public List<FuelStation> findAllFuelStations(){
         return fuelStationService.findAllFuelStations();
+    }
+
+    // for admin delete refistered fuelstations
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Boolean> deleteFuelStation(@PathVariable("id") Long Id){
+        fuelStationService.deleteById(Id);
+        return ResponseEntity.ok(true);
     }
 
 }
