@@ -3,8 +3,12 @@ package com.se.Fuel_Quota_Management_System.controller;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.se.Fuel_Quota_Management_System.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/api/vehicles")
@@ -47,4 +51,15 @@ public class VehicleController {
         // If vehicle does not exist, return 404
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/qr/{vehicleNumber}")
+    public ResponseEntity<byte[]> getQrCode(@PathVariable String vehicleNumber) {
+        Vehicle vehicle = vehicleService.getVehicleByNumber(vehicleNumber);
+        byte[] qrCodeBytes = Base64.getDecoder().decode(vehicle.getQrCode());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vehicle_qr.png")
+                .contentType(MediaType.IMAGE_PNG)
+                .body(qrCodeBytes);
+    }
+
 }
