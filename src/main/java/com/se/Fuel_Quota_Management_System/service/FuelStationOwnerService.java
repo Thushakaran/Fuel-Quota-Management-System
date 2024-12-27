@@ -1,6 +1,5 @@
 package com.se.Fuel_Quota_Management_System.service;
 
-import com.se.Fuel_Quota_Management_System.model.FuelStation;
 import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.repository.FuelStationOwnerRepository;
 import com.se.Fuel_Quota_Management_System.repository.FuelStationRepository;
@@ -20,7 +19,9 @@ public class FuelStationOwnerService {
         return fuelStationOwnerRepository.save(owner);
     }
 
-//    public List<FuelStation> getOwnerStations(Long ownerId) {
-//        return fuelStationRepository.findByOwnerId(ownerId);
-//    }
+    public List<FuelStationOwner> findAllOwners() {
+        return fuelStationOwnerRepository.findAll();
+    }
+
+
 }
