@@ -3,11 +3,10 @@ package com.se.Fuel_Quota_Management_System.controller;
 import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.service.FuelStationOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/owner")
@@ -22,7 +21,11 @@ public class FuelStationOwnerController {
         return "Succesfully Registered";
     }
 
-    public List<FuelStationOwner> findAllOwners(){
-        return fuelStationOwnerService.findAllOwners();
+
+    @GetMapping("search")
+    public FuelStationOwner findOwnerByNicOrEmail(@RequestParam(value="nicNo",required = false) String nicNo,
+                                                             @RequestParam(value= "email",required = false) String email){
+        return fuelStationOwnerService.findAllByNicOrEmail(nicNo,email);
+
     }
 }
