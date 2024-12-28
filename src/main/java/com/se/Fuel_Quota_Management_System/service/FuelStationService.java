@@ -23,12 +23,5 @@ public class FuelStationService {
         return fuelStationRepository.findByRegistrationNumber(registrationNumber);
     }
 
-    public List<FuelStation> findAllFuelStations() {
-        return (List<FuelStation>) fuelStationRepository.findAll();
-    }
 
-    public void deleteById(Long id) {
-        FuelStation fuelStation = fuelStationRepository.findById(id).orElseThrow(() -> new FuelStationNotFoundException("There is no employee on id :"+id));
-        fuelStationRepository.deleteById(id);
-    }
 }
