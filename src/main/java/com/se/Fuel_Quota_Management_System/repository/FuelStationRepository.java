@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface FuelStationRepository extends CrudRepository<FuelStation, Long> {
     Optional<FuelStation> findByRegistrationNumber(String registrationNumber);
 
-    void deleteById(Long id);
+
 
 }

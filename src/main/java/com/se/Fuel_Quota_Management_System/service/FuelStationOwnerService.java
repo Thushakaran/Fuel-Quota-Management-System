@@ -24,4 +24,7 @@ public class FuelStationOwnerService {
     }
 
 
+    public FuelStationOwner findAllByNicOrEmail(String nicNo, String email) {
+        return fuelStationOwnerRepository.findByNicNoOrEmail(nicNo,email);
+    }
 }

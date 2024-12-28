@@ -49,18 +49,6 @@ public class FuelStationController {
         return fuelStation.isPresent();
     }
 
-    // for admin get all the registered fuelstations
-    @GetMapping
-    public List<FuelStation> findAllFuelStations(){
-        return fuelStationService.findAllFuelStations();
-    }
-
-    // for admin delete registered fuelstations
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity<Boolean> deleteFuelStation(@PathVariable("id") Long Id){
-        fuelStationService.deleteById(Id);
-        return ResponseEntity.ok(true);
-    }
 
 
 
