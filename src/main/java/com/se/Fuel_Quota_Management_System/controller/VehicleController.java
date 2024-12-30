@@ -12,6 +12,7 @@ import java.util.Base64;
 
 @RestController
 @RequestMapping("/api/vehicles")
+@CrossOrigin(origins = "http://localhost:5173")
 public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
