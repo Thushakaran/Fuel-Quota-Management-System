@@ -32,7 +32,7 @@ public class FuelStationController {
             return "This Registration Number: " + fuelStation.getRegistrationNumber() + " is already registered";
         } else {
             //checking it on database
-            if(cpstStationsRepository.findByRegistrationNumber(fuelStation.getRegistrationNumber())){
+            if(cpstStationsRepository.existsByRegistrationNumber(fuelStation.getRegistrationNumber())){
                 FuelStation registeredFuelStation = fuelStationService.registerFuelStation(fuelStation);
                 return "Successfully Registered";
             }else {
@@ -41,6 +41,8 @@ public class FuelStationController {
 
         }
     }
+
+
 
     // Find is any Fuelstation registered on this RegisterdNumber
     @GetMapping("{regnum}")
