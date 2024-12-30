@@ -5,6 +5,7 @@ import FuelStationRegistration from "./RegisterFuelStation/FuelStationRegistrati
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import OwnerLogin from "./RegisterFuelStation/OwnerLogin";
 import StationLogin from "./RegisterFuelStation/StationLogin";
+import OwnerHomePage from "./RegisterFuelStation/OwnerHomePage";
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/stationlogin" element={<StationLogin/>}></Route>
         <Route path="/stationreg" element={<FuelStationRegistration/>}></Route>
         <Route path="/ownerreg" element={<FuelOwnerRgistration/>}></Route>
+        <Route path='owner/:id' element={<OwnerHomePage/>}></Route>
       </Routes>
     </BrowserRouter>
     </>
