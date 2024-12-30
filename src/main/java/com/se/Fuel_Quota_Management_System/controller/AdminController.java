@@ -1,7 +1,7 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
 
-//import com.se.Fuel_Quota_Management_System.model.AdminLog;
+import com.se.Fuel_Quota_Management_System.model.FuelStation;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.se.Fuel_Quota_Management_System.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,8 @@ public class AdminController {
         return adminService.getAllVehicles();
     }
 
+
+
 ////    @PutMapping("/vehicles/{id}")
 ////    public ResponseEntity<Vehicle> updateVehicle(@PathVariable Long id, @RequestBody Vehicle updatedVehicle) {
 ////        return ResponseEntity.ok(adminService.updateVehicle(id, updatedVehicle));
@@ -35,6 +37,11 @@ public class AdminController {
 ////    }
 //
 //    // Add other endpoints
+
+    @GetMapping("/stations")
+    public List<FuelStation> getAllFuelStation() {
+        return adminService.getAllFuelStation();
+    }
 }
 
 
