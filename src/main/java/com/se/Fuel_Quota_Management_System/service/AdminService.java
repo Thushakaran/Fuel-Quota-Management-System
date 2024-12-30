@@ -1,7 +1,9 @@
 package com.se.Fuel_Quota_Management_System.service;
 
 //import com.se.Fuel_Quota_Management_System.model.AdminLog;
+import com.se.Fuel_Quota_Management_System.model.FuelStation;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
+import com.se.Fuel_Quota_Management_System.repository.FuelStationRepository;
 import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ public class AdminService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
+    @Autowired
+    private  FuelStationRepository fuelStationRepository;
 
 //    @Autowired
 //    private AdminLogRepository adminLogRepository;
@@ -40,4 +44,6 @@ public class AdminService {
 ////    public List<AdminLog> getAdminLogs() {
 ////        return adminLogRepository.findAll();
 ////    }
+
+   public List<FuelStation> getAllFuelStation() {return fuelStationRepository.findAll(); }
 }
