@@ -65,6 +65,16 @@ public class AdminController {
         return ResponseEntity.ok(vehicle);
     }
 
+    /**
+     * Delete a vehicle by ID.
+     */
+    @DeleteMapping("/vehicles/{id}")
+    public ResponseEntity<String> deleteVehicle(@PathVariable Long id) {
+        adminService.deleteVehicle(id);
+        return ResponseEntity.ok("Vehicle with ID " + id + " deleted successfully.");
+    }
+
+
 
 
 ////    @PutMapping("/vehicles/{id}")

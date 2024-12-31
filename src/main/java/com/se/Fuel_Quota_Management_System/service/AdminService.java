@@ -1,6 +1,7 @@
 package com.se.Fuel_Quota_Management_System.service;
 
 //import com.se.Fuel_Quota_Management_System.model.AdminLog;
+import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,22 @@ public class AdminService {
         existingVehicle.setNotificationType(updatedVehicle.getNotificationType());
 
         return vehicleRepository.save(existingVehicle);
+    }
+
+    /**
+     * Deletes a vehicle by its ID.
+     *
+     * @param id the ID of the vehicle to delete
+     * @throws VehicleNotFoundException if no vehicle with the given ID is found
+     */
+    public void deleteVehicle(Long id) {
+        // Check if the vehicle exists
+        if (!vehicleRepository.existsById(id)) {
+            throw new VehicleNotFoundException("Vehicle with ID " + id + " does not exist.");
+        }
+
+        // Delete the vehicle
+        vehicleRepository.deleteById(id);
     }
 
 
