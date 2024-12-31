@@ -1,16 +1,11 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
-import com.se.Fuel_Quota_Management_System.model.CPST_Stations;
+
 import com.se.Fuel_Quota_Management_System.model.FuelStation;
-import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.repository.CPST_StationsRepository;
 import com.se.Fuel_Quota_Management_System.service.FuelStationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin("*")
