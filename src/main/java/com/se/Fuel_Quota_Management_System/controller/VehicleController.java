@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Base64;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/vehicles")
 public class VehicleController {
     @Autowired

@@ -18,8 +18,19 @@ public class FuelStationOwner {
     private String phoneNumber;
     private String email;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "loginid")
+    private OwnerLog ownerLog;
+
+    @OneToMany
     private List<FuelStation> fuelStations;
 
 }
+
+
+
+
+
+   
+
 

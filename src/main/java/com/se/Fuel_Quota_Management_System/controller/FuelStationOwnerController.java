@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +39,10 @@ public class FuelStationOwnerController {
     }
 
 
+    @GetMapping
+    public List<FuelStationOwner> findall(){
+        return fuelStationOwnerService.findAllOwners();
+    }
     // find anyone Registered on this NIC
     @GetMapping("searchnic/{nicNo}")
     public boolean findByNicNo(@PathVariable("nicNo") String nicNo){

@@ -15,7 +15,8 @@ import java.util.Map;
 public class FuelStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "station_id")
+    private Long stationId;
 
     private String stationName;
 
@@ -24,10 +25,8 @@ public class FuelStation {
     private String address;
 
     // Store fuel types as a list of strings
-    private List<String> fuelTypes;
-
-    // government or private 
-    private String ownedType;
+    @OneToMany
+    private List<FuelType> fuelTypes;
 
     // fuel station have only one owner
     @ManyToOne

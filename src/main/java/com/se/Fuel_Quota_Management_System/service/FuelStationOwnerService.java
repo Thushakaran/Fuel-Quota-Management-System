@@ -32,4 +32,8 @@ public class FuelStationOwnerService {
     public Optional<FuelStationOwner> findByNicNo(String nicNo) {
         return fuelStationOwnerRepository.findByNicNo(nicNo);
     }
+
+
+
+
 }
