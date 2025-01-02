@@ -72,6 +72,14 @@ public class VehicleService {
                 .orElseThrow(() -> new RuntimeException("Vehicle not found with number: " + vehicleNumber));
     }
 
+//    public Vehicle getVehicleByType(String vehicleType) {
+//        // Find the vehicle by its number or throw an exception if not found
+//        return vehicleRepository.findByVehicleType(vehicleType)
+//                .orElseThrow(() -> new RuntimeException("Vehicle not found with number: " + vehicleType));
+//    }
+
+
+
     // Determines the fuel quota based on the type of vehicle.
     // @return The fuel quota for the given vehicle type.
     private double calculateFuelQuota(String vehicleType) {
