@@ -20,8 +20,6 @@ public class Admin {
     private String password; // Store hashed passwords
     private String email;
 
-//    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
-//    private List<AdminLog> adminLogs;
-
-
 }
+//    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+
