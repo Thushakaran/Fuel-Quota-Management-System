@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public interface FuelTransactionService {
-  public FuelTransaction saveTransaction(FuelTransaction fuelTransaction);
+  public FuelTransaction  saveTransaction(FuelTransaction fuelTransaction);
 
   public List<FuelTransaction> getAllTransaction();
 
