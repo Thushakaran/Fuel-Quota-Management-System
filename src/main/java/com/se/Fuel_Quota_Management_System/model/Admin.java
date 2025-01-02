@@ -23,5 +23,5 @@ public class Admin {
 //    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
 //    private List<AdminLog> adminLogs;
 
-    // Getters and setters
+
 }
