@@ -20,7 +20,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 //@PreAuthorize("hasRole('ADMIN')") // Ensure only admins can access
 public class AdminController {
 

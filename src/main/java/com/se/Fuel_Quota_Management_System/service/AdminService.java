@@ -29,7 +29,7 @@ public class AdminService {
     private VehicleRepository vehicleRepository;
 
     @Autowired
-    private  FuelStationRepository fuelStationRepository;
+    private FuelStationRepository fuelStationRepository;
 
 
 //    @Autowired
@@ -68,10 +68,11 @@ public class AdminService {
     public Optional<Vehicle> getVehiclesByOwner(String ownerName) {
         return vehicleRepository.findByOwnerName(ownerName);
     }
+
     /**
      * Update vehicle details by ID.
      *
-     * @param id Vehicle ID
+     * @param id             Vehicle ID
      * @param updatedVehicle Updated vehicle details
      * @return Updated vehicle object
      */
@@ -121,21 +122,17 @@ public class AdminService {
 ////    public List<AdminLog> getAdminLogs() {
 ////        return adminLogRepository.findAll();
 ////    }
-}
-=======
-   public List<FuelStation> getAllFuelStation() {return fuelStationRepository.findAll(); }
 
 
-
-
-
+    public List<FuelStation> getAllFuelStation() {
+        return fuelStationRepository.findAll();
+    }
 
 
     public FuelStation getFuelStationById(Long id) {
         return fuelStationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Fuel station not found with id: " + id));
     }
-
 
 
     public FuelStation getFuelStationByOwnerId(Long owner_id) {
@@ -145,12 +142,10 @@ public class AdminService {
     }
 
 
-
     public FuelStation getFuelStationByLocation(String location) {
         return fuelStationRepository.findByLocation(location)
                 .orElseThrow(() -> new RuntimeException("Fuel station not found with location: " + location));
     }
-
 
 
     public FuelStation getFuelStationByStationName(String station_name) {
@@ -159,16 +154,13 @@ public class AdminService {
     }
 
 
-
     public FuelStation getFuelStationByRegistrationNumber(String registration_number) {
         return fuelStationRepository.findByRegistrationNumber(registration_number)
                 .orElseThrow(() -> new RuntimeException("Fuel station not found with station_name: " + registration_number));
     }
 
 
-
-
-     // Update vehicle details by ID.
+    // Update vehicle details by ID.
 
     public FuelStation updateFuelStation(Long id, FuelStation updatedFuelStation) {
         FuelStation existingFuelStation = getFuelStationById(id);
@@ -183,7 +175,7 @@ public class AdminService {
     }
 
 
-     // Deletes a vehicle by its ID.
+    // Deletes a vehicle by its ID.
 
 
     public void deleteFuelStation(Long id) {
@@ -194,10 +186,12 @@ public class AdminService {
 
         // Delete the vehicle
         else {
-        fuelStationRepository.deleteById(id);}
+            fuelStationRepository.deleteById(id);
+        }
 
 
     }
-
 }
+
+
 
