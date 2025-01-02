@@ -21,5 +21,5 @@ public class Admin {
     private String email;
 
 }
-//    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+
 
