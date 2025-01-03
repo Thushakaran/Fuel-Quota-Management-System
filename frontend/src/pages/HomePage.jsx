@@ -61,12 +61,12 @@ const HomePage = () => {
     <div>
       <Navbar />
       <header className="hero bg-primary text-white text-center py-5">
-        <div className="container">
+        <div>
           <h1 className="display-4">Welcome to the Fuel Quota Management System</h1>
           <p className="lead">
             Your one-stop solution for managing fuel quotas during a crisis.
           </p>
-          <a href="/register" className="btn btn-light btn-lg mt-3">
+          <a href="/vehicle-registration" className="btn btn-light btn-lg mt-3">
             Get Started
           </a>
         </div>

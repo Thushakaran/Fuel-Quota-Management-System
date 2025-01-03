@@ -75,7 +75,7 @@ const AboutUsPage = () => {
     <div>
       <Navbar />
       <header className="hero bg-primary text-white text-center py-5">
-        <div className="container">
+        <div>
           <h1 className="display-4">About Us</h1>
           <p className="lead">
             Empowering fuel management for a better tomorrow.
