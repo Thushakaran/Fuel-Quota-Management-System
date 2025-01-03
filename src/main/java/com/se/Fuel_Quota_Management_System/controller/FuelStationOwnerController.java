@@ -5,8 +5,6 @@ import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.model.OwnerLog;
 import com.se.Fuel_Quota_Management_System.repository.CPST_StationsRepository;
 import com.se.Fuel_Quota_Management_System.service.FuelStationOwnerService;
-import com.se.Fuel_Quota_Management_System.service.OwnerLogService;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @CrossOrigin("*")

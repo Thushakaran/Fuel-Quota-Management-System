@@ -13,9 +13,13 @@ public class OwnerLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true, unique = true) // Unique username
+    @Column(nullable = false, unique = true)
     private String ownerUserName;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String password;
+
+    @OneToOne(mappedBy = "ownerLog", cascade = CascadeType.ALL)
+    private FuelStationOwner owner; // Reverse mapping
 }
+
