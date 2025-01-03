@@ -26,11 +26,3 @@ public class FuelStationOwner {
     private List<FuelStation> fuelStations;
 
 }
-
-
-
-
-
-   
-
-
