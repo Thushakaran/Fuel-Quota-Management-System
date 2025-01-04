@@ -128,39 +128,39 @@ public class AdminService {
         return fuelStationRepository.findAll();
     }
 
-
+    //Get FuelStation by their id
     public FuelStation getFuelStationById(Long id) {
         return fuelStationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Fuel station not found with id: " + id));
     }
 
-
+    //Get FuelStation by their owner_id
     public FuelStation getFuelStationByOwnerId(Long owner_id) {
         System.out.println("Searching for owner_id: " + owner_id);
         return fuelStationRepository.findByOwnerId(owner_id)
                 .orElseThrow(() -> new RuntimeException("Fuel station not found with owner id: " + owner_id));
     }
 
-
+    //Get FuelStation by their location
     public FuelStation getFuelStationByLocation(String location) {
         return fuelStationRepository.findByLocation(location)
                 .orElseThrow(() -> new RuntimeException("Fuel station not found with location: " + location));
     }
 
-
+   //Get FuelStation by their station_name
     public FuelStation getFuelStationByStationName(String station_name) {
         return fuelStationRepository.findByStationName(station_name)
                 .orElseThrow(() -> new RuntimeException("Fuel station not found with station_name: " + station_name));
     }
 
-
+    //Get FuelStation by their registration_number
     public FuelStation getFuelStationByRegistrationNumber(String registration_number) {
         return fuelStationRepository.findByRegistrationNumber(registration_number)
                 .orElseThrow(() -> new RuntimeException("Fuel station not found with station_name: " + registration_number));
     }
 
 
-    // Update vehicle details by ID.
+    // Update FuelStation details by ID.
 
     public FuelStation updateFuelStation(Long id, FuelStation updatedFuelStation) {
         FuelStation existingFuelStation = getFuelStationById(id);
@@ -175,7 +175,7 @@ public class AdminService {
     }
 
 
-    // Deletes a vehicle by its ID.
+    // Deletes a FuelStation by its ID.
 
 
     public void deleteFuelStation(Long id) {
@@ -184,7 +184,7 @@ public class AdminService {
             throw new FuelStationNotFoundException("FuelStation with ID " + id + " does not exist.");
         }
 
-        // Delete the vehicle
+        // Delete the FuelStation
         else {
             fuelStationRepository.deleteById(id);
         }
