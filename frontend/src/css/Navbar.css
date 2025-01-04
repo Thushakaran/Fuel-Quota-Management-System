@@ -1,0 +1,29 @@
+/* Change dropdown background to white and text color to black */
+.dropdown-menu {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.dropdown-item {
+  color: #000000 !important;
+  cursor: pointer; /* Change cursor to pointer when hovering over items */
+}
+
+/* Change color when item is clicked or touched */
+.dropdown-item:active {
+  background-color: #e2e6ea !important; /* Light gray when clicked or touched */
+  color: #000000 !important; /* Keep text color black when clicked */
+}
+
+/* Change hover color */
+.dropdown-item:hover {
+   /* background-color: #a3cbf3 !important;Change background color on hover */
+  color: #448b30 !important; /* Change text color on hover */
+}
+
+/* Open dropdown on hover */
+.navbar-nav .dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0; /* Remove margin from the dropdown menu */
+}
+

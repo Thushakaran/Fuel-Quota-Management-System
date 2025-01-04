@@ -1,7 +1,7 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
-import com.se.Fuel_Quota_Management_System.service.VehicleService;
+import com.se.Fuel_Quota_Management_System.service.vehicle.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,6 +13,7 @@ import java.util.Base64;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/vehicles")
+@CrossOrigin(origins = "http://localhost:5173")
 public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
