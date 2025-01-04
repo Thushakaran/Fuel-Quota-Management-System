@@ -15,7 +15,7 @@ import java.util.List;
 public class FuelStationLogDTO {
     private String stationName;
     private String registrationNumber;
-    private String address;
+    private String location;
     private Long ownerId;
     private List<FuelType> fuelTypes;
 
