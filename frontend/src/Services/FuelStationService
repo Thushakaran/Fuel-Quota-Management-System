@@ -1,6 +1,19 @@
 import axios from "axios";
 
-const REST_API_BASE_URL = 'http://localhost:8080/api/fuel-stations';
+const REST_API_BASE_URL = 'http://localhost:8080';
+const FUEL_STATION_BASE = '/api/fuel-station';
+const OWNER_CASE = '/api/owner';
+
+// Function to register a fuel station
+export const fuelstationregister = (fuelStationData) => {
+  return axios.post(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/register`, fuelStationData);
+};
+
+// Function to register an owner
+export const ownerregister = (ownerData) => {
+  return axios.post(`${REST_API_BASE_URL}${OWNER_CASE}/register`, ownerData);
+};
+
 
 
 

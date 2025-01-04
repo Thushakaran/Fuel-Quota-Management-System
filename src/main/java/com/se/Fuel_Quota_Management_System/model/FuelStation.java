@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Getter
@@ -16,7 +16,8 @@ import java.util.Map;
 public class FuelStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "station_id")
+    private Long stationId;
 
     @Column
     private String stationName;
@@ -25,16 +26,23 @@ public class FuelStation {
 
     private String address;
 
-    // Store fuel types as a list of strings
-    private List<String> fuelTypes;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "loginid")
+    private StationLog stationLog;
 
-    // government or private 
-    private String ownedType;
+    // Store fuel types as a list of strings
+    @OneToMany
+    private List<FuelType> fuelTypes;
+
+//    // One-to-Many relationship with FuelInventory
+//    @OneToMany(mappedBy = "fuelStation", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<FuelInventory> fuelInventories = new ArrayList<>();
 
     // fuel station have only one owner
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private FuelStationOwner owner;
+
 
     public FuelStationOwner getOwner() {
         return owner;
@@ -81,5 +89,6 @@ public class FuelStation {
     @MapKeyColumn(name = "fuel_type")
     @Column(name = "available_fuel")
     private Map<String, Double> fuelInventory; // Key: Fuel type (e.g., Petrol, Diesel), Value: Quantity available
+
 
 }
