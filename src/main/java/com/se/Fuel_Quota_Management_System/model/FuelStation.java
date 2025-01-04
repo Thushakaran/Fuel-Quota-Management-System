@@ -41,35 +41,5 @@ public class FuelStation {
     @JoinColumn(name = "owner_id")
     private FuelStationOwner owner;
 
-//    // Helper methods for managing fuel inventories
-//    public void addFuelInventory(FuelInventory inventory) {
-//        fuelInventories.add(inventory);
-//        inventory.setFuelStation(this);
-//    }
-//
-//    public void removeFuelInventory(FuelInventory inventory) {
-//        fuelInventories.remove(inventory);
-//        inventory.setFuelStation(null);
-//    }
-//
-//    public void fillFuelForType(FuelType fuelType, double quantity) {
-//        for (FuelInventory inventory : fuelInventories) {
-//            if (inventory.getFuelType().equals(fuelType)) {
-//                inventory.fillFuel(quantity);
-//                return;
-//            }
-//        }
-//        throw new IllegalArgumentException("Fuel type not found in inventory.");
-//    }
-//
-//    public void distributeFuelForType(FuelType fuelType, double quantity) {
-//        for (FuelInventory inventory : fuelInventories) {
-//            if (inventory.getFuelType().equals(fuelType)) {
-//                inventory.distributeFuel(quantity);
-//                return;
-//            }
-//        }
-//        throw new IllegalArgumentException("Fuel type not found in inventory.");
-//    }
 
 }
