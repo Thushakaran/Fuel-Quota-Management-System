@@ -28,7 +28,7 @@ public class FuelStationOwnerController {
 
     // for register StationOwner
     @PostMapping("/register")
-    public ResponseEntity<String> registerOwner(@RequestBody FuelStationOwnerLogDTO dto) {
+    public ResponseEntity<?> registerOwner(@RequestBody FuelStationOwnerLogDTO dto) {
         try {
             // Create OwnerLog
             OwnerLog ownerLog = new OwnerLog();
@@ -49,8 +49,9 @@ public class FuelStationOwnerController {
             // Save FuelStationOwner
             fuelStationOwnerService.registerOwner(owner);
 
-            return ResponseEntity.ok("Owner registered successfully!");
+            return ResponseEntity.ok(owner);
         } catch (DataIntegrityViolationException e) {
+            // make sure that username in unique
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed!");

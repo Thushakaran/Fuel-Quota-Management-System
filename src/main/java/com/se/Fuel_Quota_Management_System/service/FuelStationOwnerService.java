@@ -20,16 +20,16 @@ public class FuelStationOwnerService {
     @Autowired
     private FuelStationRepository fuelStationRepository;
 
-    public ResponseEntity<FuelStationOwner> registerOwner(FuelStationOwner fuelStationOwner) {
-        FuelStationOwner registeredOwner = null;
+    public ResponseEntity<?> registerOwner(FuelStationOwner fuelStationOwner) {
+
         if(fuelStationOwnerRepository.existsByNicNo(fuelStationOwner.getNicNo())) {
-            return ResponseEntity.ok(registeredOwner);
+            return ResponseEntity.ok("Already Registered");
         }else {
             if (cpstStationsRepository.existsByOwnerNicNo(fuelStationOwner.getNicNo())) {
-                registeredOwner =fuelStationOwnerRepository.save(fuelStationOwner);
+                FuelStationOwner registeredOwner =fuelStationOwnerRepository.save(fuelStationOwner);
                 return ResponseEntity.ok(registeredOwner);
             } else {
-                return ResponseEntity.ok(registeredOwner);
+                return ResponseEntity.ok("NIC Number not found in database");
             }
         }
     }

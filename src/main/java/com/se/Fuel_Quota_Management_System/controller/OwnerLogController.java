@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/owner")
 public class OwnerLogController {
@@ -30,13 +32,18 @@ public class OwnerLogController {
 
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody OwnerLog ownerLog) {
-        boolean authenticated = ownerlogservice.authenticate(ownerLog.getOwnerUserName(), ownerLog.getPassword());
-        if (authenticated) {
-            return ResponseEntity.ok("Login successful!");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials!");
-        }
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody OwnerLog ownerLog) {
+//        try {
+//            Optional<OwnerLog> authenticated =
+//                    ownerlogservice.authenticate(ownerLog.getOwnerUserName(), ownerLog.getPassword());
+//        }catch (Error e){
+//
+//        }
+//        if (authenticated) {
+//            return ResponseEntity.ok("Login successful!");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials!");
+//        }
+//    }
 }

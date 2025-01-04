@@ -3,6 +3,7 @@ package com.se.Fuel_Quota_Management_System.service;
 import com.se.Fuel_Quota_Management_System.model.OwnerLog;
 import com.se.Fuel_Quota_Management_System.repository.OwnerLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +19,13 @@ public class OwnerLogService {
         return ownerlogrepository.save(ownerLog);
     }
 
-    public boolean authenticate(String username, String password) {
+    public ResponseEntity<?> authenticate(String username, String password) {
         Optional<OwnerLog> user = ownerlogrepository.findByOwnerUserName(username);
-        return user.isPresent() && new BCryptPasswordEncoder().matches(password, user.get().getPassword());
+        if(user.isPresent() && new BCryptPasswordEncoder().matches(password, user.get().getPassword())){
+            return ResponseEntity.ok(user);
+        }else {
+            return ResponseEntity.ok("UserName or PAssword incorrect");
+        }
     }
 
 
