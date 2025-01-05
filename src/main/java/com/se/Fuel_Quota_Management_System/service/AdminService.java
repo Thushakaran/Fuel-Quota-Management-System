@@ -1,12 +1,11 @@
 package com.se.Fuel_Quota_Management_System.service;
 
-
-//import com.se.Fuel_Quota_Management_System.model.AdminLog;
+import com.se.Fuel_Quota_Management_System.DTO.DashboardData;
 import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
 
 import com.se.Fuel_Quota_Management_System.exception.FuelStationNotFoundException;
 import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
-//import com.se.Fuel_Quota_Management_System.model.AdminLog;
+
 import com.se.Fuel_Quota_Management_System.model.FuelStation;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.se.Fuel_Quota_Management_System.repository.FuelStationRepository;
@@ -17,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.Optional;
-import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 public class AdminService {
@@ -32,9 +28,6 @@ public class AdminService {
     private FuelStationRepository fuelStationRepository;
 
 
-//    @Autowired
-//    private AdminLogRepository adminLogRepository;
-
     public List<Vehicle> getAllVehicles() {
         return vehicleRepository.findAll();
     }
@@ -45,12 +38,7 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("Vehicle not found with id: " + id));
     }
 
-    /**
-     * Get vehicles by their type (e.g., "Car", "Truck").
-     *
-     * @param vehicleType Type of vehicle
-     * @return List of vehicles matching the type
-     */
+
     public List<Vehicle> getVehiclesByType(String vehicleType) {
         List<Vehicle> vehicles = vehicleRepository.findByVehicleType(vehicleType);
         if (vehicles.isEmpty()) {
@@ -59,23 +47,12 @@ public class AdminService {
         return vehicles;
     }
 
-    /**
-     * Get vehicles by owner name.
-     *
-     * @param ownerName Name of the vehicle owner
-     * @return List of vehicles registered under the owner's name
-     */
+
     public Optional<Vehicle> getVehiclesByOwner(String ownerName) {
         return vehicleRepository.findByOwnerName(ownerName);
     }
 
-    /**
-     * Update vehicle details by ID.
-     *
-     * @param id             Vehicle ID
-     * @param updatedVehicle Updated vehicle details
-     * @return Updated vehicle object
-     */
+
     public Vehicle updateVehicle(Long id, Vehicle updatedVehicle) {
         Vehicle existingVehicle = getVehicleById(id);
 
@@ -87,12 +64,6 @@ public class AdminService {
         return vehicleRepository.save(existingVehicle);
     }
 
-    /**
-     * Deletes a vehicle by its ID.
-     *
-     * @param id the ID of the vehicle to delete
-     * @throws VehicleNotFoundException if no vehicle with the given ID is found
-     */
     public void deleteVehicle(Long id) {
         // Check if the vehicle exists
         if (!vehicleRepository.existsById(id)) {
@@ -102,26 +73,6 @@ public class AdminService {
         // Delete the vehicle
         vehicleRepository.deleteById(id);
     }
-
-
-//    public Vehicle updateVehicle(Long id, Vehicle updatedVehicle) {
-//        Vehicle existingVehicle = vehicleRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
-//
-//        // Update vehicle details
-//        existingVehicle.setQuota(updatedVehicle.getQuota());
-//        vehicleRepository.save(existingVehicle);
-
-////        // Log the action
-////        AdminLog log = new AdminLog("Updated Vehicle Quota", LocalDateTime.now(),admin);
-////        adminLogRepository.save(log);
-////
-////        return existingVehicle;
-////    }
-////
-////    public List<AdminLog> getAdminLogs() {
-////        return adminLogRepository.findAll();
-////    }
 
 
     public List<FuelStation> getAllFuelStation() {
@@ -190,6 +141,18 @@ public class AdminService {
         }
 
 
+    }
+
+    public DashboardData getDashboardData() {
+        DashboardData data = new DashboardData();
+
+        // Fetch totals from the database
+        data.setTotalVehicles(vehicleRepository.count());
+        data.setTotalStations(fuelStationRepository.count());
+        data.setTotalFuelDistributed(vehicleRepository.sumFuelQuota()); // Implement a custom query
+//      data.setActiveTransactions(vehicleRepository.countActiveTransactions()); // Implement a custom query
+
+        return data;
     }
 }
 
