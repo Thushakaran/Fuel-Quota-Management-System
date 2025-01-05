@@ -22,6 +22,7 @@ public class FuelStation {
 
     private String stationName;
 
+
     private String registrationNumber;
 
     private String location;
@@ -35,8 +36,6 @@ public class FuelStation {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private FuelStationOwner owner;
-
-
 
 
 // Repeat for other fields
