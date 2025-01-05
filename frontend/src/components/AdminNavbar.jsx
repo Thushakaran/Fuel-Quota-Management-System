@@ -22,23 +22,23 @@ const AdminNavbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link active" to="/">
+              <Link className="nav-link" to="/">
                 <i className="bi bi-house-door me-2"></i>Home
               </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#user-management">
-                <i className="bi bi-person-lines-fill me-2"></i>User Management
+              <a className="nav-link" href="#vehicle-management">
+                <i className="bi bi-car-front me-2"></i>Vehicle Management
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#fuel-management">
+                <i className="bi bi-fuel-pump me-2"></i>Fuel Management
               </a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#transactions">
                 <i className="bi bi-credit-card-2-front me-2"></i>Transactions
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#settings">
-                <i className="bi bi-gear me-2"></i>Settings
               </a>
             </li>
             {/* Logout option */}
