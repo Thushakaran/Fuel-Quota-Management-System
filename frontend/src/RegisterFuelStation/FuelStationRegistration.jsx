@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import "./FuelStationRegistration.css"
+import { fuelstationregister } from "../Services/FuelStationService";
+import './FuelStationRegistration.css';
 
 const FuelStationRegistration = () => {
   const [fuelStationData, setFuelStationData] = useState({
     stationName: '',
     registrationNumber: '',
     location: '',
-    fuelInventory: '',
+    fuelInventory: [],
   });
 
-  const [ownerData, setOwnerData] = useState({
-    name: '',
-    nicNo: '',
-    phoneNumber: '',
-    email: '',
-  });
+  const [fuel, setFuel] = useState([]);
 
-   // Step 1: Fuel Station, Step 2: Owner
-  const [step, setStep] = useState(1);
+  const handleFuelChange = (value) => {
+    setFuel((prevFuel) => {
+      const updatedFuel = prevFuel.includes(value)
+        ? prevFuel.filter((item) => item !== value)
+        : [...prevFuel, value];
+
+      // Update fuel inventory in the main state
+      setFuelStationData((prev) => ({ ...prev, fuelInventory: updatedFuel }));
+      return updatedFuel;
+    });
+  };
 
   const handleStationChange = (e) => {
     const { name, value } = e.target;
@@ -28,177 +32,106 @@ const FuelStationRegistration = () => {
     });
   };
 
-  const handleOwnerChange = (e) => {
-    const { name, value } = e.target;
-    setOwnerData({
-      ...ownerData,
-      [name]: value,
-    });
-  };
-
-  const handleContinue = (e) => {
-    // check Station RegistationNo available
-    
-
-    setStep(2);
-  };
-
-  const checkDataMatchWithDB = (e) => {
-
-  }
-
-  const resetFuelStation = () =>{
+  const reset = () => {
     setFuelStationData({
       stationName: '',
       registrationNumber: '',
       location: '',
-      fuelInventory: '',
+      fuelInventory: [],
     });
-  }
-  const resetOwner = () => {
-    setOwnerData({
-      name: '',
-      nicNo: '',
-      phoneNumber: '',
-      email: '',
-    });
-  }
+    setFuel([]);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('/api/fuel-station/register',fuelStationData).then(
-        (response) => 
-            {console.log(Succes);
-                resetFuelStation;
-        }
-    ).catch((error) => {
+      fuelstationregister(fuelStationData).then((response) => {
+        console.log('Success:', response.data);
+        alert('Fuel station registered successfully!');
+        reset();
+      })
+      .catch((error) => {
         console.error('Error registering fuel station:', error);
         alert('Registration failed. Please try again.');
       });
-
-    
-    axios.post('/api/owner/register',ownerData).then(
-        (response) => 
-            {console.log(Succes);
-                
-                setStep(1); 
-        }
-    ).catch((error) => {
-        console.error('Error registering fuel station:', error);
-        alert('Registration failed. Please try again.');
-      });
-
-    
-      
   };
 
   return (
-    
-    <div className="register-container">
-        
-      {step === 1 && (
-       
-            <form>
-            <h2>Register Fuel Station</h2>
-            <div>
-                <label htmlFor="stationName">Station Name:</label>
-                <input
-                type="text"
-                id="stationName"
-                name="stationName"
-                placeholder="Enter Station Name"
-                value={fuelStationData.stationName}
-                onChange={handleStationChange}
-                required
-                />
-            </div>
-            <div>
-                <label htmlFor="registrationNumber">Registration Number:</label>
-                <input
-                type="text"
-                id="registrationNumber"
-                name="registrationNumber"
-                placeholder="Enter Registration Number"
-                value={fuelStationData.registrationNumber}
-                onChange={handleStationChange}
-                required
-                />
-            </div>
-            <div>
-                <label htmlFor="location">Location:</label>
-                <input
-                type="text"
-                id="location"
-                name="location"
-                placeholder="Enter Location"
-                value={fuelStationData.location}
-                onChange={handleStationChange}
-                required
-                />
-            </div>
-            <div>
-                <label htmlFor="fuelInventory">Fuel Inventory:</label>
-                <input
-                type="number"
-                id="fuelInventory"
-                name="fuelInventory"
-                placeholder="Enter Fuel Inventory"
-                value={fuelStationData.fuelInventory}
-                onChange={handleStationChange}
-                />
-            </div>
-            <button type="button" onClick={handleContinue}>Continue</button>
-            </form>
-       
-      )}
-
-      {step === 2 && (
+    <>
+      <br />
+      <br />
+      <div className="register-container">
         <form onSubmit={handleSubmit}>
-          <h2>Register Fuel Station Owner</h2>
+          <h2>Register Fuel Station</h2>
           <div>
-            <label>Name:</label>
+            <label htmlFor="stationName">Station Name:</label>
             <input
               type="text"
-              name="name"
-              value={ownerData.name}
-              onChange={handleOwnerChange}
+              id="stationName"
+              name="stationName"
+              placeholder="Enter Station Name"
+              value={fuelStationData.stationName}
+              onChange={handleStationChange}
               required
             />
           </div>
           <div>
-            <label>NIC No:</label>
+            <label htmlFor="registrationNumber">Registration Number:</label>
             <input
               type="text"
-              name="nicNo"
-              value={ownerData.nicNo}
-              onChange={handleOwnerChange}
+              id="registrationNumber"
+              name="registrationNumber"
+              placeholder="Enter Registration Number"
+              value={fuelStationData.registrationNumber}
+              onChange={handleStationChange}
               required
             />
           </div>
           <div>
-            <label>Phone Number:</label>
+            <label htmlFor="location">Location:</label>
             <input
               type="text"
-              name="phoneNumber"
-              value={ownerData.phoneNumber}
-              onChange={handleOwnerChange}
+              id="location"
+              name="location"
+              placeholder="Enter Location"
+              value={fuelStationData.location}
+              onChange={handleStationChange}
               required
             />
           </div>
           <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={ownerData.email}
-              onChange={handleOwnerChange}
-              required
-            />
+            <label htmlFor="fuelInventory">Fuel Inventory:</label>
+            <div className="check-box">
+              <input
+                type="checkbox"
+                value="Petrol 92-Octane"
+                onChange={(e) => handleFuelChange(e.target.value)}
+              />
+              <div className='name'>92-Octane</div>
+              <input
+                type="checkbox"
+                value="Petrol 95-Octane"
+                onChange={(e) => handleFuelChange(e.target.value)}
+              />
+              <div className='name'>95-Octane</div>
+              <input
+                type="checkbox"
+                value="Auto Diesel"
+                onChange={(e) => handleFuelChange(e.target.value)}
+              />
+              <div className='name'>Auto Diesel</div>
+              <input
+                type="checkbox"
+                value="Super Diesel"
+                onChange={(e) => handleFuelChange(e.target.value)}
+              />
+              <div className='name'>Super Diesel
+            </div>
           </div>
-          <button type="submit" onClick={()=> re}>Register</button>
+          </div>
+          <button type="submit">Submit</button>
         </form>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 
