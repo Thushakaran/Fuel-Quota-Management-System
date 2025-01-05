@@ -22,18 +22,18 @@ const AdminNavbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/">
+              <Link className="nav-link" to="/adminDashboard">
                 <i className="bi bi-house-door me-2"></i>Home
               </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#vehicle-management">
+              <a className="nav-link" href="/vehicleManagement">
                 <i className="bi bi-car-front me-2"></i>Vehicle Management
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#fuel-management">
-                <i className="bi bi-fuel-pump me-2"></i>Fuel Management
+              <a className="nav-link" href="/fuelStationManagemnt">
+                <i className="bi bi-fuel-pump me-2"></i>Fuel Station Management
               </a>
             </li>
             <li className="nav-item">
