@@ -11,6 +11,7 @@ import OwnerHomePage from "./RegisterFuelStation/OwnerHomePage";
 import HomePage from "./pages/HomePage";
 
 import AboutUsPage from "./pages/AboutUsPage";
+import FuelStationManagement from "./components/FuelStationManagement";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path="/vehicle-registration" element={<VehicleRegistration />}></Route>
         <Route path="/" element={<HomePage/>}></Route>
         <Route path="/about" element={<AboutUsPage/>}></Route>
+        <Route path="/fuelStationManagement" element={<FuelStationManagement/>}></Route>
 
       </Routes>
     </BrowserRouter>
