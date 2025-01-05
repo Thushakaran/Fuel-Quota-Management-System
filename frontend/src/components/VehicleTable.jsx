@@ -5,7 +5,7 @@ const VehicleTable = ({ vehicles, onEdit, onDelete }) => {
 
     return (
         <table className="table table-striped table-bordered table-hover">
-            <thead className="table-dark">
+            <thead className="table-secondary">
                 <tr>
                     <th>Vehicle Number</th>
                     <th>Owner</th>
