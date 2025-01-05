@@ -1,5 +1,7 @@
 package com.se.Fuel_Quota_Management_System.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,8 +20,13 @@ public class FuelStationOwner {
     private String phoneNumber;
     private String email;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "loginid")
+    @JsonManagedReference
+    @JsonIgnore
+    private OwnerLog ownerLog;
+
+    @OneToMany
     private List<FuelStation> fuelStations;
 
 }
-

@@ -1,10 +1,11 @@
 package com.se.Fuel_Quota_Management_System.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import lombok.*;
 
-import java.util.List;
+
 import java.util.Map;
 
 @Data
@@ -16,26 +17,25 @@ import java.util.Map;
 public class FuelStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "station_id")
+    private Long stationId;
 
-    @Column
     private String stationName;
-@Column
+
+
     private String registrationNumber;
 
     private String location;
 
-    // Store fuel types as a list of strings
-    private List<String> fuelTypes;
-
-    // government or private 
-    private String ownedType;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "loginid")
+    @JsonIgnore
+    private StationLog stationLog;
 
     // fuel station have only one owner
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private FuelStationOwner owner;
-
 
 
 // Repeat for other fields
@@ -45,5 +45,6 @@ public class FuelStation {
     @MapKeyColumn(name = "fuel_type")
     @Column(name = "available_fuel")
     private Map<String, Double> fuelInventory; // Key: Fuel type (e.g., Petrol, Diesel), Value: Quantity available
+
 
 }

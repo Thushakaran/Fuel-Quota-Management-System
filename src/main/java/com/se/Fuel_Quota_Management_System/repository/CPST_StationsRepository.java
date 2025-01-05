@@ -7,4 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CPST_StationsRepository extends JpaRepository<CPST_Stations, Long> {
 
     boolean findByRegistrationNumber(String registrationNumber);
+
+    boolean findByOwnerNicNo(String nicNo);
+
+    boolean existsByRegistrationNumber(String registrationNumber);
+
+    boolean existsByOwnerNicNo(String nicNo);
 }

@@ -1,0 +1,47 @@
+.owner-home-container {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  .personal-details, .fuel-station-details {
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .personal-details h2, .fuel-station-details h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .personal-details div, .fuel-station-details div {
+    margin-bottom: 10px;
+  }
+  
+  strong {
+    font-weight: bold;
+  }
+  
+  ul {
+    list-style-type: square;
+    padding-left: 20px;
+  }
+  
+  li {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  @media (max-width: 600px) {
+    .owner-home-container {
+      margin: 10px;
+    }
+    
+    .personal-details, .fuel-station-details {
+      padding: 15px;
+    }
+  }
+  
