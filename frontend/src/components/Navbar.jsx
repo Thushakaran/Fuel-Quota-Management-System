@@ -92,7 +92,7 @@ const Navbar = () => {
             </a>
             <ul className="dropdown-menu" aria-labelledby="loginDropdown">
               <li>
-                <Link className="dropdown-item" to="/vehicle-owner-login">
+                <Link className="dropdown-item" to="/vehicleOwnerDashboard">
                   Vehicle Owner 
                 </Link>
               </li>
@@ -102,7 +102,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link className="dropdown-item" to="/admin-login">
+                <Link className="dropdown-item" to="/adminDashboard">
                   Admin 
                 </Link>
               </li>
