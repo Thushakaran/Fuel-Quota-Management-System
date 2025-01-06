@@ -1,4 +1,12 @@
 package com.se.Fuel_Quota_Management_System.model;
 
-public class SMSSendRequest {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class SMSSendRequest{
+private String destinationSMSNumber;
+private String smsMessage;
+
 }
