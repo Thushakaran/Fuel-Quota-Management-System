@@ -1,9 +1,8 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
-
-
 //import com.se.Fuel_Quota_Management_System.model.Admin;
 
+import com.se.Fuel_Quota_Management_System.DTO.DashboardData;
 import com.se.Fuel_Quota_Management_System.model.FuelStation;
 
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-
 @RestController
 @RequestMapping("/api/admin")
 //@PreAuthorize("hasRole('ADMIN')") // Ensure only admins can access
@@ -26,7 +24,7 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
-/* Get all Vehicle*/
+    /* Get all Vehicle*/
 
     @GetMapping("/vehicles")
     public List<Vehicle> getAllVehicles() {
@@ -83,35 +81,17 @@ public class AdminController {
     }
 
 
-
-
-////    @PutMapping("/vehicles/{id}")
-////    public ResponseEntity<Vehicle> updateVehicle(@PathVariable Long id, @RequestBody Vehicle updatedVehicle) {
-////        return ResponseEntity.ok(adminService.updateVehicle(id, updatedVehicle));
-////    }
-////
-////    @GetMapping("/logs")
-////    public List<AdminLog> getAdminLogs() {
-////        return adminService.getAdminLogs();
-////    }
-//
-//    // Add other endpoints
-
-
-
-
     @GetMapping("/station")
     public List<FuelStation> getAllFuelStation() {
         return adminService.getAllFuelStation();
     }
 
 
-
-     // Get a specific fuel station by ID.
+    // Get a specific fuel station by ID.
 
     @GetMapping("/fuelStation/{id}")
     public ResponseEntity<FuelStation> getFuelStationById(@PathVariable Long id) {
-        FuelStation fuelStation= adminService.getFuelStationById(id);
+        FuelStation fuelStation = adminService.getFuelStationById(id);
         return ResponseEntity.ok(fuelStation);
     }
 
@@ -120,12 +100,12 @@ public class AdminController {
 
     @GetMapping("/fuelStation/{owner_id}")
     public ResponseEntity<FuelStation> getFuelStationByOwnerId(@PathVariable Long owner_id) {
-        FuelStation fuelStation= adminService.getFuelStationByOwnerId(owner_id);
+        FuelStation fuelStation = adminService.getFuelStationByOwnerId(owner_id);
         return ResponseEntity.ok(fuelStation);
     }
 
 
-     // Get vehicles by location.
+    // Get vehicles by location.
 
     @GetMapping("/FuelStation/{location}")
     public ResponseEntity<FuelStation> getFuelStationByLocation(@PathVariable String location) {
@@ -152,9 +132,7 @@ public class AdminController {
     }
 
 
-
-
-     // Update FuelStation details by ID.
+    // Update FuelStation details by ID.
 
     @PutMapping("/FuelStation/{id}")
     public ResponseEntity<FuelStation> updateFuelStation(@PathVariable Long id, @RequestBody FuelStation updatedFuelStation) {
@@ -163,8 +141,7 @@ public class AdminController {
     }
 
 
-
-     // Delete a FuelStation details by ID.
+    // Delete a FuelStation details by ID.
 
     @DeleteMapping("/FuelStation/{id}")
     public ResponseEntity<String> deleteFuelStation(@PathVariable Long id) {
@@ -172,7 +149,10 @@ public class AdminController {
         return ResponseEntity.ok("FuelStation with ID " + id + " deleted successfully.");
     }
 
-
+    @GetMapping("/dashboard-data")
+    public DashboardData getDashboardData() {
+        return adminService.getDashboardData();
+    }
 }
 
 

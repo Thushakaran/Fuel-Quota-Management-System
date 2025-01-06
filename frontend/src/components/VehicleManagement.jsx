@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "../api/axiosInstance";
 import VehicleTable from "./VehicleTable";
 import EditVehicleModal from "./EditVehicleModal";
+import AdminNavbar from "./AdminNavbar";
+import AdminFooter from "./AdminFooter";
 
 const VehicleManagement = () => {
     const [vehicles, setVehicles] = useState([]);
@@ -60,7 +62,9 @@ const VehicleManagement = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div className="container mt-5 ">
+        <div>
+            <AdminNavbar/>
+            <div className="container mt-5 ">
             <h2>Manage Vehicles</h2>
             <VehicleTable
                 vehicles={vehicles}
@@ -74,6 +78,8 @@ const VehicleManagement = () => {
                     onUpdate={handleUpdate}
                 />
             )}
+            </div>
+            <AdminFooter/>
         </div>
     );
 };
