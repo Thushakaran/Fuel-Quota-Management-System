@@ -11,7 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
+
 
 @CrossOrigin("*")
 @RestController
@@ -38,7 +38,7 @@ public class FuelStationController {
             // Create Station
             FuelStation station = new FuelStation();
             station.setStationName(dto.getStationName());
-            station.setAddress(dto.getAddress());
+            station.setLocation(dto.getLocation());
             station.setRegistrationNumber(dto.getRegistrationNumber());
 
             station.setStationLog(registeredLog);// Link StationLog

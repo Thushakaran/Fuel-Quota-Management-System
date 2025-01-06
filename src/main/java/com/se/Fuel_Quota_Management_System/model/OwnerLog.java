@@ -1,5 +1,7 @@
 package com.se.Fuel_Quota_Management_System.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +22,9 @@ public class OwnerLog {
     private String password;
 
     @OneToOne(mappedBy = "ownerLog", cascade = CascadeType.ALL)
+    @JsonIgnore
+
+    @JsonBackReference
     private FuelStationOwner owner; // Reverse mapping
 }
 
