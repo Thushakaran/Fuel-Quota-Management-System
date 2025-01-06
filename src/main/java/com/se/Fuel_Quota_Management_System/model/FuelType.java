@@ -22,7 +22,7 @@ public class FuelType {
     private Long id;
     private String name;
 
-    //for when inputing default type using FurlTypeCongfig
+    //for when inputing default type using FuelType Congfig
     public FuelType(String type){
         this.name = type;
     }
