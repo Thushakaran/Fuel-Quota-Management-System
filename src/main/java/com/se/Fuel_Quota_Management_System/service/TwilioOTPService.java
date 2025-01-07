@@ -15,7 +15,7 @@ public class TwilioOTPService {
     String account_sid;
     @Value("${twilio.auth_token}")
     String auth_token;
-    @Value("${twilio.trial_number")
+    @Value("${twilio.trial_number}")
     String trial_number;
 
     @PostConstruct
@@ -24,7 +24,8 @@ public class TwilioOTPService {
     }
 
     public String sendSMS(String smsNumber, String smsMessage) {
-        Message message = Message.creator(new PhoneNumber(smsNumber), new PhoneNumber(trial_number), smsMessage).create();
-        return smsMessage.getChars().toString();
+        Message message = Message.creator(new PhoneNumber(smsNumber), new PhoneNumber(trial_number),smsMessage).create();
+        System.out.println("SMS sent successfully.SID:"+message.getAccountSid());
+        return smsNumber;
     }
 }
