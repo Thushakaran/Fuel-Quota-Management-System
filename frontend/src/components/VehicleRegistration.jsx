@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { registerVehicle } from "../api/vehicleApi";
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
 import "../css/VehicleRegistration.css"; // Import custom CSS
+import Navbar from "./Navbar";
 
 // Reusable form input component
 const FormInput = ({ label, type, name, value, onChange, error }) => (
@@ -92,7 +93,9 @@ const VehicleRegistration = () => {
   };
 
   return (
-    <div className="container mt-5 bg-light p-4 rounded">
+    <div>
+      <Navbar/>
+      <div className="container mt-5 bg-light p-4 rounded">
       <div className="header text-center mb-4 text-primary">
         <h2>Vehicle Registration</h2>
       </div>
@@ -203,12 +206,14 @@ const VehicleRegistration = () => {
           )}
         </div>
 
-        <button type="submit" className="btn btn-primary btn-block mt-3" disabled={loading}>
+        <button type="submit" className="btn btn-primary btn-block w-100 mt-3" disabled={loading}>
           {loading ? "Registering..." : "Register"}
         </button>
       </form>
     </div>
-  );
+
+    </div>
+      );
 };
 
 export default VehicleRegistration;

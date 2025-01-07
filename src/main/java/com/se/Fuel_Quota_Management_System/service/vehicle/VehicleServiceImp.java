@@ -1,4 +1,4 @@
-package com.se.Fuel_Quota_Management_System.service;
+package com.se.Fuel_Quota_Management_System.service.vehicle;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -18,7 +18,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 @Service
-public class VehicleService {
+public class VehicleServiceImp implements VehicleService{
 
     @Autowired
     private VehicleRepository vehicleRepository;
@@ -51,6 +51,7 @@ public class VehicleService {
         double fuelQuota = calculateFuelQuota(dmtVehicle.getVehicleType());
         vehicle.setFuelQuota(fuelQuota);
 
+
         // Generate a QR code that includes vehicle number and fuel quota
         String qrCode = generateQrCode(vehicle.getVehicleNumber(), fuelQuota);
         vehicle.setQrCode(qrCode);
@@ -71,9 +72,17 @@ public class VehicleService {
                 .orElseThrow(() -> new RuntimeException("Vehicle not found with number: " + vehicleNumber));
     }
 
+//    public Vehicle getVehicleByType(String vehicleType) {
+//        // Find the vehicle by its number or throw an exception if not found
+//        return vehicleRepository.findByVehicleType(vehicleType)
+//                .orElseThrow(() -> new RuntimeException("Vehicle not found with number: " + vehicleType));
+//    }
+
+
+
     // Determines the fuel quota based on the type of vehicle.
     // @return The fuel quota for the given vehicle type.
-    private double calculateFuelQuota(String vehicleType) {
+    public double calculateFuelQuota(String vehicleType) {
         // Assign fuel quota based on vehicle type
         switch (vehicleType.toLowerCase()) {
             case "motorcycle", "two-wheeler" -> {
@@ -110,7 +119,7 @@ public class VehicleService {
 //        return String.format("QR|VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
 //    }
 
-    private String generateQrCode(String vehicleNumber, double fuelQuota) {
+    public String generateQrCode(String vehicleNumber, double fuelQuota) {
         try {
             String qrContent = String.format("VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
