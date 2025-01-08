@@ -25,6 +25,7 @@ public class FuelStationController {
 
     //Registering the fuelStaion
     @PostMapping("/register")
+
     public ResponseEntity<?> registerFuelStation(@RequestBody FuelStationLogDTO dto) {
         try {
             // Create StationLog
