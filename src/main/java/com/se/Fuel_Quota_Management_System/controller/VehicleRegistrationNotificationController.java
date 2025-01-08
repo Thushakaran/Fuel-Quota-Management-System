@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class VehicleRegistrationNotificationController {
 
         @Autowired
-        TwilioOTPService twilioOTPService;
+        private TwilioOTPService twilioOTPService;
         @PostMapping("/processSMS")
         public String processSMS(@RequestBody SMSSendRequest smsSendRequest)
         {
