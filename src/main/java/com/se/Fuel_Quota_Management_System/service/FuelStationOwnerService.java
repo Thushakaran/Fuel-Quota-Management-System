@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class FuelStationOwnerService {
@@ -45,7 +45,7 @@ public class FuelStationOwnerService {
     }
 
 
-    public Optional<FuelStationOwner> findById(Long id) {
-        return fuelStationOwnerRepository.findById(id);
+    public FuelStationOwner findById(Long Id) {
+        return fuelStationOwnerRepository.findFuelStationOwnerById(Id);
     }
 }

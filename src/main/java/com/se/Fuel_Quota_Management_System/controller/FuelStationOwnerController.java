@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 
 @RestController
@@ -65,7 +65,7 @@ public class FuelStationOwnerController {
     }
 
     @GetMapping("findbyid/{id}")
-    public Optional<FuelStationOwner> findByID(@RequestBody Long Id){
+    public FuelStationOwner findByID(@PathVariable Long Id){
         return fuelStationOwnerService.findById(Id);
     }
 
