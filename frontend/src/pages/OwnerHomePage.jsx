@@ -26,6 +26,7 @@ const OwnerHomePage = () => {
 
     return (
       <div>
+      {/* temporay Navbar */}
       <Navbar />
       <header className="hero bg-primary text-white text-center py-5">
         <div>
@@ -69,38 +70,9 @@ const OwnerHomePage = () => {
           </div>
         </section>
       </main>
-      <Footer />
+      {/* temporayFooter  */}
+      <Footer/>
     </div>
-//       <div className="layout">
-     
-//         <header className="header">
-//           <nav>
-//             <ul>
-//               <li><img src='./image.png' alt='emoji'/></li>
-//               <li><a href="#home">Home</a></li>
-//               <li><a href="#about">About</a></li>
-//               <li><a href="#contact">Contact</a></li>
-//             </ul>
-//           </nav>
-//         </header>
-  
-       
-//         <main className="body">
-//           <div className='layout-box'>
-//             <h1>Fuel Station List</h1>
-//             <p>The ID is: {decodedId}</p>
-//             <Link to="/stationreg">Register FuelStation</Link>
-//             {console.log("Raw ID:", id)}
-// {console.log("Decoded ID:", decodeURIComponent(id))}
-
-//           </div>
-//         </main>
-  
-        
-//         <footer className="footer">
-//           <p>&copy; 2025 My Website. All rights reserved.</p>
-//         </footer>
-//       </div>
     );
   };
   
