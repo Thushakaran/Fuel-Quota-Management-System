@@ -29,6 +29,4 @@ public class FuelStationOwner {
     @JsonIgnore
     private OwnerLog ownerLog;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<FuelStation> fuelStations;
 }
