@@ -1,5 +1,6 @@
 package com.se.Fuel_Quota_Management_System.service;
 import com.se.Fuel_Quota_Management_System.config.TwilioConfig;
+import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -26,6 +27,33 @@ public class TwilioOTPService {
     public TwilioOTPService(TwilioConfig twilioConfig) {
         this.twilioConfig = twilioConfig;
         Twilio.init(twilioConfig.getAccount_sid(),twilioConfig.getAuth_token());
+    }
+    public void sendRegistrationConfirmation(Vehicle vehicle) {
+        String messageBody = String.format(
+                "Dear %s,\n\nYour vehicle %s has been successfully registered in the Fuel Quota Management System. " +
+                        "Your unique QR code is ready for use: %s.\n\nThank you,\nFuel Quota Management Team",
+                vehicle.getOwnerName(),
+                vehicle.getVehicleNumber(),
+                vehicle.getQrCode()
+        );
+
+        sendSMS(String.valueOf(vehicle.getVehicleOwner().getPhoneNumber()), messageBody);
+    }
+    public void sendFuelPumpingNotification(Vehicle vehicle, double fuelDispensed) {
+        double remainingQuota = vehicle.getFuelQuota() - fuelDispensed;
+        String messageBody = String.format(
+                "Dear %s,\n\nFuel dispensing details:\n" +
+                        "- Vehicle Number: %s\n" +
+                        "- Fuel Dispensed: %.2f Liters\n" +
+                        "- Remaining Quota: %.2f Liters\n\n" +
+                        "Thank you for using our service.\nFuel Quota Management Team",
+                vehicle.getOwnerName(),
+                vehicle.getVehicleNumber(),
+                fuelDispensed,
+                remainingQuota
+        );
+
+        sendSMS(String.valueOf(vehicle.getVehicleOwner().getPhoneNumber()), messageBody);
     }
 
 
