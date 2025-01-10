@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { ownerregister } from '../Services/FuelStationService';
-import '../css/Registration.css';
+import '../css/FuelStationRegistration.css';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 
 const FuelOwnerRegistration = () => {
 
@@ -67,114 +65,104 @@ const FuelOwnerRegistration = () => {
                
 return (
   <>
-   {/* temporay Nav bar */}
-    <Navbar/>
-   
+    <br />
+    <br />
     {path === 1 && (
-      <div className="register-container container mt-5">
-        <form onSubmit={handleSubmit} className="p-4 border rounded bg-light">
-          <h2 className="text-center mb-4">Register Fuel Station Owner</h2>
-          {error && <div className="alert alert-danger">{error}</div>}
-          <div className="mb-3">
-            <label className="form-label">Name:</label>
-            <input
-              type="text"
-              name="ownerName"
-              value={ownerData.ownerName}
-              onChange={handleOwnerChange}
-              className="form-control"
-              required
+      <div className="register-container">
+      <form onSubmit={handleSubmit}>
+      <h2>Register Fuel Station Owner</h2>
+        {error && <p className="error-message">{error}</p>}
+        <div>
+          <label>Name:</label>
+          <input
+            type="text"
+            name="ownerName"
+            value={ownerData.ownerName}
+            onChange={handleOwnerChange}
+            required
+          />
+        </div>
+        <div>
+          <label>NIC No:</label>
+          <input
+            type="text"
+            name="nicNo"
+            value={ownerData.nicNo}
+            onChange={handleOwnerChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Phone Number:</label>
+          <input
+            type="text"
+            name="phoneNumber"
+            value={ownerData.phoneNumber}
+            onChange={handleOwnerChange}
+            required
             />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">NIC No:</label>
-            <input
-              type="text"
-              name="nicNo"
-              value={ownerData.nicNo}
-              onChange={handleOwnerChange}
-              className="form-control"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Phone Number:</label>
-            <input
-              type="text"
-              name="phoneNumber"
-              value={ownerData.phoneNumber}
-              onChange={handleOwnerChange}
-              className="form-control"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={ownerData.email}
-              onChange={handleOwnerChange}
-              className="form-control"
-              required
-            />
-          </div>
-          <button type="submit" className="btn btn-primary w-100">Next</button>
-        </form>
-      </div>
+        </div>
+        <div>
+                                  <label>Email:</label>
+                                  <input
+                                    type="email"
+                                    name="email"
+                                    value={ownerData.email}
+                                    onChange={handleOwnerChange}
+                                    required
+                                  />
+        </div>
+        <button type="submit">Next</button>
+      </form>
+    </ div>
     )}
     {path === 2 && (
-      <div className="register-container container mt-5">
-        <form onSubmit={handleSubmit} className="p-4 border rounded bg-light">
-          <h2 className="text-center mb-4">Register Fuel Station Owner</h2>
-          {error && <div className="alert alert-danger">{error}</div>}
-          <div className="mb-3">
-            <label className="form-label" htmlFor="username">Create Username:</label>
-            <input
-              type="text"
-              id="username"
-              value={ownerData.ownerUserName}
-              onChange={handleOwnerChange}
-              name="ownerUserName"
-              placeholder="Enter your username"
-              className="form-control"
-              required
-            />
+      <div className="register-container">
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="username">Create Username:</label>
+              <input
+                type="text"
+                id="username"
+                value={ownerData.ownerUserName}
+                onChange={handleOwnerChange}
+                name="ownerUserName"
+                placeholder="Enter your username"
+                required
+                />
           </div>
-          <div className="mb-3">
-            <label className="form-label" htmlFor="password">Enter Password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={ownerData.password}
-              placeholder="Enter your password"
-              onChange={handleOwnerChange}
-              className="form-control"
-              required
-            />
+          <div>
+            <label htmlFor="password">Enter Password:</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={ownerData.password}
+                placeholder="Enter your password"
+                onChange={handleOwnerChange}
+                required
+                />
           </div>
-          <div className="mb-3">
-            <label className="form-label" htmlFor="rePassword">ReEnter Password:</label>
-            <input
-              type="password"
-              id="rePassword"
-              name="rePassword"
-              value={rePassword}
-              placeholder="Re-enter your password"
-              onChange={(e) => setRePassword(e.target.value)}
-              className="form-control"
-              required
-            />
+          <div>
+            <label htmlFor="rePassword">ReEnter Password:</label>
+              <input
+                type="password"
+                id="rePassword"
+                name="rePassword"
+                value={rePassword}
+                placeholder="Re-enter your password"
+                onChange={(e) => setRePassword(e.target.value)}
+                required
+                />
           </div>
-          <button type="submit" className="btn btn-primary w-100">Submit</button>
+          <button type="submit">Submit</button>
         </form>
       </div>
     )}
-    {/* temporay Footer*/}
-    <Footer/>
     </>
   );
 };
-
+                  
+  
+  
 export default FuelOwnerRegistration;

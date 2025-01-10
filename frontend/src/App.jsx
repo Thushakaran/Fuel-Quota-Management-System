@@ -1,12 +1,11 @@
 import VehicleRegistration from "./components/VehicleRegistration";
-import FuelOwnerRgistration from "./pages/FuelOwnerRgistration";
-import FuelStationRegistration from "./pages/FuelStationRegistration"
+// import FuelOwnerRgistration from "./RegisterFuelStation/FuelOwnerRgistration";
+import FuelStationRegistration from "./RegisterFuelStation/FuelStationRegistration"
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
-import OwnerLogin from "./pages/OwnerLogin";
-import StationLogin from "./pages/StationLogin";
-import OwnerHomePage from "./pages/OwnerHomePage";
-import StationHomePage from "./pages/StationHomePage";
+import OwnerLogin from "./RegisterFuelStation/OwnerLogin";
+import StationLogin from "./RegisterFuelStation/StationLogin";
+import OwnerHomePage from "./RegisterFuelStation/OwnerHomePage";
 
 import HomePage from "./pages/HomePage";
 
@@ -23,6 +22,11 @@ function App() {
       <BrowserRouter>
       <Routes> 
 
+        <Route path="/ownerlogin" element={<OwnerLogin/>}></Route>
+        <Route path="/stationlogin" element={<StationLogin/>}></Route>
+        <Route path="/stationreg" element={<FuelStationRegistration/>}></Route>
+        {/* <Route path="/ownerreg" element={<FuelOwnerRgistration/>}></Route> */}
+        <Route path='owner/:id' element={<OwnerHomePage/>}></Route>
         <Route path="/vehicle-registration" element={<VehicleRegistration />}></Route>
         <Route path="/" element={<HomePage/>}></Route>
         <Route path="/about" element={<AboutUsPage/>}></Route>
@@ -30,16 +34,6 @@ function App() {
         <Route path="/adminDashboard" element={<AdminDashboard/>}></Route>
         <Route path="/vehicleOwnerDashboard" element={<VehicleOwnerDashboard/>}></Route>
 
-
-        <Route path="/ownerlogin" element={<OwnerLogin/>}></Route>
-
-        <Route path="/ownerreg" element={<FuelOwnerRgistration/>}></Route>
-        <Route path='owner/:id' element={<OwnerHomePage/>}></Route>
-        <Route path="/owner/:id/stationreg" element={<FuelStationRegistration/>}></Route>
-
-        <Route path="/stationlogin" element={<StationLogin/>}></Route>
-        
-        <Route path='station/:id' element={<StationHomePage/>}></Route>
       </Routes>
     </BrowserRouter>
     </>
