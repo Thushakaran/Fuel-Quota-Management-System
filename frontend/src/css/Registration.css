@@ -1,0 +1,33 @@
+@media (min-width: 700px) {
+  .register-container {
+    width: 90%; /* Adjust the width to fit the screen */
+    margin: 10px auto; /* Add margin for spacing */
+    padding: 15px; /* Adjust padding for smaller screens */
+  }
+
+  .register-container h2 {
+    font-size: 1.5rem; /* Adjust font size for headers */
+  }
+
+  .register-container input,
+  .register-container select,
+  .register-container button {
+    font-size: 0.9rem; /* Adjust font size for form elements */
+    padding: 8px; /* Adjust padding for inputs and buttons */
+  }
+
+  .check-box {
+    grid-template-columns: repeat(2, 1fr); /* Adjust the layout for checkboxes */
+    gap: 5px; /* Reduce gap between elements */
+  }
+
+  .form-check-label {
+    font-size: 0.85rem; /* Smaller text for labels */
+  }
+
+  .adjust{
+    display: flex;
+    grid-template-columns: repeat(1,2fr);
+    gap: 4px;
+  }
+}

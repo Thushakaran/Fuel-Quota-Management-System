@@ -11,10 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
-
 @RestController
 @CrossOrigin("*")
 @RequestMapping("api/owner")
@@ -24,6 +20,7 @@ public class FuelStationOwnerController {
 
     @Autowired
     private OwnerLogController ownerLogController;
+
     @Autowired
     private CPST_StationsRepository cpstStationsRepository;
 
@@ -45,6 +42,7 @@ public class FuelStationOwnerController {
             owner.setNicNo(dto.getNicNo());
             owner.setPhoneNumber(dto.getPhoneNumber());
             owner.setEmail(dto.getEmail());
+
             owner.setOwnerLog(registeredLog); // Link OwnerLog
 
             // Save FuelStationOwner
@@ -59,14 +57,9 @@ public class FuelStationOwnerController {
         }
     }
 
-    @GetMapping
-    public List<FuelStationOwner> findall(){
-        return fuelStationOwnerService.findAllOwners();
-    }
-
     @GetMapping("findbyid/{id}")
-    public Optional<FuelStationOwner> findByID(@RequestBody Long Id){
-        return fuelStationOwnerService.findById(Id);
+    public FuelStationOwner findFuelStationOwnerById(@PathVariable Long Id){
+        return fuelStationOwnerService.findFuelStationOwnerById(Id);
     }
 
     @GetMapping("search")

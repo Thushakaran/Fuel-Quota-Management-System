@@ -17,7 +17,7 @@ public class FuelStationLogDTO {
     private String registrationNumber;
     private String location;
     private Long ownerId;
-    private List<FuelType> fuelTypes;
+    private List<String> fuelTypes;
 
     private String stationUserName;
     private String password;

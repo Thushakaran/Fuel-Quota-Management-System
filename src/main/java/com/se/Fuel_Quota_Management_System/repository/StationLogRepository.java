@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface StationLogRepository extends JpaRepository<StationLog,Long> {
 
     Optional<OwnerLog> findByStationUserName(String username);
+
+    boolean existsByStationUserName(String stationusername);
 }
