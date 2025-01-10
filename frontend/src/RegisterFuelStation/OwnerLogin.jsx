@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import "../css/Login.css"; 
-import { Link } from "react-router-dom";
+import "./Login.css"; 
+import { useNavigate , Link} from "react-router-dom";
 
-const StationLogin = () => {
+
+const LoginOwner = () => {
   const [loginData, setLoginData] = useState({
-    stationid: "",
+    username: "",
     password: "",
   });
 
@@ -16,11 +17,13 @@ const StationLogin = () => {
     });
   };
 
+  const navigator = useNavigate();
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Login Data Submitted:", loginData);
     // l
-    if (loginData.stationid === "admin" && loginData.password === "password") {
+    if (loginData.username === "admin" && loginData.password === "password") {
       alert("Login successful!");
     } else {
       alert("Invalid credentials. Please try again.");
@@ -29,16 +32,16 @@ const StationLogin = () => {
 
   return (
     <div className="login-container">
-      <h2>FuelStation Login</h2>
+      <h2>FuelStation Owner Login</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="stationid">StationID:</label>
+          <label htmlFor="username">Username:</label>
           <input
             type="text"
-            id="stationid"
-            name="stationid"
-            placeholder="Enter your stationid"
-            value={loginData.stationid}
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            value={loginData.username}
             onChange={handleChange}
             required
           />
@@ -58,10 +61,10 @@ const StationLogin = () => {
         <button type="submit">Submit</button>
       </form>
       <p>
-        Not registered? <Link to={"/stationreg"}>Register</Link>
+        Not registered? <Link to="/ownerreg">Register</Link>
       </p>
     </div>
   );
 };
 
-export default StationLogin;
+export default LoginOwner;
