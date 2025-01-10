@@ -1,4 +1,4 @@
-package com.se.Fuel_Quota_Management_System.service.vehicle;
+package com.se.Fuel_Quota_Management_System.service;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -18,7 +18,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 @Service
-public class VehicleServiceImp implements VehicleService{
+public class VehicleServiceImp implements VehicleService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
@@ -77,7 +77,6 @@ public class VehicleServiceImp implements VehicleService{
 //        return vehicleRepository.findByVehicleType(vehicleType)
 //                .orElseThrow(() -> new RuntimeException("Vehicle not found with number: " + vehicleType));
 //    }
-
 
 
     // Determines the fuel quota based on the type of vehicle.
