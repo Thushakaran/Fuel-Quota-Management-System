@@ -1,37 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import axios from "../api/axiosInstance";
 
-function VehicleOwnerDashboard() {
-  const [vehicleOwner, setVehicleOwner] = useState({});
+
+function VehicleOwnerDashboard({id}) {
+  const [ownerDetails, setOwnerDetails] = useState(null);
   const [fuelInfo, setFuelInfo] = useState({});
 
   useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      const headers = { Authorization: `Bearer ${token}` };
+    axios
+      .get(`/vehicle-owner/details/${id}`)
+      .then((response) => {
+        setOwnerDetails(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching owner details:", error);
+      });
+  }, [id]);
 
-      try {
-        const ownerResponse = await fetch("/api/vehicle-owner/details", {
-          headers,
-        });
-        const fuelResponse = await fetch("/api/vehicle-owner/fuel-info", {
-          headers,
-        });
-
-        if (ownerResponse.ok && fuelResponse.ok) {
-          setVehicleOwner(await ownerResponse.json());
-          setFuelInfo(await fuelResponse.json());
-        } else {
-          console.error("Failed to fetch data");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  if (!ownerDetails) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div>
