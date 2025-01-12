@@ -17,19 +17,17 @@ import java.util.Map;
 public class FuelStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "station_id")
     private Long stationId;
 
     private String stationName;
-
 
     private String registrationNumber;
 
     private String location;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "loginid")
-    @JsonIgnore
+    @JoinColumn(name = "loginid" , nullable = false)
+//    @JsonIgnore
     private StationLog stationLog;
 
     // fuel station have only one owner
@@ -37,9 +35,7 @@ public class FuelStation {
     @JoinColumn(name = "owner_id")
     private FuelStationOwner owner;
 
-
 // Repeat for other fields
-
     @ElementCollection
     @CollectionTable(name = "fuel_station_inventory", joinColumns = @JoinColumn(name = "fuel_station_id"))
     @MapKeyColumn(name = "fuel_type")
