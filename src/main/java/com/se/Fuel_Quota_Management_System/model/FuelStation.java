@@ -17,7 +17,7 @@ import java.util.Map;
 public class FuelStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long stationId;
+    private Long id;
 
     private String stationName;
 
