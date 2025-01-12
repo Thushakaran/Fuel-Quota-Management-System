@@ -11,9 +11,13 @@ import StationHomePage from "./pages/StationHomePage";
 import HomePage from "./pages/HomePage";
 
 import AboutUsPage from "./pages/AboutUsPage";
+
 import VehicleManagement from "./components/VehicleManagement";
 import AdminDashboard from "./pages/AdminDashboard";
 import VehicleOwnerDashboard from "./pages/VehicleOwnerDashboard";
+
+import FuelStationManagement from "./components/FuelStationManagement";
+
 
 
 function App() {
@@ -29,6 +33,9 @@ function App() {
         <Route path="/vehicleManagement" element={<VehicleManagement/>}></Route>
         <Route path="/adminDashboard" element={<AdminDashboard/>}></Route>
         <Route path="/vehicleOwnerDashboard" element={<VehicleOwnerDashboard/>}></Route>
+
+
+        <Route path="/fuelStationManagement" element={<FuelStationManagement/>}></Route>
 
 
         <Route path="/ownerlogin" element={<OwnerLogin/>}></Route>
