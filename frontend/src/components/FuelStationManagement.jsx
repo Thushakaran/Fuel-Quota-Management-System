@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "../api/axiosInstance";
 import FuelStationTable from "./FuelStationTable";
+import AdminNavbar from "./AdminNavbar";
+import AdminFooter from "./AdminFooter";
 // import EditFuelStationModal from "./EditFuelStationModal";
 
 const FuelStationManagement = () => {
@@ -60,20 +62,24 @@ const FuelStationManagement = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div className="container mt-5">
-            <h2>Manage Fuel Stations</h2>
-            <FuelStationTable
-                fuelStations={fuelStations}
-                onEdit={handleEdit} // Pass edit handler to the table
-                onDelete={deleteFuelStation} // Pass delete handler to the table
-            />
-            {/* {editingFuelStation && (
-                <EditFuelStationModal
-                    fuelStation={editingFuelStation}
-                    onClose={handleCloseModal}
-                    onUpdate={handleUpdate}
+        <div>
+            <AdminNavbar/>
+            <div className="container mt-5">
+                <h2>Manage Fuel Stations</h2>
+                <FuelStationTable
+                    fuelStations={fuelStations}
+                    onEdit={handleEdit} // Pass edit handler to the table
+                    onDelete={deleteFuelStation} // Pass delete handler to the table
                 />
-            )} */}
+                {/* {editingFuelStation && (
+                    <EditFuelStationModal
+                        fuelStation={editingFuelStation}
+                        onClose={handleCloseModal}
+                        onUpdate={handleUpdate}
+                    />
+                )} */}
+            </div>
+            <AdminFooter/>
         </div>
     );
 };
