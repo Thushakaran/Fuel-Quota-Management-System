@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 
 @Service
@@ -102,6 +103,9 @@ public class FuelStationService {
         return fuelStationRepository.existsByRegistrationNumber(registrationNumber);
     }
 
+    public Optional<FuelStation> findByOwnerId(Long id) {
+        return fuelStationRepository.findByOwnerId(id);
+    }
 }
 
 

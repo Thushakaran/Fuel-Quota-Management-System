@@ -21,4 +21,8 @@ public class StationLog {
 
     @Column(nullable = true)
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 }
