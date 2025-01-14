@@ -19,13 +19,9 @@ public class OwnerLogService {
         return ownerlogrepository.save(ownerLog);
     }
 
-    public ResponseEntity<?> authenticate(String username, String password) {
-        Optional<OwnerLog> user = ownerlogrepository.findByOwnerUserName(username);
-        if(user.isPresent() && new BCryptPasswordEncoder().matches(password, user.get().getPassword())){
-            return ResponseEntity.ok(user);
-        }else {
-            return ResponseEntity.ok("UserName or PAssword incorrect");
-        }
+    public boolean authenticate(String username, String password) {
+        Optional<OwnerLog> user =ownerlogrepository.findByOwnerUserName(username);
+        return user.isPresent() && new BCryptPasswordEncoder().matches(password, user.get().getPassword());
     }
 
 

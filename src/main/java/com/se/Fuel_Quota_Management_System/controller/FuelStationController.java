@@ -11,16 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 
-@CrossOrigin("*")
+
 @RestController
 @RequestMapping("/api/fuel-station")
 public class FuelStationController {
     @Autowired
     private FuelStationService fuelStationService;
-
-    @Autowired
-    private StationLogController stationLogController;
 
     @Autowired
     private FuelStationOwnerRepository ownerRepository;
@@ -42,6 +40,12 @@ public class FuelStationController {
     @GetMapping("{regnum}")
     public boolean existsByRegisNumById(@PathVariable("regnum") String registrationNumber) {
         return fuelStationService.existsByRegistrationNumber(registrationNumber);
+    }
+
+    // FindfuelStation Details By id
+    @GetMapping("findbyid/{id}")
+    public Optional<FuelStation> findByStationId(@PathVariable("id") Long id){
+        return fuelStationService.findByStationId(id);
     }
 
 
