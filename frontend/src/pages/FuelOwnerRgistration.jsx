@@ -16,7 +16,7 @@ const FuelOwnerRegistration = () => {
     nicNo: '',
     phoneNumber: '',
     email: '',
-    ownerUSerName: '',
+    ownerUserName: '',
     password: '',
   });
   const [rePassword,setRePassword] = useState('');

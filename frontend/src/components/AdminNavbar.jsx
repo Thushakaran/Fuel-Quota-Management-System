@@ -32,7 +32,7 @@ const AdminNavbar = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/fuelStationManagemnt">
+              <a className="nav-link" href="/fuelStationManagement">
                 <i className="bi bi-fuel-pump me-2"></i>Fuel Station Management
               </a>
             </li>
