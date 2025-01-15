@@ -27,7 +27,7 @@ public class FuelStationController {
     public ResponseEntity<?> registerFuelStation(@Validated @RequestBody FuelStationLogDTO request) {
         try {
             FuelStation registeredStation = fuelStationService.registerFuelStation(request);
-            return ResponseEntity.ok(registeredStation.getStationId());
+            return ResponseEntity.ok(registeredStation.getId());
         } catch (Exception e) {
             // Log the error (use a logger in production)
             System.err.println("Error during registration: " + e.getMessage());
