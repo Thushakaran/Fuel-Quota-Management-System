@@ -3,6 +3,7 @@ package com.se.Fuel_Quota_Management_System.controller;
 
 import com.se.Fuel_Quota_Management_System.model.StationLog;
 import com.se.Fuel_Quota_Management_System.service.StationLogService;
+import com.se.Fuel_Quota_Management_System.DTO.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -33,8 +34,8 @@ public class StationLogController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody StationLog stationLog) {
-        boolean authenticated = stationlogservice.authenticate(stationLog.getStationUserName(), stationLog.getPassword());
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        boolean authenticated = stationlogservice.authenticate(loginRequest.getUserName(), loginRequest.getPassword());
         if (authenticated) {
             return ResponseEntity.ok("Login successful!");
         } else {
