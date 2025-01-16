@@ -15,6 +15,12 @@ export const ownerregister = (ownerData) => {
 };
 
 
+//Function to login
+export const login = (loginData) => {
+  return axios.post(`${REST_API_BASE_URL}/api/auth/login`,loginData)
+}
+
+
 
 
 // export const listEmployees = () => axios.get(REST_API_BASE_URL);
