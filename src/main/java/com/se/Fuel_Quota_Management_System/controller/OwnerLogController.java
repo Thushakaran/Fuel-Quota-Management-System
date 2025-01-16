@@ -1,5 +1,6 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
+import com.se.Fuel_Quota_Management_System.DTO.LoginRequest;
 import com.se.Fuel_Quota_Management_System.model.OwnerLog;
 import com.se.Fuel_Quota_Management_System.service.OwnerLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,27 +24,22 @@ public class OwnerLogController {
     public OwnerLog signup(@RequestBody OwnerLog ownerLog) {
         OwnerLog registeredlog = null;
         try {
-             registeredlog = ownerlogservice.register(ownerLog);
+            registeredlog = ownerlogservice.register(ownerLog);
             return registeredlog;
         } catch (DataIntegrityViolationException e) {
-           // return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists!");
+            // return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists!");
             return  registeredlog;
         }
 
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody OwnerLog ownerLog) {
-//        try {
-//            Optional<OwnerLog> authenticated =
-//                    ownerlogservice.authenticate(ownerLog.getOwnerUserName(), ownerLog.getPassword());
-//        }catch (Error e){
-//
-//        }
-//        if (authenticated) {
-//            return ResponseEntity.ok("Login successful!");
-//        } else {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials!");
-//        }
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        boolean authenticated = ownerlogservice.authenticate(loginRequest.getUserName(), loginRequest.getPassword());
+        if (authenticated) {
+            return ResponseEntity.ok("Login successful!");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials!");
+        }
+    }
 }

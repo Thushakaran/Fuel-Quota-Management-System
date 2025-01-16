@@ -97,7 +97,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link className="dropdown-item" to="/station-owner-login">
+                <Link className="dropdown-item" to="/ownerlogin">
                   Station Owner 
                 </Link>
               </li>

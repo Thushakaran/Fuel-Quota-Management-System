@@ -26,5 +26,9 @@ public class OwnerLog {
 
     @JsonBackReference
     private FuelStationOwner owner; // Reverse mapping
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role; // Connects to Role entity
 }
 

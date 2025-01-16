@@ -9,5 +9,7 @@ import java.util.Optional;
 @Repository
 public interface OwnerLogRepository extends JpaRepository<OwnerLog, Long> {
     Optional<OwnerLog> findByOwnerUserName(String username);
+
+    boolean existsByOwnerUserName(String ownerUserName);
 }
 
