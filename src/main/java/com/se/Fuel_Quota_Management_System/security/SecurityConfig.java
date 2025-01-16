@@ -28,7 +28,7 @@ public class SecurityConfig {
             throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("api/auth/**").permitAll()
+                        auth.requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/station").hasRole("station")
                                 .requestMatchers("/owner").hasRole("stationowner")
                                 .anyRequest().authenticated())

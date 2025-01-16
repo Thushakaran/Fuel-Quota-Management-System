@@ -42,11 +42,11 @@ public class FuelStationController {
         return fuelStationService.existsByRegistrationNumber(registrationNumber);
     }
 
-//    // FindfuelStation Details By id
-//    @GetMapping("findbyid/{id}")
-//    public Optional<FuelStation> findByStationId(@PathVariable("id") Long id){
-//        return fuelStationService.findByStationId(id);
-//    }
+    // FindfuelStation Details By id
+    @GetMapping("findbyid/{id}")
+    public Optional<FuelStation> findByStationId(@PathVariable("id") Long id){
+        return fuelStationService.findByStationId(id);
+    }
 
 
 }

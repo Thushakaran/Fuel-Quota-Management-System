@@ -15,7 +15,7 @@ const FuelStationRegistration = () => {
     location: '',
     ownerId: '',
     fuelType: [],
-    userName: '',
+    stationUserName: '',
     password: ''
   });
   const [fuel, setFuel] = useState([]);
@@ -52,7 +52,7 @@ const FuelStationRegistration = () => {
       setError('');
       setPath(2);
     } else if (path === 2) {
-      if (!fuelStationData.userName || !fuelStationData.password) {
+      if (!fuelStationData.stationUserName || !fuelStationData.password) {
         setError('Username and password are required.');
         return;
       }
@@ -174,11 +174,11 @@ const FuelStationRegistration = () => {
           <form onSubmit={handleSubmit} className="p-4 border rounded bg-light">
             <h2 className="text-center mb-4">Register Fuel Station</h2>
             <div className="mb-3">
-              <label htmlFor="userName" className="form-label">Station UserName:</label>
+              <label htmlFor="stationUserName" className="form-label">Station UserName:</label>
               <input
                 type="text"
-                id="userName"
-                name="userName"
+                id="stationUserName"
+                name="stationUserName"
                 placeholder="Enter Station Name"
                 value={fuelStationData.stationUserName}
                 onChange={handleStationChange}

@@ -1,6 +1,5 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
-import com.se.Fuel_Quota_Management_System.model.AuthResponse;
 import com.se.Fuel_Quota_Management_System.security.JwtUtil;
 import com.se.Fuel_Quota_Management_System.model.RegisterRequest;
 import com.se.Fuel_Quota_Management_System.model.Role;
@@ -23,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthController {
 
@@ -41,7 +40,6 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
 
 
     //register user
@@ -81,14 +79,9 @@ public class AuthController {
             UserLog user = userLogRepository.findByUserName(loginRequest.getUserName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Generate JWT token
-            String token = jwtUtil.generateToken(user.getUserName());
-
-            // Create response
-            AuthResponse authResponse = new AuthResponse(token, user.getRole());
             //generate JWT token with roles
-
-            return ResponseEntity.ok(authResponse);
+            String token = jwtUtil.generateToken(user.getUserName());
+            return ResponseEntity.ok(token);
 
         } catch (BadCredentialsException e) {
             return ResponseEntity.badRequest().body("Invalid username or password");
