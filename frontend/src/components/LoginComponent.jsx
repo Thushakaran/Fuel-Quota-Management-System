@@ -17,7 +17,8 @@ const LoginComponent = ({ heading, registrationLink, registrationText }) => {
     });
   };
 
-  const navigator = useNavigate();
+  const navigate = useNavigate();
+  const id = 1;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,10 +26,26 @@ const LoginComponent = ({ heading, registrationLink, registrationText }) => {
     login(loginData).then((response) => {
       console.log(response.data);
       const token = response.data.token;
+      const role  = response.data.role.name;
       localStorage.setItem('jwtToken', token);
-    }).catch((error)=>{
-      console.error(error);
-    })
+
+      switch (role) {
+        case 'admin':
+            navigate('/admin-dashboard');
+            break;
+        case 'stationowner':
+            navigate(`/owner/`+id);
+            break;
+        case 'station':
+            navigate(`/station/{id}`);
+            break;
+        default:
+            console.error("Unknown role, cannot navigate.");
+      }
+            
+    }).catch(error => {
+      console.log(error);
+  });
   };
 
   return (

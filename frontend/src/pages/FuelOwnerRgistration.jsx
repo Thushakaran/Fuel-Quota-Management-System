@@ -16,7 +16,7 @@ const FuelOwnerRegistration = () => {
     nicNo: '',
     phoneNumber: '',
     email: '',
-    ownerUserName: '',
+    userName: '',
     password: '',
   });
   const [rePassword,setRePassword] = useState('');
@@ -45,13 +45,14 @@ const FuelOwnerRegistration = () => {
         setPath(2); // Go to the second form
       } else if (path === 2) {
         // Validate form 2 (ensure passwords match)
-        if (!ownerData.ownerUserName || !ownerData.password || ownerData.password !== rePassword) {
+        if (!ownerData.userName || !ownerData.password || ownerData.password !== rePassword) {
           setError('Passwords must match.');
           return;
         }
   
         // Final submission logic
         setError('');
+        console.log(ownerData)
         ownerregister(ownerData).then((response) => {
           const id = response.data.id;
           console.log('Success:', response.data);
@@ -133,9 +134,9 @@ return (
             <input
               type="text"
               id="username"
-              value={ownerData.ownerUserName}
+              value={ownerData.userName}
               onChange={handleOwnerChange}
-              name="ownerUserName"
+              name="userName"
               placeholder="Enter your username"
               className="form-control"
               required
