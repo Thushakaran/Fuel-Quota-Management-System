@@ -1,6 +1,5 @@
 package com.se.Fuel_Quota_Management_System.DTO;
 
-import com.se.Fuel_Quota_Management_System.model.FuelType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,6 @@ public class FuelStationLogDTO {
     private String location;
     private Long ownerId;
     private List<String> fuelTypes;
-
-    private String stationUserName;
+    private String userName;
     private String password;
 }

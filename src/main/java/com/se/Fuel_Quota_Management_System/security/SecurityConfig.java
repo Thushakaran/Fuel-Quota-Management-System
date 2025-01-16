@@ -28,9 +28,9 @@ public class SecurityConfig {
             throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/station").hasRole("station")
-                                .requestMatchers("/owner").hasRole("stationowner")
+                        auth.requestMatchers("/api/auth/**","api/fuel-station/register","/api/owner/register").permitAll()
+                                .requestMatchers("api/fuel-station").hasAuthority("station")
+                                .requestMatchers("api/owner").hasAuthority("stationowner")
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy

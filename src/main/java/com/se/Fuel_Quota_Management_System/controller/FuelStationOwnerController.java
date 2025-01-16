@@ -20,9 +20,6 @@ public class FuelStationOwnerController {
     private FuelStationOwnerService fuelStationOwnerService;
 
     @Autowired
-    private OwnerLogController ownerLogController;
-
-    @Autowired
     private FuelStationService fuelStationService;
 
 
@@ -30,8 +27,8 @@ public class FuelStationOwnerController {
     @PostMapping("/register")
     public ResponseEntity<?> registerOwner(@Validated @RequestBody FuelStationOwnerLogDTO request) {
         try {
-            FuelStationOwner registeredowner = fuelStationOwnerService.registerOwner(request);
-            return ResponseEntity.ok(registeredowner.getId());
+            ResponseEntity<?> registeredowner = fuelStationOwnerService.registerOwner(request);
+            return ResponseEntity.ok(registeredowner.getBody());
         } catch (Exception e) {
             // Log the error (use a logger in production)
             System.err.println("Error during registration: " + e.getMessage());
