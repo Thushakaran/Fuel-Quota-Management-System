@@ -27,6 +27,7 @@ public class FuelTransactionController {
         return fuelTransactionService.getAllTransaction();
     }
 
+    //scan QR code and convert to VehicleId
     @PostMapping("/scan-qr")
     public ResponseEntity<String> scanVehicleQR(@RequestParam("file") MultipartFile qrFile) {
         try {
