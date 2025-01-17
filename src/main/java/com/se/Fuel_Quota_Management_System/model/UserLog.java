@@ -7,22 +7,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StationLog {
+public class UserLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true, unique = true) // Unique username
-    private String stationUserName;
+    @Column(nullable = false, unique = true)
+    private String userName;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String password;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 }
+

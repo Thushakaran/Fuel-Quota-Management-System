@@ -11,16 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 
-@CrossOrigin("*")
+
 @RestController
 @RequestMapping("/api/fuel-station")
 public class FuelStationController {
     @Autowired
     private FuelStationService fuelStationService;
-
-    @Autowired
-    private StationLogController stationLogController;
 
     @Autowired
     private FuelStationOwnerRepository ownerRepository;
@@ -29,7 +27,7 @@ public class FuelStationController {
     public ResponseEntity<?> registerFuelStation(@Validated @RequestBody FuelStationLogDTO request) {
         try {
             FuelStation registeredStation = fuelStationService.registerFuelStation(request);
-            return ResponseEntity.ok(registeredStation.getStationId());
+            return ResponseEntity.ok(registeredStation.getId());
         } catch (Exception e) {
             // Log the error (use a logger in production)
             System.err.println("Error during registration: " + e.getMessage());
@@ -42,6 +40,12 @@ public class FuelStationController {
     @GetMapping("{regnum}")
     public boolean existsByRegisNumById(@PathVariable("regnum") String registrationNumber) {
         return fuelStationService.existsByRegistrationNumber(registrationNumber);
+    }
+
+    // FindfuelStation Details By id
+    @GetMapping("findbyid/{id}")
+    public Optional<FuelStation> findByStationId(@PathVariable("id") Long id){
+        return fuelStationService.findByStationId(id);
     }
 
 
