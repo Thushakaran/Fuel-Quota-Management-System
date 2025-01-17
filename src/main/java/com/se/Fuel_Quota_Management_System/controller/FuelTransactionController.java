@@ -46,4 +46,20 @@ public class FuelTransactionController {
         }
     }
 
+
+
+    @GetMapping("/fuel-quota")
+    public double getFuelQuotaByVehicleId(@PathVariable Long vehicleId) {
+        return fuelTransactionService.fetchQuotaByVehicleId(vehicleId);
+    }
+
+
+    @PostMapping("/pump")
+    public FuelTransaction pumpFuel(@PathVariable Long vehicleId, @RequestParam double amount) {
+        return fuelTransactionService.pumpFuel(vehicleId, amount);
+    }
+
+
+
+
 }
