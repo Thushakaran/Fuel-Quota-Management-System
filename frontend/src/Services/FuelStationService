@@ -20,3 +20,12 @@ export const login = (loginData) => {
   return axios.post(`${REST_API_BASE_URL}/api/auth/login`,loginData)
 };
 
+// function to get owner name
+export const getownername = (id) => {
+  return axios.get(`${REST_API_BASE_URL}${OWNER_CASE}/findname/${id}`);
+}
+
+// functions to get all registered stations
+export const liststations = (id) => {
+  return axios.get(`${REST_API_BASE_URL}${OWNER_CASE}/findstations/${id}`);
+}

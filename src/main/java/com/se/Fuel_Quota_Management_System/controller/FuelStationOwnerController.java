@@ -6,12 +6,13 @@ import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.service.FuelStationOwnerService;
 import com.se.Fuel_Quota_Management_System.service.FuelStationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("api/owner")
@@ -32,39 +33,42 @@ public class FuelStationOwnerController {
         } catch (Exception e) {
             // Log the error (use a logger in production)
             System.err.println("Error during registration: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
         }
     }
 
 
 
+    // find owner name by Id
     @GetMapping("/findname/{id}")
     public ResponseEntity<?> getOwnerById(@PathVariable Long id) {
         try {
             FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerById(id);
             return ResponseEntity.ok(owner.getName());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
         }
     }
 
+    // find owner details by Id
     @GetMapping("finddetail/{id}")
     public ResponseEntity<?> getDetailsbyId(@PathVariable Long id){
         try {
             FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerById(id);
             return ResponseEntity.ok(owner);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
         }
     }
 
+    // find fuelstations owned by owner through owner id
     @GetMapping("findstations/{id}")
     public ResponseEntity<?> getStationsById(@PathVariable Long id){
         try {
-            Optional<FuelStation> fuelStation = fuelStationService.findByOwnerId(id);
+            List<FuelStation> fuelStation = fuelStationService.getByOwnerId(id);
             return ResponseEntity.ok(fuelStation);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
         }
     }
 
@@ -75,11 +79,11 @@ public class FuelStationOwnerController {
     }
 
 
-
-    @GetMapping("search")
-    public FuelStationOwner findOwnerByNicOrEmail(@RequestParam(value="nicNo",required = false) String nicNo,
-                                                             @RequestParam(value= "email",required = false) String email){
-        return fuelStationOwnerService.findAllByNicOrEmail(nicNo,email);
-
-    }
+//
+//    @GetMapping("search")
+//    public FuelStationOwner findOwnerByNicOrEmail(@RequestParam(value="nicNo",required = false) String nicNo,
+//                                                             @RequestParam(value= "email",required = false) String email){
+//        return fuelStationOwnerService.findAllByNicOrEmail(nicNo,email);
+//
+//    }
 }

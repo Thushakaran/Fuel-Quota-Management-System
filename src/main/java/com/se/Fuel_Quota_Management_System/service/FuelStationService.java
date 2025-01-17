@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -52,7 +52,7 @@ public class FuelStationService {
         fuelStation.setRegistrationNumber(request.getRegistrationNumber());
         fuelStation.setLocation(request.getLocation());
         fuelStation.setOwner(owner);
-        fuelStation.setFuelInventory((Map<String, Double>) request.getFuelTypes()); // Assuming getFuelTypes() returns Map<String, Double>
+        fuelStation.setFuelInventory(request.getFuelTypes()); // Assuming getFuelTypes() returns Map<String, Double>
 
         // Create and validate StationLog registration request
         Optional<Role> roleOptional = roleRepository.findByName("station");
@@ -72,9 +72,10 @@ public class FuelStationService {
 
         UserLog registeredLog = (UserLog) registerResponse.getBody();
         fuelStation.setStationLog(registeredLog);
+        FuelStation registeredfuelStation = fuelStationRepository.save(fuelStation);
 
         // Save to database
-        return fuelStationRepository.save(fuelStation);
+        return registeredfuelStation;
     }
 
     private void validateRegistrationNumber(String registrationNumber) {
@@ -95,8 +96,8 @@ public class FuelStationService {
         return fuelStationRepository.existsByRegistrationNumber(registrationNumber);
     }
 
-    public Optional<FuelStation> findByOwnerId(Long id) {
-        return fuelStationRepository.findByOwnerId(id);
+    public List<FuelStation> getByOwnerId(Long id) {
+        return fuelStationRepository.getByOwnerId(id);
     }
 }
 
