@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import "../css/Login.css"; 
 import { useNavigate, Link } from "react-router-dom";
-import { login } from "../Services/FuelStationService";
+import { login, getownerid, getstationid } from "../Services/FuelStationService";
 
 const LoginComponent = ({ heading, registrationLink, registrationText }) => {
   const [loginData, setLoginData] = useState({
     userName: "",
     password: "",
   });
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,34 +19,63 @@ const LoginComponent = ({ heading, registrationLink, registrationText }) => {
   };
 
   const navigate = useNavigate();
-  const id = 1;
+
+  const findownerid = (loginid) => {
+    getownerid(loginid)
+      .then((response) => {
+        console.log(response.data)
+        const ownerId = response.data; // Assuming response.data is the ID
+        navigate(`/owner/${ownerId}`);
+      })
+      .catch((error) => {
+        console.error(error);
+        setError("Failed to fetch owner details.");
+      });
+  };
+
+  const findstationid = (loginid) => {
+    getstationid(loginid)
+      .then((response) => {
+        console.log(response.data)
+        const stationId = response.data; // Assuming response.data is the ID
+        navigate(`/station/${stationId}`);
+      })
+      .catch((error) => {
+        console.error(error);
+        setError("Failed to fetch station details.");
+      });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError(null); // Clear previous errors
     console.log("Login Data Submitted:", loginData);
-    login(loginData).then((response) => {
-      console.log(response.data);
-      const token = response.data.token;
-      const role  = response.data.role.name;
-      localStorage.setItem('jwtToken', token);
+    login(loginData)
+      .then((response) => {
+        console.log(response.data);
+        const token = response.data.token;
+        const role = response.data.role.name;
+        const loginid = response.data.id;
+        localStorage.setItem("jwtToken", token);
 
-      switch (role) {
-        case 'admin':
-            navigate('/admin-dashboard');
+        switch (role) {
+          case "admin":
+            navigate("/admin-dashboard");
             break;
-        case 'stationowner':
-            navigate(`/owner/`+id);
+          case "stationowner":
+            findownerid(loginid);
             break;
-        case 'station':
-            navigate(`/station/{id}`);
+          case "station":
+            findstationid(loginid);
             break;
-        default:
-            console.error("Unknown role, cannot navigate.");
-      }
-            
-    }).catch(error => {
-      console.log(error);
-  });
+          default:
+            setError("Unknown role, cannot navigate.");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setError("Login failed. Please check your credentials.");
+      });
   };
 
   return (
@@ -76,6 +106,7 @@ const LoginComponent = ({ heading, registrationLink, registrationText }) => {
             required
           />
         </div>
+        {error && <p className="error-message">{error}</p>}
         <button type="submit">Submit</button>
       </form>
       <p>
@@ -84,7 +115,6 @@ const LoginComponent = ({ heading, registrationLink, registrationText }) => {
     </div>
   );
 };
-
 
 export const OwnerLogin = () => (
   <LoginComponent
@@ -101,4 +131,3 @@ export const StationLogin = () => (
     registrationText="Station Registration"
   />
 );
-

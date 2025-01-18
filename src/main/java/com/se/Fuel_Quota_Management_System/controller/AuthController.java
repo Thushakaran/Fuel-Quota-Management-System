@@ -85,7 +85,7 @@ public class AuthController {
             String token = jwtUtil.generateToken(user.getUserName());
 
             // Create response
-            AuthResponse authResponse = new AuthResponse(token, user.getRole());
+            AuthResponse authResponse = new AuthResponse(token, user.getRole(),user.getId());
             //generate JWT token with roles
 
             return ResponseEntity.ok(authResponse);
