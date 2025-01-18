@@ -99,6 +99,10 @@ public class FuelStationService {
     public List<FuelStation> getByOwnerId(Long id) {
         return fuelStationRepository.getByOwnerId(id);
     }
+
+    public FuelStation findFuelStationByStationLog(Long loginid) {
+        return fuelStationRepository.findFuelStationOwnerByStationLogId(loginid);
+    }
 }
 
 
