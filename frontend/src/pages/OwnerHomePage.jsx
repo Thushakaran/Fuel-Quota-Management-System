@@ -40,10 +40,21 @@ const OwnerHomePage = () => {
 
       <main className="container my-2">
         <h2 className="fw-bold mb-3">Your Stations</h2>
-        <div className="row g-4">
+        <div className="d-flex flex-wrap gap-4">
           {
             stations.map((station) => (
-              <div key={station.id}>{station.stationName}</div>
+              <div 
+                key={station.id} 
+                className="card shadow-sm d-flex flex-column align-items-center justify-content-center"
+                style={{ width: '300px', height: '100px' }}
+              >
+                <div className="bg-primary text-white fw-bold px-3 py-1 rounded-pill w-100 text-center">
+                  {station.stationName}
+                </div>
+                <div className="card-body text-center">
+                  <h5 className="card-title">{station.location}</h5>
+                </div>
+              </div>
             ))
           }
         </div>
