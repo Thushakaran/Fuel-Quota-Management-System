@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ public class FuelStationLogDTO {
     private String registrationNumber;
     private String location;
     private Long ownerId;
-    private List<String> fuelTypes;
+    private Map<String,Double> fuelTypes;
     private String userName;
     private String password;
 }

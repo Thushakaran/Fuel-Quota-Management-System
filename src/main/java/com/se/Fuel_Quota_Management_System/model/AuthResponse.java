@@ -9,4 +9,6 @@ import lombok.Getter;
 public class AuthResponse {
     private String token;
     private Role role;
+
+    private Long id;
 }

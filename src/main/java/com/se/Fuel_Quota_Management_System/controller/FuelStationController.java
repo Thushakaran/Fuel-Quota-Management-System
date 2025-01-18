@@ -3,7 +3,9 @@ package com.se.Fuel_Quota_Management_System.controller;
 
 import com.se.Fuel_Quota_Management_System.DTO.FuelStationLogDTO;
 import com.se.Fuel_Quota_Management_System.model.FuelStation;
+import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.repository.FuelStationOwnerRepository;
+import com.se.Fuel_Quota_Management_System.security.JwtUtil;
 import com.se.Fuel_Quota_Management_System.service.FuelStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.Map;
+import java.util.Set;
 
 
 @RestController
@@ -21,7 +24,8 @@ public class FuelStationController {
     private FuelStationService fuelStationService;
 
     @Autowired
-    private FuelStationOwnerRepository ownerRepository;
+    private JwtUtil jwtUtil;
+
 
     @PostMapping("/register")
     public ResponseEntity<?> registerFuelStation(@Validated @RequestBody FuelStationLogDTO request) {
@@ -29,9 +33,9 @@ public class FuelStationController {
             FuelStation registeredStation = fuelStationService.registerFuelStation(request);
             return ResponseEntity.ok(registeredStation.getId());
         } catch (Exception e) {
-            // Log the error (use a logger in production)
+            // Log the error
             System.err.println("Error during registration: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
         }
     }
 
@@ -42,11 +46,23 @@ public class FuelStationController {
         return fuelStationService.existsByRegistrationNumber(registrationNumber);
     }
 
-    // FindfuelStation Details By id
-    @GetMapping("findbyid/{id}")
-    public Optional<FuelStation> findByStationId(@PathVariable("id") Long id){
-        return fuelStationService.findByStationId(id);
+    // find station by login Id
+    @GetMapping("/findbyloginid/{id}")
+    public ResponseEntity<?> getidbyloginid(@PathVariable("id") Long loginid){
+        try {
+            FuelStation station = fuelStationService.findFuelStationByStationLog(loginid);
+            return ResponseEntity.ok(station.getId());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
     }
+
+
+    // FindfuelStation Details By id
+//    @GetMapping("findbyid/{id}")
+//    public Optional<FuelStation> findByStationId(@PathVariable("id") Long id){
+//        return fuelStationService.findByStationId(id);
+//    }
 
 
 }

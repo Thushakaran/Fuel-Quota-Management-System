@@ -33,7 +33,6 @@ public class FuelStationOwnerService {
     @Autowired
     private UserLogRepository userLogRepository;
 
-
     @PostMapping("/registerOwner")
     public ResponseEntity<?> registerOwner(@RequestBody FuelStationOwnerLogDTO fuelStationOwnerlog) {
         try {
@@ -83,9 +82,9 @@ public class FuelStationOwnerService {
     }
 
 
-    public FuelStationOwner findAllByNicOrEmail(String nicNo, String email) {
-        return fuelStationOwnerRepository.findByNicNoOrEmail(nicNo,email);
-    }
+//    public FuelStationOwner findAllByNicOrEmail(String nicNo, String email) {
+//        return fuelStationOwnerRepository.findByNicNoOrEmail(nicNo,email);
+//    }
 
 
     public FuelStationOwner findFuelStationOwnerById(Long Id) {
@@ -93,4 +92,7 @@ public class FuelStationOwnerService {
     }
 
 
+    public FuelStationOwner findFuelStationOwnerByOwnerLog(Long loginid) {
+        return fuelStationOwnerRepository.findFuelStationOwnerByOwnerLogId(loginid);
+    }
 }
