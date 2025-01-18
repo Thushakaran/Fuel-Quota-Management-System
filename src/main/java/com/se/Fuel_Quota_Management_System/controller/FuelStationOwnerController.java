@@ -72,10 +72,15 @@ public class FuelStationOwnerController {
         }
     }
 
-
-    @GetMapping("findbyid/{id}")
-    public FuelStationOwner findFuelStationOwnerById(@PathVariable("id") Long Id){
-        return fuelStationOwnerService.findFuelStationOwnerById(Id);
+    // find owner by login Id
+    @GetMapping("/findbyloginid/{id}")
+    public ResponseEntity<?> getidbyloginid(@PathVariable("id") Long loginid){
+        try {
+            FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerByOwnerLog(loginid);
+            return ResponseEntity.ok(owner.getId());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
     }
 
 
