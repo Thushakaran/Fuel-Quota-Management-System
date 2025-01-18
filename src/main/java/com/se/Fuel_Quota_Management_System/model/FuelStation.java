@@ -18,28 +18,25 @@ public class FuelStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "station_id")
-    private Long stationId;
+    private Long id;
 
     private String stationName;
-
 
     private String registrationNumber;
 
     private String location;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "loginid")
-    @JsonIgnore
-    private StationLog stationLog;
+    @JoinColumn(name = "loginid" , nullable = false)
+//    @JsonIgnore
+    private UserLog stationLog;
 
     // fuel station have only one owner
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private FuelStationOwner owner;
 
-
 // Repeat for other fields
-
     @ElementCollection
     @CollectionTable(name = "fuel_station_inventory", joinColumns = @JoinColumn(name = "fuel_station_id"))
     @MapKeyColumn(name = "fuel_type")

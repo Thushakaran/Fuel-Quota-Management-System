@@ -1,4 +1,4 @@
-package com.se.Fuel_Quota_Management_System.service.vehicle;
+package com.se.Fuel_Quota_Management_System.service;
 
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 
 @Entity
 @Getter
@@ -27,8 +26,6 @@ public class FuelStationOwner {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "loginid", nullable = false)
     @JsonIgnore
-    private OwnerLog ownerLog;
+    private UserLog ownerLog;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<FuelStation> fuelStations;
 }

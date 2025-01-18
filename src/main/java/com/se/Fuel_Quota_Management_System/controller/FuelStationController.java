@@ -3,17 +3,17 @@ package com.se.Fuel_Quota_Management_System.controller;
 
 import com.se.Fuel_Quota_Management_System.DTO.FuelStationLogDTO;
 import com.se.Fuel_Quota_Management_System.model.FuelStation;
-import com.se.Fuel_Quota_Management_System.model.StationLog;
+import com.se.Fuel_Quota_Management_System.repository.FuelStationOwnerRepository;
 import com.se.Fuel_Quota_Management_System.service.FuelStationService;
-import com.se.Fuel_Quota_Management_System.service.StationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 
-@CrossOrigin("*")
+
 @RestController
 @RequestMapping("/api/fuel-station")
 public class FuelStationController {
@@ -21,55 +21,32 @@ public class FuelStationController {
     private FuelStationService fuelStationService;
 
     @Autowired
-    private StationLogService stationLogService;
+    private FuelStationOwnerRepository ownerRepository;
 
-    //Registering the fuelStaion
     @PostMapping("/register")
-
-    public ResponseEntity<?> registerFuelStation(@RequestBody FuelStationLogDTO dto) {
+    public ResponseEntity<?> registerFuelStation(@Validated @RequestBody FuelStationLogDTO request) {
         try {
-            // Create StationLog
-            StationLog stationLog = new StationLog();
-            stationLog.setStationUserName(dto.getStationUserName());
-            stationLog.setPassword(dto.getPassword());
-
-            // Save StationLog
-            StationLog registeredLog = stationLogService.register(stationLog);
-
-            // Create Station
-            FuelStation station = new FuelStation();
-            station.setStationName(dto.getStationName());
-            station.setLocation(dto.getLocation());
-            station.setRegistrationNumber(dto.getRegistrationNumber());
-
-            station.setStationLog(registeredLog);// Link StationLog
-
-            // Save FuelStation
-            fuelStationService.registerFuelStation(station);
-
-            return ResponseEntity.ok(station);
-        } catch (DataIntegrityViolationException e) {
-            // make sure that user name in unique
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists!");
+            FuelStation registeredStation = fuelStationService.registerFuelStation(request);
+            return ResponseEntity.ok(registeredStation.getId());
         } catch (Exception e) {
-            // if any error occurs
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed!");
+            // Log the error (use a logger in production)
+            System.err.println("Error during registration: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed: " + e.getMessage());
         }
-
-
     }
 
 
-
-
-    // Find is any Fuelstation registered on this RegisterdNumber
+    // Find is any Fuel station registered on this RegisteredNumber
     @GetMapping("{regnum}")
     public boolean existsByRegisNumById(@PathVariable("regnum") String registrationNumber) {
         return fuelStationService.existsByRegistrationNumber(registrationNumber);
-
     }
 
-
+    // FindfuelStation Details By id
+    @GetMapping("findbyid/{id}")
+    public Optional<FuelStation> findByStationId(@PathVariable("id") Long id){
+        return fuelStationService.findByStationId(id);
+    }
 
 
 }
