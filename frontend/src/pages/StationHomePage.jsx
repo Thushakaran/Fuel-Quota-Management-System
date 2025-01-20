@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import StationNavbar from '../components/StationNavbar';
 import Footer from '../components/Footer';
 import { getfuelInventory, getstationname } from '../Services/FuelStationService';
-import '../css/StationHome.css';
 
 const StationHomePage = () => {
   const { id } = useParams();
