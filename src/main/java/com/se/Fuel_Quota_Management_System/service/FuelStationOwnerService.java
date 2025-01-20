@@ -3,7 +3,7 @@ package com.se.Fuel_Quota_Management_System.service;
 import com.se.Fuel_Quota_Management_System.DTO.FuelStationOwnerLogDTO;
 import com.se.Fuel_Quota_Management_System.controller.AuthController;
 import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
-import com.se.Fuel_Quota_Management_System.model.RegisterRequest;
+import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
 import com.se.Fuel_Quota_Management_System.model.Role;
 import com.se.Fuel_Quota_Management_System.model.UserLog;
 import com.se.Fuel_Quota_Management_System.repository.FuelStationOwnerRepository;

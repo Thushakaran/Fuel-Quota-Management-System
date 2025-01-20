@@ -1,8 +1,8 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
-import com.se.Fuel_Quota_Management_System.model.AuthResponse;
+import com.se.Fuel_Quota_Management_System.DTO.AuthResponse;
 import com.se.Fuel_Quota_Management_System.security.JwtUtil;
-import com.se.Fuel_Quota_Management_System.model.RegisterRequest;
+import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
 import com.se.Fuel_Quota_Management_System.model.Role;
 import com.se.Fuel_Quota_Management_System.model.UserLog;
 import com.se.Fuel_Quota_Management_System.repository.RoleRepository;

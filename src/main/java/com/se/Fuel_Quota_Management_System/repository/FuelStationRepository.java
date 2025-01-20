@@ -28,4 +28,6 @@ public interface FuelStationRepository extends JpaRepository<FuelStation, Long> 
     @Query("SELECT o FROM FuelStation o WHERE o.stationLog.id = :loginId")
     FuelStation findFuelStationOwnerByStationLogId(@Param("loginId") Long loginId);
 
+    @Override
+    Optional<FuelStation> findById(Long id);
 }

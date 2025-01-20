@@ -1,6 +1,7 @@
-package com.se.Fuel_Quota_Management_System.model;
+package com.se.Fuel_Quota_Management_System.DTO;
 
 
+import com.se.Fuel_Quota_Management_System.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

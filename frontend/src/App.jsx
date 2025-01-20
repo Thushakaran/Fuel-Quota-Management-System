@@ -46,6 +46,7 @@ function App() {
         <Route path="/stationlogin" element={<StationLogin/>}></Route>
         
         <Route path='station/:id' element={<StationHomePage/>}></Route>
+        <Route path="station/reg" ></Route>
       </Routes>
     </BrowserRouter>
     </>

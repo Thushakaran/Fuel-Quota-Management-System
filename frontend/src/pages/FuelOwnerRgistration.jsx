@@ -68,7 +68,7 @@ const FuelOwnerRegistration = () => {
       setError({});
       ownerregister(ownerData)
         .then((response) => {
-          const id = response.data.id;
+          const id = response.data.owner.id;
           alert('Fuel owner registered successfully!');
           navigate(`/owner/${id}`);
         })
