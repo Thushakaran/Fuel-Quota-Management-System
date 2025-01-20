@@ -37,7 +37,7 @@ public class JwtUtil {
             Role role = userOpt.get().getRole();
             return Jwts.builder()
                     .setSubject(username)
-                    .claim("roles", role.getName())
+                    .claim("role", role.getName())
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(new Date().getTime() + jwtExpirationMilliSecond))
                     .signWith(secretkey)
@@ -59,16 +59,15 @@ public class JwtUtil {
     }
 
     //extract Role
-    public Set<String> extractRole(String token) {
+    public String extractRole(String token) {
         String rolesString = Jwts.parserBuilder()
                 .setSigningKey(secretkey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("roles", String.class);
-        return Set.of(rolesString);
+                .get("role", String.class);
+        return rolesString;
     }
-
 
     //JWT token validation
     public boolean isTokenValid(String token) {

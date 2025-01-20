@@ -2,20 +2,17 @@ package com.se.Fuel_Quota_Management_System.service;
 
 
 import com.se.Fuel_Quota_Management_System.DTO.FuelStationLogDTO;
-import com.se.Fuel_Quota_Management_System.controller.FuelStationController;
-import com.se.Fuel_Quota_Management_System.controller.StationLogController;
-import com.se.Fuel_Quota_Management_System.model.FuelStation;
-import com.se.Fuel_Quota_Management_System.model.StationLog;
-
-import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
-import com.se.Fuel_Quota_Management_System.repository.CPST_StationsRepository;
-import com.se.Fuel_Quota_Management_System.repository.FuelStationOwnerRepository;
-import com.se.Fuel_Quota_Management_System.repository.FuelStationRepository;
-import com.se.Fuel_Quota_Management_System.repository.StationLogRepository;
+import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
+import com.se.Fuel_Quota_Management_System.controller.AuthController;
+import com.se.Fuel_Quota_Management_System.exception.CustomException;
+import com.se.Fuel_Quota_Management_System.model.*;
+import com.se.Fuel_Quota_Management_System.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,33 +25,28 @@ public class FuelStationService {
     private CPST_StationsRepository cpstStationsRepository;
 
     @Autowired
-    private StationLogRepository stationLogRepository;
+    private UserLogRepository userLogRepository;
 
     @Autowired
     private FuelStationOwnerRepository ownerRepository;
-    @Autowired
-    private StationLogController stationLogController;
 
+    @Autowired
+    private AuthController authController;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Transactional
     public FuelStation registerFuelStation(FuelStationLogDTO request) throws Exception {
-        System.out.println(request.getRegistrationNumber());
-        if(!cpstStationsRepository.existsByRegistrationNumber(request.getRegistrationNumber())){
-            throw new Exception("Registration number is not exists at CPST repository");
-        }
-        // Check if registration number already exists
-        if (fuelStationRepository.existsByRegistrationNumber(request.getRegistrationNumber())) {
-            throw new Exception("Registration number already exists");
-        }
+        // Check registration number in the CPST repository or already rgistered
+        validateRegistrationNumber(request.getRegistrationNumber());
 
         // Check if username already exists
-        if (stationLogRepository.existsByStationUserName(request.getStationUserName())) {
-            throw new Exception("Username already exists");
-        }
+        validateUserName(request.getUserName());
 
         // Fetch the owner
         FuelStationOwner owner = ownerRepository.findById(request.getOwnerId())
-                .orElseThrow(() -> new Exception("Owner not found with ID: " + request.getOwnerId()));
+                .orElseThrow(() -> new CustomException("Owner not found with ID: " + request.getOwnerId()));
 
         // Create FuelStation entity
         FuelStation fuelStation = new FuelStation();
@@ -62,49 +54,68 @@ public class FuelStationService {
         fuelStation.setRegistrationNumber(request.getRegistrationNumber());
         fuelStation.setLocation(request.getLocation());
         fuelStation.setOwner(owner);
-        fuelStation.setFuelInventory((Map<String, Double>) request.getFuelTypes());
+        fuelStation.setFuelInventory(request.getFuelTypes()); // Assuming getFuelTypes() returns Map<String, Double>
 
-        StationLog stationLog = new StationLog();
-        stationLog.setStationUserName(request.getStationUserName());
+        // Create and validate StationLog registration request
+        Optional<Role> roleOptional = roleRepository.findByName("station");
+        if (roleOptional.isEmpty()) {
+            throw new CustomException("Invalid role name: station");
+        }
+
+        RegisterRequest stationLog = new RegisterRequest();
+        stationLog.setUserName(request.getUserName());
         stationLog.setPassword(request.getPassword());
+        stationLog.setRole(roleOptional.get().getName());
 
-        StationLog registeredLog =stationLogController.signup(stationLog);
+        ResponseEntity<?> registerResponse = authController.register(stationLog);
+        if (!registerResponse.getStatusCode().is2xxSuccessful()) {
+            throw new CustomException("Failed to register station log: " + registerResponse.getBody());
+        }
 
+        UserLog registeredLog = (UserLog) registerResponse.getBody();
         fuelStation.setStationLog(registeredLog);
+        FuelStation registeredfuelStation = fuelStationRepository.save(fuelStation);
+
         // Save to database
-
-        FuelStationController fuelStationController = new FuelStationController();
-
-        return fuelStationRepository.save(fuelStation);
-
+        return registeredfuelStation;
     }
 
+    private void validateRegistrationNumber(String registrationNumber) {
+        if (!cpstStationsRepository.existsByRegistrationNumber(registrationNumber)) {
+            throw new CustomException("Registration number does not exist in the CPST repository");
+        }
+        if (fuelStationRepository.existsByRegistrationNumber(registrationNumber)) {
+            throw new CustomException("Registration number is already registered");
+        }
+    }
 
-//    public ResponseEntity<?> registerFuelStation(FuelStation fuelStation) throws ConfigDataResourceNotFoundException {
-//
-//        // Check if fuel station is already registered using the registration number
-//        if (fuelStationRepository.existsByRegistrationNumber(fuelStation.getRegistrationNumber())) {
-//            return new ResponseEntity<>("Fuel station with this registration number is already registered.", HttpStatus.CONFLICT);
-//        } else {
-//            // Check if the registration number exists in repository (cpstStationsRepository)
-//            if (cpstStationsRepository.existsByRegistrationNumber(fuelStation.getRegistrationNumber())) {
-//                FuelStation registeredStation = fuelStationRepository.save(fuelStation);
-//                return new ResponseEntity<>(registeredStation, HttpStatus.CREATED);
-//            } else {
-//                return new ResponseEntity<>("Fuel station with this registration number is not in DMT File.", HttpStatus.CONFLICT);
-//
-//
-//            }
-//        }
-//    }
-
-
+    private void validateUserName(String userName) {
+        if (userLogRepository.existsByUserName(userName)) {
+            throw new CustomException("Username already exists");
+        }
+    }
     public boolean existsByRegistrationNumber(String registrationNumber) {
         return fuelStationRepository.existsByRegistrationNumber(registrationNumber);
     }
 
-    public Optional<FuelStation> findByOwnerId(Long id) {
-        return fuelStationRepository.findByOwnerId(id);
+    public List<FuelStation> getByOwnerId(Long id) {
+        return fuelStationRepository.getByOwnerId(id);
+    }
+
+    public FuelStation findFuelStationByStationLog(Long loginid) {
+        return fuelStationRepository.findFuelStationOwnerByStationLogId(loginid);
+    }
+
+    public Map<String, Double> getFuelInventory(Long stationId) {
+        Optional<FuelStation> fuelStation = fuelStationRepository.findById(stationId);
+        if (fuelStation.isPresent()) {
+            return fuelStation.get().getFuelInventory();
+        }
+        return null;  // Or throw an exception based on your needs
+    }
+
+    public Optional<FuelStation> findFuelStationById(Long stationid) {
+        return fuelStationRepository.findById(stationid);
     }
 }
 
