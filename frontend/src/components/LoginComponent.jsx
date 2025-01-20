@@ -1,81 +1,71 @@
 import React, { useState } from "react";
-import "../css/Login.css"; 
+import "../css/Login.css";
 import { useNavigate, Link } from "react-router-dom";
 import { login, getownerid, getstationid } from "../Services/FuelStationService";
 
 const LoginComponent = ({ heading, registrationLink, registrationText }) => {
-  const [loginData, setLoginData] = useState({
-    userName: "",
-    password: "",
-  });
+  const [loginData, setLoginData] = useState({ userName: "", password: "" });
   const [error, setError] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLoginData({
-      ...loginData,
-      [name]: value,
-    });
-  };
-
   const navigate = useNavigate();
 
-  const findownerid = (loginid) => {
-    getownerid(loginid)
-      .then((response) => {
-        console.log(response.data)
-        const ownerId = response.data; // Assuming response.data is the ID
-        navigate(`/owner/${ownerId}`);
-      })
-      .catch((error) => {
-        console.error(error);
-        setError("Failed to fetch owner details.");
-      });
+  // Handle input field changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const findstationid = (loginid) => {
-    getstationid(loginid)
-      .then((response) => {
-        console.log(response.data)
-        const stationId = response.data; // Assuming response.data is the ID
-        navigate(`/station/${stationId}`);
-      })
-      .catch((error) => {
-        console.error(error);
-        setError("Failed to fetch station details.");
-      });
+  // Handle fetching owner details and navigation
+  const fetchOwnerDetails = async (loginId) => {
+    try {
+      const response = await getownerid(loginId);
+      const ownerId = response.data; // Assuming response.data contains the owner ID
+      navigate(`/owner/${ownerId}`);
+    } catch (error) {
+      console.error(error);
+      setError("Failed to fetch owner details.");
+    }
   };
 
-  const handleSubmit = (e) => {
+  // Handle fetching station details and navigation
+  const fetchStationDetails = async (loginId) => {
+    try {
+      const response = await getstationid(loginId);
+      const stationId = response.data; // Assuming response.data contains the station ID
+      navigate(`/station/${stationId}`);
+    } catch (error) {
+      console.error(error);
+      setError("Failed to fetch station details.");
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null); // Clear previous errors
-    console.log("Login Data Submitted:", loginData);
-    login(loginData)
-      .then((response) => {
-        console.log(response.data);
-        const token = response.data.token;
-        const role = response.data.role.name;
-        const loginid = response.data.id;
-        localStorage.setItem("jwtToken", token);
 
-        switch (role) {
-          case "admin":
-            navigate("/admin-dashboard");
-            break;
-          case "stationowner":
-            findownerid(loginid);
-            break;
-          case "station":
-            findstationid(loginid);
-            break;
-          default:
-            setError("Unknown role, cannot navigate.");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setError("Login failed. Please check your credentials.");
-      });
+    try {
+      const response = await login(loginData);
+      const { token, role: { name: role }, id: loginId } = response.data;
+
+      localStorage.setItem("token", token);
+
+      switch (role) {
+        case "admin":
+          navigate("/admin-dashboard");
+          break;
+        case "stationowner":
+          await fetchOwnerDetails(loginId);
+          break;
+        case "station":
+          await fetchStationDetails(loginId);
+          break;
+        default:
+          setError("Unknown role, cannot navigate.");
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Login failed. Please check your credentials.");
+    }
   };
 
   return (
