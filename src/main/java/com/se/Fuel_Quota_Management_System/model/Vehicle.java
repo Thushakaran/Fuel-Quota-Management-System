@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -45,6 +45,5 @@ public class Vehicle {
     @ManyToOne
     @JoinColumn(name = "vehicle_owner_id")
     private VehicleOwner vehicleOwner; // Link to the VehicleOwner entity
-
 
 }
