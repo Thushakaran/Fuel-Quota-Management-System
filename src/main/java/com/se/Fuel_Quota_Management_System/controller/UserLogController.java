@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Set;
-
 @RestController
 @RequestMapping("/api")
 public class UserLogController {
@@ -36,13 +34,13 @@ public class UserLogController {
                 if(jwtUtil.isTokenValid(jwtToken)){
                     String username = jwtUtil.extractUserName(jwtToken);
 
-                    Set<String> roles = jwtUtil.extractRole(jwtToken);
+                    String roles = jwtUtil.extractRole(jwtToken);
 
-                    if(roles.contains(roleAdmin)){
+                    if(roles.equals(roleAdmin)){
                         return ResponseEntity.ok("Welcome "+ username + " Here is the "+ roles + " - specific data");
-                    }else if (roles.contains(roleStationowner)){
+                    }else if (roles.equals(roleStationowner)){
                         return ResponseEntity.ok("Welcome "+ username + " Here is the "+ roles + " - specific data");
-                    }else if (roles.contains(roleStation)) {
+                    }else if (roles.equals(roleStation)) {
                         return ResponseEntity.ok("Welcome " + username + " Here is the " + roles + " - specific data");
                     }else {
                         return ResponseEntity.status(403).body("Access Denied: You don't have the necessary role");
