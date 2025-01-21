@@ -1,7 +1,8 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
+import com.se.Fuel_Quota_Management_System.DTO.VehicleOwnerLogDTO;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
-import com.se.Fuel_Quota_Management_System.service.vehicle.VehicleService;
+import com.se.Fuel_Quota_Management_System.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,8 +19,8 @@ public class VehicleController {
 
     // Register a new vehicle
     @PostMapping("/register")
-    public ResponseEntity<Vehicle> registerVehicle(@RequestBody Vehicle vehicle) {
-        Vehicle registeredVehicle = vehicleService.registerVehicle(vehicle);
+    public ResponseEntity<Vehicle> registerVehicle(@RequestBody VehicleOwnerLogDTO vehicleOwnerLogDTO) {
+        Vehicle registeredVehicle = vehicleService.registerVehicle(vehicleOwnerLogDTO);
         return ResponseEntity.ok(registeredVehicle);
     }
 

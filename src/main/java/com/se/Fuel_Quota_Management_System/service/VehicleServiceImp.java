@@ -4,13 +4,21 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
+import com.se.Fuel_Quota_Management_System.DTO.VehicleOwnerLogDTO;
+import com.se.Fuel_Quota_Management_System.controller.AuthController;
 import com.se.Fuel_Quota_Management_System.exception.VehicleAlreadyRegisteredException;
 import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
 import com.se.Fuel_Quota_Management_System.model.DmtVehicle;
+import com.se.Fuel_Quota_Management_System.model.Role;
+import com.se.Fuel_Quota_Management_System.model.UserLog;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.se.Fuel_Quota_Management_System.repository.DmtVehicleRepository;
+import com.se.Fuel_Quota_Management_System.repository.RoleRepository;
 import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -24,44 +32,77 @@ public class VehicleServiceImp implements VehicleService {
     private VehicleRepository vehicleRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private DmtVehicleRepository dmtVehicleRepository;
+
+    @Autowired
+    private AuthController authController;
 
     // Registers a vehicle by validating its details from the DMT mock database,
     // ensuring the vehicle is not already registered, assigning a fuel quota, and generating a QR code.
     // @return The registered vehicle with all necessary details set.
-    public Vehicle registerVehicle(Vehicle vehicle) {
-        // Validate the vehicle details in the Department of Motor Traffic (DMT) mock database
-        DmtVehicle dmtVehicle = dmtVehicleRepository
-                .findByVehicleNumber(vehicle.getVehicleNumber())
-                .orElseThrow(() -> new VehicleNotFoundException("Vehicle details not found in the Department of Motor Traffic database"));
 
+    @Transactional
+    public Vehicle registerVehicle(VehicleOwnerLogDTO vehicledto) {
+        try {
+            // Validate the vehicle details in the DMT mock database
+            DmtVehicle dmtVehicle = dmtVehicleRepository
+                    .findByVehicleNumber(vehicledto.getVehicleNumber())
+                    .orElseThrow(() -> new VehicleNotFoundException("Vehicle details not found in the Department of Motor Traffic database"));
 
-        // Ensure the vehicle is not already registered in the system
-        Optional<Vehicle> existingVehicle = vehicleRepository.findByVehicleNumber(vehicle.getVehicleNumber());
-        if (existingVehicle.isPresent()) {
-            throw new VehicleAlreadyRegisteredException("Vehicle already registered");
+            // Ensure the vehicle is not already registered in the system
+            vehicleRepository.findByVehicleNumber(vehicledto.getVehicleNumber())
+                    .ifPresent(v -> {
+                        throw new VehicleAlreadyRegisteredException("Vehicle already registered");
+                    });
+
+            // Verify that the owner name matches the DMT record
+            if (!dmtVehicle.getOwnerName().equals(vehicledto.getOwnerName())) {
+                throw new RuntimeException("Owner details do not match");
+            }
+
+            // Ensure the role exists
+            Role role = roleRepository.findByName("vehicle")
+                    .orElseThrow(() -> new RuntimeException("Role Not Found"));
+
+            // Register the vehicle owner in the authentication system
+            RegisterRequest vehicleLog = new RegisterRequest();
+            vehicleLog.setUserName(vehicledto.getUserName());
+            vehicleLog.setPassword(vehicledto.getPassword());
+            vehicleLog.setRole(role.getName());
+
+            ResponseEntity<?> registerResponse = authController.register(vehicleLog);
+            if (!registerResponse.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("Error registering user");
+            }
+
+            UserLog registeredLog = (UserLog) registerResponse.getBody();
+
+            // Create and populate the Vehicle object
+            Vehicle vehicle = new Vehicle();
+            vehicle.setVehicleNumber(vehicledto.getVehicleNumber());
+            vehicle.setOwnerName(dmtVehicle.getOwnerName());
+            vehicle.setFuelType(dmtVehicle.getFuelType());
+            vehicle.setChassisNumber(dmtVehicle.getChassisNumber());
+            vehicle.setOwnerLog(registeredLog);
+
+            // Assign the fuel quota based on the vehicle type
+            double fuelQuota = calculateFuelQuota(dmtVehicle.getVehicleType());
+            vehicle.setFuelQuota(fuelQuota);
+
+            // Generate a QR code that includes vehicle number and fuel quota
+            String qrCode = generateQrCode(vehicle.getVehicleNumber(), fuelQuota);
+            vehicle.setQrCode(qrCode);
+
+            // Save the vehicle to the repository and return
+            return vehicleRepository.save(vehicle);
+        } catch (Exception e) {
+            // Log the exception and rethrow
+            System.err.println("Error registering vehicle: " + e.getMessage());
+            throw new RuntimeException("Vehicle registration failed", e);
         }
-
-        // Verify that the owner name matches the DMT record
-        if (!dmtVehicle.getOwnerName().equals(vehicle.getOwnerName())) {
-            throw new RuntimeException("Owner details do not match");
-        }
-
-        // Assign the fuel quota based on the vehicle type
-        double fuelQuota = calculateFuelQuota(dmtVehicle.getVehicleType());
-        vehicle.setFuelQuota(fuelQuota);
-
-
-        // Generate a QR code that includes vehicle number and fuel quota
-        String qrCode = generateQrCode(vehicle.getVehicleNumber(), fuelQuota);
-        vehicle.setQrCode(qrCode);
-
-        // Set additional details from the DMT mock database
-        vehicle.setFuelType(dmtVehicle.getFuelType());
-        vehicle.setOwnerName(dmtVehicle.getOwnerName());
-
-        // Save the vehicle to the repository and return
-        return vehicleRepository.save(vehicle);
     }
 
     // Retrieves a vehicle by its vehicle number from the repository.
