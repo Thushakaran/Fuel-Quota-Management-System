@@ -60,7 +60,9 @@ const OwnerHomePage = () => {
         </div>
       </main>
 
-      <Footer />
+      <div style={{position:'absolute',bottom:'0', display:'block', width:'100%'}} >
+        <Footer/>
+      </div>
     </>
   );
 };

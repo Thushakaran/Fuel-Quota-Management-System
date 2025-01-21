@@ -32,8 +32,8 @@ public class SecurityConfig {
                                         "api/owner/**",
                                         "api/v1/**",
                                         "api/admin/**",
-                                        "/api/transactions",
-                                        "/api/vehicles")
+                                        "/api/transactions/**",
+                                        "/api/vehicles/**")
                                 .permitAll()
 //                                .requestMatchers("api/fuel-station/**").hasAuthority("station")
 //                                .requestMatchers("api/owner/**").hasAuthority("stationowner")
