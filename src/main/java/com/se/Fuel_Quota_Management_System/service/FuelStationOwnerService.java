@@ -9,6 +9,7 @@ import com.se.Fuel_Quota_Management_System.model.UserLog;
 import com.se.Fuel_Quota_Management_System.repository.FuelStationOwnerRepository;
 import com.se.Fuel_Quota_Management_System.repository.RoleRepository;
 import com.se.Fuel_Quota_Management_System.repository.UserLogRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,9 @@ public class FuelStationOwnerService {
     @Autowired
     private UserLogRepository userLogRepository;
 
-    @PostMapping("/registerOwner")
-    public ResponseEntity<?> registerOwner(@RequestBody FuelStationOwnerLogDTO fuelStationOwnerlog) {
+
+    @Transactional
+    public ResponseEntity<?> registerOwner( FuelStationOwnerLogDTO fuelStationOwnerlog) {
         try {
             // Check if NIC number already exists
             if (fuelStationOwnerRepository.existsByNicNo(fuelStationOwnerlog.getNicNo())) {

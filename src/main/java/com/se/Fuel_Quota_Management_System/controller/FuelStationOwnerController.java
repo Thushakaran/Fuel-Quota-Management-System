@@ -43,7 +43,7 @@ public class FuelStationOwnerController {
     // find owner name by Id
     @PreAuthorize("hasAuthority('stationowner')")
     @GetMapping("/findname/{id}")
-    public ResponseEntity<?> getOwnerById(@PathVariable Long id) {
+    public ResponseEntity<?> getOwnerById(@PathVariable("id") Long id) {
         try {
             FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerById(id);
             return ResponseEntity.ok(owner.getName());
@@ -67,7 +67,7 @@ public class FuelStationOwnerController {
     // find fuelstations owned by owner through owner id
     @PreAuthorize("hasAuthority('stationowner')")
     @GetMapping("findstations/{id}")
-    public ResponseEntity<?> getStationsById(@PathVariable Long id){
+    public ResponseEntity<?> getStationsById(@PathVariable("id") Long id){
         try {
             List<FuelStation> fuelStation = fuelStationService.getByOwnerId(id);
             return ResponseEntity.ok(fuelStation);

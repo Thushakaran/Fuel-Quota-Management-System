@@ -7,6 +7,7 @@ import com.se.Fuel_Quota_Management_System.model.Role;
 import com.se.Fuel_Quota_Management_System.model.UserLog;
 import com.se.Fuel_Quota_Management_System.repository.RoleRepository;
 import com.se.Fuel_Quota_Management_System.repository.UserLogRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,7 @@ public class AuthController {
 
 
     //register user
+    @Transactional
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
 
