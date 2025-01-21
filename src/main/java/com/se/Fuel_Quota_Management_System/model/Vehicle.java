@@ -1,5 +1,6 @@
 package com.se.Fuel_Quota_Management_System.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,8 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -42,9 +43,11 @@ public class Vehicle {
     @JoinColumn(name = "fuel_station_id")
     private FuelStation fuelStation;
 
-    @ManyToOne
-    @JoinColumn(name = "vehicle_owner_id")
-    private VehicleOwner vehicleOwner; // Link to the VehicleOwner entity
-
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "loginid", nullable = false)
+    private UserLog ownerLog;
+//    @ManyToOne
+//    @JoinColumn(name = "vehicle_owner_id")
+//    private VehicleOwner vehicleOwner; // Link to the VehicleOwner entity
 
 }
