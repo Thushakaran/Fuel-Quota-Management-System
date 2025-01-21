@@ -18,8 +18,19 @@ public class VehicleRegistrationNotificationController {
         @PostMapping("/processSMS")
         public String processSMS(@RequestBody SMSSendRequest smsSendRequest)
         {
-            log.info("processSMS started smsRequest"+ smsSendRequest.toString());
-            return twilioOTPService.sendSMS(smsSendRequest.getDestinationSMSNumber(),smsSendRequest.getSmsMessage());
+            log.info("Received SMS request: Destination={}, Message={}",
+                    smsSendRequest.getDestinationSMSNumber(), smsSendRequest.getSmsMessage());
+
+            String response;
+            try {
+                response = twilioOTPService.sendSMS(smsSendRequest.getDestinationSMSNumber(), smsSendRequest.getSmsMessage());
+                log.info("SMS sent successfully: {}", response);
+            } catch (Exception e) {
+                log.error("Error while processing SMS: {}", e.getMessage(), e);
+                response = "Error sending SMS: " + e.getMessage();
+            }
+            return response;
+
         }
     }
 
