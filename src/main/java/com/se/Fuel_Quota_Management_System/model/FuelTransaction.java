@@ -2,43 +2,53 @@ package com.se.Fuel_Quota_Management_System.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Getter
+@Setter
 public class FuelTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_id")
-    private Vehicle vehicle;
+    //    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "vehicle_id")
+    private Long vehicleId;
 
-    private double pumpedLiters;
 
     private double amount;
 
-    private double remainingQuota;
 
     private LocalDateTime transactionDate;
 
-    @ManyToOne
-    @JoinColumn(name = "station_id")
-    private FuelStation station;
+//    @ManyToMany
+//    @JoinColumn(name = "station_id")
+
+
+    private Long stationId;
 
     public FuelTransaction() {
     }
 
-    public FuelTransaction(Long id, Vehicle vehicle, double pumpedLiters, double amount, double remainingQuota, LocalDateTime transactionDate, FuelStation station) {
+
+    public FuelTransaction(Long id, Long vehicleId, double amount, LocalDateTime transactionDate, Long stationId) {
         this.id = id;
-        this.vehicle = vehicle;
-        this.pumpedLiters = pumpedLiters;
+        this.vehicleId = vehicleId;
         this.amount = amount;
-        this.remainingQuota = remainingQuota;
         this.transactionDate = transactionDate;
-        this.station = station;
+        this.stationId = stationId;
+    }
+
+    public FuelTransaction(Long stationId, Long vehicleId, double amount, LocalDateTime now) {
+        this.vehicleId = vehicleId;
+        this.amount = amount;
+        this.transactionDate = now;
+        this.stationId = stationId;
     }
 
     public Long getId() {
@@ -49,20 +59,12 @@ public class FuelTransaction {
         this.id = id;
     }
 
-    public Vehicle getVehicle() {
-        return vehicle;
+    public Long getVehicleId() {
+        return vehicleId;
     }
 
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public double getPumpedLiters() {
-        return pumpedLiters;
-    }
-
-    public void setPumpedLiters(double pumpedLiters) {
-        this.pumpedLiters = pumpedLiters;
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public double getAmount() {
@@ -73,14 +75,6 @@ public class FuelTransaction {
         this.amount = amount;
     }
 
-    public double getRemainingQuota() {
-        return remainingQuota;
-    }
-
-    public void setRemainingQuota(double remainingQuota) {
-        this.remainingQuota = remainingQuota;
-    }
-
     public LocalDateTime getTransactionDate() {
         return transactionDate;
     }
@@ -89,11 +83,11 @@ public class FuelTransaction {
         this.transactionDate = transactionDate;
     }
 
-    public FuelStation getStation() {
-        return station;
+    public Long getStationId() {
+        return stationId;
     }
 
-    public void setStation(FuelStation station) {
-        this.station = station;
+    public void setStationId(Long stationId) {
+        this.stationId = stationId;
     }
 }
