@@ -37,10 +37,7 @@ public class FuelTransactionServiceImpl implements FuelTransactionService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    @Override
-    public FuelTransaction saveTransaction(FuelTransaction fuelTransaction) {
-        return fuelTransactionRepository.save(fuelTransaction) ;
-    }
+
 
     @Override
     public List<FuelTransaction> getAllTransaction() {
