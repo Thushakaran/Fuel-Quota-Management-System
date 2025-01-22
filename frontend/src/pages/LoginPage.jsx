@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login, getownerid, getstationid } from "../Services/FuelStationService";
-import Navbar from "./Navbar";
+import { getstationid} from "../api/FuelStationServiceApi.js";
+import {login} from '../api/CommonApi.js'
+import {getownerid }from '../api/FuelStationOwnerServiceApi.js'
+import { getvehicleid } from "../api/vehicleApi";
+import Navbar from "../components/Navbar";
 
 const LoginComponent = ({ heading, registrationLink, registrationText, image }) => {
   const [loginData, setLoginData] = useState({ userName: "", password: "" });
@@ -35,10 +38,21 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image }) 
     }
   };
 
+  const fetchvehicleDetails = async (loginId) => {
+    try {
+      const response = await getvehicleid(loginId);
+      const stationId = response.data;
+      navigate(`/station/${stationId}`);
+    } catch (error) {
+      console.error("Error fetching station details:", error);
+      setError("Failed to fetch station details.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-
+    console.log(loginData);
     try {
       const response = await login(loginData);
       const {
@@ -58,6 +72,9 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image }) 
           break;
         case "station":
           await fetchStationDetails(loginId);
+          break;
+        case "vehicle":
+          await fetchvehicleDetails(loginId);
           break;
         default:
           setError("Unknown role, cannot navigate.");
@@ -154,3 +171,4 @@ export const StationLogin = () => (
     registrationText="Station Registration"
   />
 );
+

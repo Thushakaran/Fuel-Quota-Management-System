@@ -2,53 +2,14 @@ import axios from "axios";
 
 const REST_API_BASE_URL = 'http://localhost:8082';
 const FUEL_STATION_BASE = '/api/fuel-station';
-const OWNER_CASE = '/api/owner';
+
 
 // Function to register a fuel station
 export const fuelstationregister = (fuelStationData) => {
   return axios.post(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/register`, fuelStationData);
 };
 
-// Function to register an owner
-export const ownerregister = (ownerData) => {
-  return axios.post(`${REST_API_BASE_URL}${OWNER_CASE}/register`, ownerData);
-};
-
-
-//Function to login
-export const login = (loginData) => {
-  return axios.post(`${REST_API_BASE_URL}/api/auth/login`,loginData)
-};
-
-// function to get owner name
-export const getownername = (id) => {
-  return axios.get(`${REST_API_BASE_URL}${OWNER_CASE}/findname/${id}`);
-}
-
-// functions to get all registered stations
-export const liststations = (id) => {
-  return axios.get(`${REST_API_BASE_URL}${OWNER_CASE}/findstations/${id}`);
-}
-
 // //function to get ownerid by login id
-// export const getownerid = (loginid) => {
-//   return axios.get(`${REST_API_BASE_URL}${OWNER_CASE}/findbyloginid/${loginid}`);
-// }
-export const getownerid = (loginid) => {
-  const token = localStorage.getItem("token");
-  return axios.get(`${REST_API_BASE_URL}${OWNER_CASE}/findbyloginid/${loginid}`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    }
-  });
-};
-
-
-// //function to get ownerid by login id
-// export const getstationid = (loginid) => {
-//   return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findbyloginid/${loginid}`);
-// }
 export const getstationid = (loginid) => {
   const token = localStorage.getItem("token");
   return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findbyloginid/${loginid}`, {
