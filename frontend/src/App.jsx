@@ -3,7 +3,7 @@ import FuelOwnerRgistration from "./pages/FuelOwnerRgistration";
 import FuelStationRegistration from "./pages/FuelStationRegistration"
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
-import { OwnerLogin, StationLogin } from "./components/LoginComponent";
+import { OwnerLogin, StationLogin, VehicleLogin } from "./components/LoginComponent";
 import OwnerHomePage from "./pages/OwnerHomePage";
 import StationHomePage from "./pages/StationHomePage";
 
@@ -31,7 +31,9 @@ function App() {
         <Route path="/about" element={<AboutUsPage/>}></Route>
         <Route path="/vehicleManagement" element={<VehicleManagement/>}></Route>
         <Route path="/adminDashboard" element={<AdminDashboard/>}></Route>
-        <Route path="/vehicleOwnerDashboard" element={<VehicleOwnerDashboard/>}></Route>
+        <Route path="/vehicleOwnerDashboard" element={<VehicleLogin/>}></Route>
+
+        <Route path="/vehicle/:id" element={<VehicleOwnerDashboard/>}></Route>
 
 
         <Route path="/fuelStationManagement" element={<FuelStationManagement/>}></Route>
