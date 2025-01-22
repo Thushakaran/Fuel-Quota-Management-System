@@ -50,6 +50,8 @@ const StationHomePage = () => {
       <header className="text-black text-left py-1 ps-4 ms-4">
         <h1 className="fw-bold">{name.toLocaleUpperCase()}</h1>
       </header>
+      <br/>
+      <br/>
       <main className="container my-2" style={{ width: '800px' }}>
         <h2 className="fw-bold mb-2">Balance Fuels</h2>
         {lowFuelAlerts.length > 0 && (
@@ -102,7 +104,7 @@ const StationHomePage = () => {
         </div>
         <br />
       </main>
-      <div style={{ position: 'relative', bottom: '0', display: 'block', width: '100%' }}>
+      <div style={{ position: 'absolute', bottom: '0', display: 'block', width: '100%' }}>
         <Footer />
       </div>
     </>
