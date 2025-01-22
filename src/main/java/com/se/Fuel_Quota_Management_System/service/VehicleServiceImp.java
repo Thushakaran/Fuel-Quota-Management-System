@@ -9,11 +9,9 @@ import com.se.Fuel_Quota_Management_System.DTO.VehicleOwnerLogDTO;
 import com.se.Fuel_Quota_Management_System.controller.AuthController;
 import com.se.Fuel_Quota_Management_System.exception.VehicleAlreadyRegisteredException;
 import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
-import com.se.Fuel_Quota_Management_System.model.DmtVehicle;
-import com.se.Fuel_Quota_Management_System.model.Role;
-import com.se.Fuel_Quota_Management_System.model.UserLog;
-import com.se.Fuel_Quota_Management_System.model.Vehicle;
+import com.se.Fuel_Quota_Management_System.model.*;
 import com.se.Fuel_Quota_Management_System.repository.DmtVehicleRepository;
+import com.se.Fuel_Quota_Management_System.repository.FuelTransactionRepository;
 import com.se.Fuel_Quota_Management_System.repository.RoleRepository;
 import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
 import jakarta.transaction.Transactional;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,6 +38,9 @@ public class VehicleServiceImp implements VehicleService {
 
     @Autowired
     private AuthController authController;
+
+    @Autowired
+    private FuelTransactionRepository fuelTransactionRepository;
 
     // Registers a vehicle by validating its details from the DMT mock database,
     // ensuring the vehicle is not already registered, assigning a fuel quota, and generating a QR code.
@@ -85,6 +87,8 @@ public class VehicleServiceImp implements VehicleService {
             vehicle.setVehicleNumber(vehicledto.getVehicleNumber());
             vehicle.setOwnerName(dmtVehicle.getOwnerName());
             vehicle.setFuelType(dmtVehicle.getFuelType());
+            vehicle.setVehicleType(dmtVehicle.getVehicleType());
+            vehicle.setOwnerIcNumber(dmtVehicle.getOwnerIcNumber());
             vehicle.setChassisNumber(dmtVehicle.getChassisNumber());
             vehicle.setOwnerLog(registeredLog);
 
@@ -171,6 +175,27 @@ public class VehicleServiceImp implements VehicleService {
         }
     }
 
+    @Override
+    public Vehicle findVehicleByOwnerLog(Long loginid) {
+        return vehicleRepository.findVehicleByOwnerLogId(loginid);
+    }
+
+    @Override
+    public Optional<Vehicle> getVehicleById(Long vehicleId) {
+        return vehicleRepository.findById(vehicleId); // Use findById, not getById
+    }
+//
+//    @Override
+//    public Vehicle getVehicleById(Long vehicleId) {
+//        return vehicleRepository.getById(vehicleId);
+//
+//    }
+
+    @Override
+    public List<FuelTransaction> getFuelTransactions(Long vehicleId) {
+        return fuelTransactionRepository.findByVehicleId(vehicleId);
+    }
+
 
     // Update vehicle details in the system
     public Vehicle updateVehicle(Vehicle vehicle) {
@@ -200,10 +225,12 @@ public class VehicleServiceImp implements VehicleService {
         existingVehicle.setVehicleType(vehicle.getVehicleType());
         existingVehicle.setChassisNumber(vehicle.getChassisNumber());
         existingVehicle.setQrCode(vehicle.getQrCode());
-        existingVehicle.setNotificationType(vehicle.getNotificationType());
+//        existingVehicle.setNotificationType(vehicle.getNotificationType());
         // Update additional fields as needed
 
         // Save the updated vehicle
         return vehicleRepository.save(existingVehicle);
     }
+
+
 }
