@@ -1,31 +1,70 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import axios from "../api/axiosInstance";
+import { useParams } from "react-router-dom";
+import OwnerNavbar from "../components/OwnerNavbar";
 
-
-function VehicleOwnerDashboard({id}) {
+function VehicleOwnerDashboard() {
+  const { id } = useParams();
   const [ownerDetails, setOwnerDetails] = useState(null);
-  const [fuelInfo, setFuelInfo] = useState({});
+  const [fuelInfo, setFuelInfo] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(`/vehicle-owner/details/${id}`)
-      .then((response) => {
-        setOwnerDetails(response.data);
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setError("Unauthorized. Please log in.");
+      return;
+    }
+
+    console.log("Vehicle ID:", id); // Debugging output
+
+    const fetchOwnerDetails = axios.get(`/vehicles/dashboard/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const fetchFuelInfo = axios.get(`/vehicles/dashboard/transactions/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    Promise.all([fetchOwnerDetails, fetchFuelInfo])
+      .then(([ownerResponse, fuelResponse]) => {
+        setOwnerDetails(ownerResponse.data);
+        setFuelInfo(fuelResponse.data || []); // Ensure it's an array
       })
-      .catch((error) => {
-        console.error("Error fetching owner details:", error);
+      .catch((err) => {
+        setError(`Failed to load data. Error: ${err.response?.data?.message || "Please try again."}`);
+        console.error("Error fetching data:", err);
       });
   }, [id]);
 
-  if (!ownerDetails) {
-    return <p>Loading...</p>;
+  if (error) {
+    return (
+      <div className="container mt-5 text-center">
+        <div className="alert alert-danger">
+          <i className="fas fa-exclamation-triangle"></i> {error}
+        </div>
+      </div>
+    );
   }
+
+  if (!ownerDetails || fuelInfo.length === 0) {
+    return <p className="text-center mt-5">Loading...</p>;
+  }
+
+  // Extract latest fuel transaction
+  const latestTransaction = fuelInfo[0] || {}; // Take the first transaction if exists
 
   return (
     <div>
-      <Navbar />
+      <OwnerNavbar/>
       <div className="container mt-5">
         <h2 className="text-center mb-5 text-primary">
           <i className="fas fa-car-side"></i> Vehicle Owner Dashboard
@@ -41,28 +80,16 @@ function VehicleOwnerDashboard({id}) {
               </div>
               <div className="card-body">
                 <p className="card-text">
-                  <strong>Full Name:</strong>{" "}
-                  {vehicleOwner.fullName || (
-                    <span className="text-muted">Loading...</span>
-                  )}
+                  <strong>Full Name:</strong> {ownerDetails?.ownerName || "Not Available"}
                 </p>
                 <p className="card-text">
-                  <strong>IC Number:</strong>{" "}
-                  {vehicleOwner.icNumber || (
-                    <span className="text-muted">Loading...</span>
-                  )}
+                  <strong>IC Number:</strong> {ownerDetails?.ownerIcNumber || "Not Available"}
                 </p>
                 <p className="card-text">
-                  <strong>Phone Number:</strong>{" "}
-                  {vehicleOwner.phoneNumber || (
-                    <span className="text-muted">Loading...</span>
-                  )}
+                  <strong>Phone Number:</strong> {ownerDetails?.phoneNumber || "Not Available"}
                 </p>
                 <p className="card-text">
-                  <strong>Email:</strong>{" "}
-                  {vehicleOwner.email || (
-                    <span className="text-muted">Loading...</span>
-                  )}
+                  <strong>Email:</strong> {ownerDetails?.email || "Not Available"}
                 </p>
               </div>
             </div>
@@ -78,25 +105,13 @@ function VehicleOwnerDashboard({id}) {
               </div>
               <div className="card-body">
                 <p className="card-text">
-                  <strong>Fuel Quota:</strong>{" "}
-                  {fuelInfo.quota || (
-                    <span className="text-muted">Loading...</span>
-                  )}{" "}
-                  liters
+                  <strong>Fuel Quota:</strong> {latestTransaction?.amount || "Not Available"} liters
                 </p>
                 <p className="card-text">
-                  <strong>Pumped Fuel:</strong>{" "}
-                  {fuelInfo.pumped || (
-                    <span className="text-muted">Loading...</span>
-                  )}{" "}
-                  liters
+                  <strong>Pumped Fuel:</strong> {latestTransaction?.pumpedLiters || "Not Available"} liters
                 </p>
                 <p className="card-text">
-                  <strong>Balance Fuel:</strong>{" "}
-                  {fuelInfo.balance || (
-                    <span className="text-muted">Loading...</span>
-                  )}{" "}
-                  liters
+                  <strong>Balance Fuel:</strong> {latestTransaction?.remainingQuota || "Not Available"} liters
                 </p>
               </div>
             </div>
