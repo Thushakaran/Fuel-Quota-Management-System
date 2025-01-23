@@ -1,71 +1,99 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
 import com.se.Fuel_Quota_Management_System.DTO.FuelStationOwnerLogDTO;
+import com.se.Fuel_Quota_Management_System.model.FuelStation;
 import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
-import com.se.Fuel_Quota_Management_System.model.OwnerLog;
-import com.se.Fuel_Quota_Management_System.repository.CPST_StationsRepository;
 import com.se.Fuel_Quota_Management_System.service.FuelStationOwnerService;
+import com.se.Fuel_Quota_Management_System.service.FuelStationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
+
 @RestController
-@CrossOrigin("*")
 @RequestMapping("api/owner")
 public class FuelStationOwnerController {
     @Autowired
     private FuelStationOwnerService fuelStationOwnerService;
 
     @Autowired
-    private OwnerLogController ownerLogController;
+    private FuelStationService fuelStationService;
 
-    @Autowired
-    private CPST_StationsRepository cpstStationsRepository;
 
     // for register StationOwner
     @PostMapping("/register")
-    public ResponseEntity<?> registerOwner(@RequestBody FuelStationOwnerLogDTO dto) {
+    public ResponseEntity<?> registerOwner(@Validated @RequestBody FuelStationOwnerLogDTO request) {
         try {
-            // Create OwnerLog
-            OwnerLog ownerLog = new OwnerLog();
-            ownerLog.setOwnerUserName(dto.getOwnerUserName());
-            ownerLog.setPassword(dto.getPassword());
-
-            // Save OwnerLog
-            OwnerLog registeredLog = ownerLogController.signup(ownerLog);
-
-            // Create FuelStationOwner
-            FuelStationOwner owner = new FuelStationOwner();
-            owner.setName(dto.getOwnerName());
-            owner.setNicNo(dto.getNicNo());
-            owner.setPhoneNumber(dto.getPhoneNumber());
-            owner.setEmail(dto.getEmail());
-
-            owner.setOwnerLog(registeredLog); // Link OwnerLog
-
-            // Save FuelStationOwner
-            fuelStationOwnerService.registerOwner(owner);
-
-            return ResponseEntity.ok(owner);
-        } catch (DataIntegrityViolationException e) {
-            // make sure that username in unique
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists!");
+            ResponseEntity<?> registeredowner = fuelStationOwnerService.registerOwner(request);
+            return ResponseEntity.ok(registeredowner.getBody());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed!");
+            // Log the error (use a logger in production)
+            System.err.println("Error during registration: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
         }
     }
 
-    @GetMapping("findbyid/{id}")
-    public FuelStationOwner findFuelStationOwnerById(@PathVariable Long Id){
-        return fuelStationOwnerService.findFuelStationOwnerById(Id);
+
+
+    // find owner name by Id
+    @PreAuthorize("hasAuthority('stationowner')")
+    @GetMapping("/findname/{id}")
+    public ResponseEntity<?> getOwnerById(@PathVariable("id") Long id) {
+        try {
+            FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerById(id);
+            return ResponseEntity.ok(owner.getName());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
     }
 
-    @GetMapping("search")
-    public FuelStationOwner findOwnerByNicOrEmail(@RequestParam(value="nicNo",required = false) String nicNo,
-                                                             @RequestParam(value= "email",required = false) String email){
-        return fuelStationOwnerService.findAllByNicOrEmail(nicNo,email);
-
+    // find owner details by Id
+    @PreAuthorize("hasAuthority('stationowner')")
+    @GetMapping("finddetail/{id}")
+    public ResponseEntity<?> getDetailsbyId(@PathVariable Long id){
+        try {
+            FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerById(id);
+            return ResponseEntity.ok(owner);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
     }
+
+    // find fuelstations owned by owner through owner id
+    @PreAuthorize("hasAuthority('stationowner')")
+    @GetMapping("findstations/{id}")
+    public ResponseEntity<?> getStationsById(@PathVariable("id") Long id){
+        try {
+            List<FuelStation> fuelStation = fuelStationService.getByOwnerId(id);
+            return ResponseEntity.ok(fuelStation);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
+    }
+
+    // find owner by login Id
+    @PreAuthorize("hasAuthority('stationowner')")
+    @GetMapping("/findbyloginid/{id}")
+    public ResponseEntity<?> getidbyloginid(@PathVariable("id") Long loginid){
+        try {
+            FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerByOwnerLog(loginid);
+            return ResponseEntity.ok(owner.getId());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
+    }
+
+
+//
+//    @GetMapping("search")
+//    public FuelStationOwner findOwnerByNicOrEmail(@RequestParam(value="nicNo",required = false) String nicNo,
+//                                                             @RequestParam(value= "email",required = false) String email){
+//        return fuelStationOwnerService.findAllByNicOrEmail(nicNo,email);
+//
+//    }
 }

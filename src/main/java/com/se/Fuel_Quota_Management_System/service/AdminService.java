@@ -59,7 +59,7 @@ public class AdminService {
         // Update only the fields that are allowed to be modified
         existingVehicle.setFuelQuota(updatedVehicle.getFuelQuota());
         existingVehicle.setFuelType(updatedVehicle.getFuelType());
-        existingVehicle.setNotificationType(updatedVehicle.getNotificationType());
+//        existingVehicle.setNotificationType(updatedVehicle.getNotificationType());
 
         return vehicleRepository.save(existingVehicle);
     }
@@ -98,7 +98,7 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("Fuel station not found with location: " + location));
     }
 
-   //Get FuelStation by their station_name
+    //Get FuelStation by their station_name
     public FuelStation getFuelStationByStationName(String station_name) {
         return fuelStationRepository.findByStationName(station_name)
                 .orElseThrow(() -> new RuntimeException("Fuel station not found with station_name: " + station_name));

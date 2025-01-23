@@ -17,6 +17,7 @@ import java.util.Map;
 public class FuelStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "station_id")
     private Long id;
 
     private String stationName;
@@ -28,7 +29,7 @@ public class FuelStation {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "loginid" , nullable = false)
 //    @JsonIgnore
-    private StationLog stationLog;
+    private UserLog stationLog;
 
     // fuel station have only one owner
     @ManyToOne

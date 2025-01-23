@@ -69,8 +69,8 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link className="dropdown-item" to="/fuel-station-registration">
-                  Fuel Station Registration
+                <Link className="dropdown-item" to="/ownerreg">
+                  Fuel Station Owner Registration
                 </Link>
               </li>
             </ul>
@@ -97,8 +97,13 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link className="dropdown-item" to="/station-owner-login">
+                <Link className="dropdown-item" to="/ownerlogin">
                   Station Owner 
+                </Link>
+              </li>
+              <li>
+                <Link className="dropdown-item" to="/stationlogin">
+                  Station 
                 </Link>
               </li>
               <li>
