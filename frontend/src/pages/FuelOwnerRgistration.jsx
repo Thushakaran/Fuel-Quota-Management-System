@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ownerregister } from '../Services/FuelStationService';
+import { ownerregister } from '../api/FuelStationOwnerServiceApi.js';
 import { useNavigate } from 'react-router-dom';
 import '../css/Registration.css';
 import Navbar from '../components/Navbar';
@@ -210,8 +210,12 @@ const FuelOwnerRegistration = () => {
           </form>
         </div>
       )}
-
-      <Footer />
+      
+      <br/>
+      <br/>
+      <div style={{position:'relative',bottom:'0', display:'block', width:'100%'}} >
+        <Footer/>
+      </div>
     </>
   );
 };

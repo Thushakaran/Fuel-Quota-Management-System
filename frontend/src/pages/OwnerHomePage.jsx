@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import OwnerNavbar from "../components/OwnerNavbar";
 import Footer from "../components/Footer";
 import "../css/Layout.css";
-import { getownername, liststations } from "../Services/FuelStationService";
+import { getownername, liststations } from "../api/FuelStationOwnerServiceApi.js";
 
 const OwnerHomePage = () => {
   const { id } = useParams();
@@ -60,7 +60,9 @@ const OwnerHomePage = () => {
         </div>
       </main>
 
-      <Footer />
+      <div style={{position:'absolute',bottom:'0', display:'block', width:'100%'}} >
+        <Footer/>
+      </div>
     </>
   );
 };
