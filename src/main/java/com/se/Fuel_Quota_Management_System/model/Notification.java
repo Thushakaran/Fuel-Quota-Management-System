@@ -18,5 +18,6 @@ public class Notification {
 
     private String message;
 
-    private LocalDateTime notificationDate;
+    private LocalDateTime notificationDate = LocalDateTime.now();
+
 }

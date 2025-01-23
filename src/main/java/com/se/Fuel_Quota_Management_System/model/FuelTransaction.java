@@ -16,6 +16,10 @@ public class FuelTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "vehicle_id")
+    private Vehicle vehicle;
+
     //    @ManyToMany(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "vehicle_id")
     private Long vehicleId;
@@ -24,7 +28,7 @@ public class FuelTransaction {
     private double amount;
 
 
-    private LocalDateTime transactionDate;
+    private LocalDateTime transactionDate = LocalDateTime.now();
 
 //    @ManyToMany
 //    @JoinColumn(name = "station_id")
