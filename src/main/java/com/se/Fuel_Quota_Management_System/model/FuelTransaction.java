@@ -16,9 +16,9 @@ public class FuelTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "vehicle_id")
-    private Long vehicleId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "vehicle_id") // Foreign key in the FuelTransaction table
+    private Vehicle vehicle;
 
 
     private double amount;
@@ -26,68 +26,28 @@ public class FuelTransaction {
 
     private LocalDateTime transactionDate;
 
-//    @ManyToMany
-//    @JoinColumn(name = "station_id")
-
-
-    private Long stationId;
+    @ManyToOne
+    @JoinColumn(name = "station_id")
+    private FuelStation station;
 
     public FuelTransaction() {
     }
 
 
-    public FuelTransaction(Long id, Long vehicleId, double amount, LocalDateTime transactionDate, Long stationId) {
+    public FuelTransaction(Long id, Vehicle vehicleId, double amount, LocalDateTime transactionDate, FuelStation stationId) {
         this.id = id;
-        this.vehicleId = vehicleId;
+        this.vehicle = vehicleId;
         this.amount = amount;
         this.transactionDate = transactionDate;
-        this.stationId = stationId;
+        this.station = stationId;
     }
 
-    public FuelTransaction(Long stationId, Long vehicleId, double amount, LocalDateTime now) {
-        this.vehicleId = vehicleId;
+    public FuelTransaction(FuelStation stationId, Vehicle vehicleId, double amount, LocalDateTime now) {
+        this.vehicle = vehicleId;
         this.amount = amount;
         this.transactionDate = now;
-        this.stationId = stationId;
+        this.station = stationId;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getVehicleId() {
-        return vehicleId;
-    }
-
-    public void setVehicleId(Long vehicleId) {
-        this.vehicleId = vehicleId;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public LocalDateTime getTransactionDate() {
-        return transactionDate;
-    }
-
-    public void setTransactionDate(LocalDateTime transactionDate) {
-        this.transactionDate = transactionDate;
-    }
-
-    public Long getStationId() {
-        return stationId;
-    }
-
-    public void setStationId(Long stationId) {
-        this.stationId = stationId;
-    }
 }

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const REST_API_BASE_URL = 'http://localhost:8082';
+const REST_API_BASE_URL = 'http://localhost:8080';
 const FUEL_STATION_BASE = '/api/fuel-station';
 
 
@@ -43,6 +43,23 @@ export const getfuelInventory = (stationId) => {
   });
 
 };
+
+
+
+export const addFuel = (stationId, fuels) => {
+  const token = localStorage.getItem('token');
+  return axios.post(
+    `${REST_API_BASE_URL}${FUEL_STATION_BASE}/addFuel/${stationId}`,
+    fuels, // Map { fuelType: quantity }
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
 
 
 

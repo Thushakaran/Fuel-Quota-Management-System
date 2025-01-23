@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+
 import { getstationid} from "../api/FuelStationServiceApi.js";
 import {login} from '../api/CommonApi.js'
 import {getownerid }from '../api/FuelStationOwnerServiceApi.js'
-import { getvehicleid } from "../api/vehicleApi";
+
 import Navbar from "../components/Navbar";
 
 const LoginComponent = ({ heading, registrationLink, registrationText, image }) => {
@@ -38,17 +39,19 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image }) 
     }
   };
 
-  const fetchvehicleDetails = async (loginId) => {
+  
+  const fetchVehicleDetails = async (loginId) => {
     try {
       const response = await getvehicleid(loginId);
-      const stationId = response.data;
-      navigate(`/station/${stationId}`);
+      const vehicleId = response.data; // Change variable name
+      console.log(vehicleId);
+      navigate(`/vehicle/${vehicleId}`);
     } catch (error) {
-      console.error("Error fetching station details:", error);
-      setError("Failed to fetch station details.");
+      console.error("Error fetching vehicle details:", error);
+      setError("Failed to fetch vehicle details.");
     }
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -74,7 +77,9 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image }) 
           await fetchStationDetails(loginId);
           break;
         case "vehicle":
-          await fetchvehicleDetails(loginId);
+          await fetchVehicleDetails(loginId);
+
+
           break;
         default:
           setError("Unknown role, cannot navigate.");
@@ -170,5 +175,14 @@ export const StationLogin = () => (
     registrationLink="/stationreg"
     registrationText="Station Registration"
   />
+);
+
+export const VehicleLogin = () => (
+  <LoginComponent
+    heading="Vehicle Login"
+    image="https://files.oaiusercontent.com/file-RBz1eqcSUumAXYaRYsapiq?se=2025-01-21T09%3A52%3A29Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D04800321-b05b-4039-a339-fe2f4c26d4ce.webp&sig=TyMooMIuoI9G5NCwrGZyqnh3M9Yei%2B9Byj3f%2BijyP/c%3D"
+    registrationLink="/vehicle-registration"
+    registrationText="Vehicle Registration"
+  />
 );
 
