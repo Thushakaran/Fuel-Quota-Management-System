@@ -6,8 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
-public interface UserLogRepository extends JpaRepository<UserLog, Long> {
+public interface UserLogRepository extends JpaRepository<UserLog,Long> {
     Optional<UserLog> findByUserName(String username);
 
     boolean existsByUserName(String ownerUserName);

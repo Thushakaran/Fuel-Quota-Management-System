@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -36,6 +37,15 @@ public class FuelStationController {
         }
     }
 
+    //add fuel
+    @PostMapping("/addFuel/{id}")
+    public ResponseEntity<?> addFuel(@PathVariable("id") Long id,  @RequestBody Map<String, Double> fuelDetails) {
+        try {
+           return fuelStationService.addFuels(id,fuelDetails);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
+    }
 
     // Find is any Fuel station registered on this RegisteredNumber
     @PreAuthorize("hasAuthority('station')")
