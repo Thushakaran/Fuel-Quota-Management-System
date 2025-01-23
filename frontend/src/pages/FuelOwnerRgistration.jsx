@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { ownerregister } from '../Services/FuelStationService';
+import { ownerregister } from '../api/FuelStationOwnerServiceApi.js';
 import { useNavigate } from 'react-router-dom';
 import '../css/Registration.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { FaUser, FaPhoneAlt, FaEnvelope, FaKey } from 'react-icons/fa';
 
 const FuelOwnerRegistration = () => {
   const navigate = useNavigate();
@@ -85,62 +86,74 @@ const FuelOwnerRegistration = () => {
 
       {path === 1 && (
         <div className="register-container container mt-5">
-          <form onSubmit={handleSubmit} className="p-4 border rounded bg-light">
+          <form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow-sm">
             <h2 className="text-center mb-4">Register Fuel Station Owner</h2>
 
             <div className="mb-3">
               <label htmlFor="ownerName" className="form-label">Owner Name:</label>
-              <input
-                type="text"
-                id="ownerName"
-                name="ownerName"
-                placeholder="Enter Owner Name"
-                value={ownerData.ownerName}
-                onChange={handleOwnerChange}
-                className={`form-control ${error.ownerName ? 'is-invalid' : ''}`}
-              />
+              <div className="input-group">
+                <span className="input-group-text"><FaUser /></span>
+                <input
+                  type="text"
+                  id="ownerName"
+                  name="ownerName"
+                  placeholder="Enter Owner Name"
+                  value={ownerData.ownerName}
+                  onChange={handleOwnerChange}
+                  className={`form-control ${error.ownerName ? 'is-invalid' : ''}`}
+                />
+              </div>
               {error.ownerName && <div className="invalid-feedback">{error.ownerName}</div>}
             </div>
 
             <div className="mb-3">
               <label htmlFor="nicNo" className="form-label">NIC Number:</label>
-              <input
-                type="text"
-                id="nicNo"
-                name="nicNo"
-                placeholder="Enter NIC Number"
-                value={ownerData.nicNo}
-                onChange={handleOwnerChange}
-                className={`form-control ${error.nicNo ? 'is-invalid' : ''}`}
-              />
+              <div className="input-group">
+                <span className="input-group-text"><FaKey /></span>
+                <input
+                  type="text"
+                  id="nicNo"
+                  name="nicNo"
+                  placeholder="Enter NIC Number"
+                  value={ownerData.nicNo}
+                  onChange={handleOwnerChange}
+                  className={`form-control ${error.nicNo ? 'is-invalid' : ''}`}
+                />
+              </div>
               {error.nicNo && <div className="invalid-feedback">{error.nicNo}</div>}
             </div>
 
             <div className="mb-3">
               <label htmlFor="phoneNumber" className="form-label">Phone Number:</label>
-              <input
-                type="text"
-                id="phoneNumber"
-                name="phoneNumber"
-                placeholder="Enter Phone Number"
-                value={ownerData.phoneNumber}
-                onChange={handleOwnerChange}
-                className={`form-control ${error.phoneNumber ? 'is-invalid' : ''}`}
-              />
+              <div className="input-group">
+                <span className="input-group-text"><FaPhoneAlt /></span>
+                <input
+                  type="text"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  placeholder="Enter Phone Number"
+                  value={ownerData.phoneNumber}
+                  onChange={handleOwnerChange}
+                  className={`form-control ${error.phoneNumber ? 'is-invalid' : ''}`}
+                />
+              </div>
               {error.phoneNumber && <div className="invalid-feedback">{error.phoneNumber}</div>}
             </div>
 
             <div className="mb-3">
               <label htmlFor="email" className="form-label">Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter Email"
-                value={ownerData.email}
-                onChange={handleOwnerChange}
-                className={`form-control ${error.email ? 'is-invalid' : ''}`}
-              />
+              <div className="input-group">
+                <span className="input-group-text"><FaEnvelope /></span>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter Email"
+                  value={ownerData.email}
+                  onChange={handleOwnerChange}
+                  className={`form-control ${error.email ? 'is-invalid' : ''}`}
+                />
+              </div>
               {error.email && <div className="invalid-feedback">{error.email}</div>}
             </div>
 
@@ -151,45 +164,51 @@ const FuelOwnerRegistration = () => {
 
       {path === 2 && (
         <div className="register-container container mt-5">
-          <form onSubmit={handleSubmit} className="p-4 border rounded bg-light">
+          <form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow-sm">
             <a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
                 setPath(1);
               }}
-              className="text-decoration-none"
+              className="text-decoration-none mb-3 d-block"
             >
-              Back
+              <strong>Back</strong>
             </a>
 
             <h2 className="text-center mb-4">Register Fuel Station Owner</h2>
 
             <div className="mb-3">
               <label htmlFor="userName" className="form-label">Username:</label>
-              <input
-                type="text"
-                id="userName"
-                name="userName"
-                placeholder="Enter Username"
-                value={ownerData.userName}
-                onChange={handleOwnerChange}
-                className={`form-control ${error.userName ? 'is-invalid' : ''}`}
-              />
+              <div className="input-group">
+                <span className="input-group-text"><FaUser /></span>
+                <input
+                  type="text"
+                  id="userName"
+                  name="userName"
+                  placeholder="Enter Username"
+                  value={ownerData.userName}
+                  onChange={handleOwnerChange}
+                  className={`form-control ${error.userName ? 'is-invalid' : ''}`}
+                />
+              </div>
               {error.userName && <div className="invalid-feedback">{error.userName}</div>}
             </div>
 
             <div className="mb-3">
               <label htmlFor="password" className="form-label">Password:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter Password"
-                value={ownerData.password}
-                onChange={handleOwnerChange}
-                className={`form-control ${error.password ? 'is-invalid' : ''}`}
-              />
+              <div className="input-group">
+                <span className="input-group-text"><FaKey /></span>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter Password"
+                  value={ownerData.password}
+                  onChange={handleOwnerChange}
+                  className={`form-control ${error.password ? 'is-invalid' : ''}`}
+                />
+              </div>
               {error.password && <div className="invalid-feedback">{error.password}</div>}
             </div>
 
@@ -211,7 +230,11 @@ const FuelOwnerRegistration = () => {
         </div>
       )}
 
-      <Footer />
+      <br />
+      <br />
+      <div style={{ position: 'relative', bottom: '0', display: 'block', width: '100%' }}>
+        <Footer />
+      </div>
     </>
   );
 };

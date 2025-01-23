@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { fuelstationregister } from '../Services/FuelStationService';
+import { fuelstationregister } from '../api/FuelStationServiceApi.js';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/Registration.css';
 import Navbar from '../components/Navbar';
@@ -15,9 +15,9 @@ const FuelStationRegistration = () => {
     registrationNumber: '',
     location: '',
     ownerId: '',
-    fuelTypes: {}, // Object to hold fuel types as keys and balances as values
+    fuelTypes: {},
     userName: '',
-    password: ''
+    password: '',
   });
 
   const [rePassword, setRePassword] = useState('');
@@ -27,9 +27,9 @@ const FuelStationRegistration = () => {
     setFuelStationData((prevData) => {
       const updatedFuelTypes = { ...prevData.fuelTypes };
       if (fuelType in updatedFuelTypes) {
-        delete updatedFuelTypes[fuelType]; // Remove fuel type if unchecked
+        delete updatedFuelTypes[fuelType];
       } else {
-        updatedFuelTypes[fuelType] = ''; // Add fuel type with an empty balance
+        updatedFuelTypes[fuelType] = '';
       }
       return { ...prevData, fuelTypes: updatedFuelTypes };
     });
@@ -66,124 +66,140 @@ const FuelStationRegistration = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (path === 1) {
       const errors = validateStep1();
       if (Object.keys(errors).length > 0) {
         setError(errors);
         return;
       }
-
       setError({});
       setPath(2);
-    } else if (path === 2) {
+    } else {
       const errors = validateStep2();
       if (Object.keys(errors).length > 0) {
         setError(errors);
         return;
       }
-
       setError({});
       fuelstationregister({ ...fuelStationData, ownerId: id })
-        .then((response) => {
-          const station_id = response.data;
+        .then(() => {
           alert('Fuel station registered successfully!');
-          navigate(`/station/${station_id}`);
+          navigate(`/station/${id}`);
         })
-        .catch((error) => {
-          console.error('Error registering fuel station:', error);
-          alert('Registration failed. Please try again.');
-        });
+        .catch(() => alert('Registration failed. Try again.'));
     }
   };
 
   return (
     <>
       <Navbar />
-      {path === 1 && (
-        <div className="register-container container mt-5">
-          <form onSubmit={handleSubmit} className="p-4 border rounded bg-light">
-            <h2 className="text-center mb-4">Register Fuel Station</h2>
+      <div className="container mt-5">
+        <div className="progress mb-4">
+          <div
+            className={`progress-bar ${path === 1 ? 'bg-primary' : 'bg-success'}`}
+            role="progressbar"
+            style={{ width: path === 1 ? '50%' : '100%' }}
+            aria-valuenow={path === 1 ? '50' : '100'}
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            {path === 1 ? 'Step 1 of 2' : 'Step 2 of 2'}
+          </div>
+        </div>
+
+        {path === 1 && (
+          <form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow">
+            <h3 className="text-center mb-4">Register Fuel Station</h3>
 
             <div className="mb-3">
-              <label htmlFor="stationName" className="form-label">Station Name:</label>
+              <label className="form-label">Station Name</label>
               <input
                 type="text"
-                id="stationName"
                 name="stationName"
-                placeholder="Enter Station Name"
-                value={fuelStationData.stationName}
-                onChange={handleStationChange}
                 className={`form-control ${error.stationName ? 'is-invalid' : ''}`}
+                placeholder="Enter Station Name"
+                onChange={handleStationChange}
               />
               {error.stationName && <div className="invalid-feedback">{error.stationName}</div>}
             </div>
 
             <div className="mb-3">
-              <label htmlFor="registrationNumber" className="form-label">Registration Number:</label>
+              <label className="form-label">Registration Number</label>
               <input
                 type="text"
-                id="registrationNumber"
                 name="registrationNumber"
-                placeholder="Enter Registration Number"
-                value={fuelStationData.registrationNumber}
-                onChange={handleStationChange}
                 className={`form-control ${error.registrationNumber ? 'is-invalid' : ''}`}
+                placeholder="Enter Registration Number"
+                onChange={handleStationChange}
               />
               {error.registrationNumber && <div className="invalid-feedback">{error.registrationNumber}</div>}
             </div>
 
             <div className="mb-3">
-              <label htmlFor="location" className="form-label">Location:</label>
+              <label className="form-label">Location</label>
               <input
                 type="text"
-                id="location"
                 name="location"
-                placeholder="Enter Location"
-                value={fuelStationData.location}
-                onChange={handleStationChange}
                 className={`form-control ${error.location ? 'is-invalid' : ''}`}
+                placeholder="Enter Location"
+                onChange={handleStationChange}
               />
               {error.location && <div className="invalid-feedback">{error.location}</div>}
             </div>
 
-            <div className="mb-3">
-              <label className="form-label">Fuel Inventory:</label>
-              {['92-Octane', '95-Octane', 'Auto Diesel', 'Super Diesel'].map((fuelType) => (
-                <div key={fuelType} className="mb-2">
-                  <div className="form-check">
-                    <input
-                      type="checkbox"
-                      value={fuelType}
-                      onChange={() => handleFuelChange(fuelType)}
-                      className="form-check-input"
-                      checked={fuelType in fuelStationData.fuelTypes}
-                    />
-                    <label className="form-check-label">{fuelType}</label>
+            <div className="accordion mb-4" id="fuelAccordion">
+              <div className="accordion-item">
+                <h2 className="accordion-header" id="fuelHeading">
+                  <button
+                    className="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#fuelCollapse"
+                    aria-expanded="true"
+                    aria-controls="fuelCollapse"
+                  >
+                    Select Fuel Types
+                  </button>
+                </h2>
+                <div
+                  id="fuelCollapse"
+                  className="accordion-collapse collapse show"
+                  aria-labelledby="fuelHeading"
+                  data-bs-parent="#fuelAccordion"
+                >
+                  <div className="accordion-body">
+                    {['92-Octane', '95-Octane', 'Auto Diesel', 'Super Diesel'].map((fuelType) => (
+                      <div key={fuelType} className="form-check mb-2">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          onChange={() => handleFuelChange(fuelType)}
+                        />
+                        <label className="form-check-label">{fuelType}</label>
+                        {fuelType in fuelStationData.fuelTypes && (
+                          <input
+                            type="number"
+                            className="form-control mt-2"
+                            placeholder="Enter Balance"
+                            onChange={(e) => handleBalanceChange(fuelType, e.target.value)}
+                          />
+                        )}
+                      </div>
+                    ))}
+                    {error.fuelTypes && <div className="text-danger">{error.fuelTypes}</div>}
                   </div>
-                  {fuelType in fuelStationData.fuelTypes && (
-                    <input
-                      type="number"
-                      placeholder="Balance"
-                      value={fuelStationData.fuelTypes[fuelType]}
-                      onChange={(e) => handleBalanceChange(fuelType, e.target.value)}
-                      className="form-control mt-2"
-                      style={{ width: '100px' }}
-                    />
-                  )}
                 </div>
-              ))}
-              {error.fuelTypes && <div className="text-danger">{error.fuelTypes}</div>}
+              </div>
             </div>
 
-            <button type="submit" className="btn btn-primary w-100">Next</button>
+            <button type="submit" className="btn btn-primary w-100">
+              Next
+            </button>
           </form>
-        </div>
-      )}
+        )}
 
-      {path === 2 && (
-        <div className="register-container container mt-5">
-          <form onSubmit={handleSubmit} className="p-4 border rounded bg-light">
+        {path === 2 && (
+          <form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow">
             <a
               href="#"
               onClick={(e) => {
@@ -194,54 +210,46 @@ const FuelStationRegistration = () => {
             >
               Back
             </a>
-            <h2 className="text-center mb-4">Register Fuel Station</h2>
+            <h3 className="text-center mb-4">Station Login Details</h3>
 
             <div className="mb-3">
-              <label htmlFor="userName" className="form-label">Station Username:</label>
+              <label className="form-label">Username</label>
               <input
                 type="text"
-                id="userName"
                 name="userName"
-                placeholder="Enter Username"
-                value={fuelStationData.userName}
-                onChange={handleStationChange}
                 className={`form-control ${error.userName ? 'is-invalid' : ''}`}
-              />
-              {error.userName && <div className="invalid-feedback">{error.userName}</div>}
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">Password:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter Password"
-                value={fuelStationData.password}
+                placeholder="Enter Username"
                 onChange={handleStationChange}
-                className={`form-control ${error.password ? 'is-invalid' : ''}`}
               />
-              {error.password && <div className="invalid-feedback">{error.password}</div>}
+              </div>
+
+            <div className="mb-3">
+              <label className="form-label">Password</label>
+              <input
+                type="password"
+                name="password"
+                className="form-control"
+                placeholder="Enter Password"
+                onChange={handleStationChange}
+              />
             </div>
 
             <div className="mb-3">
-              <label htmlFor="rePassword" className="form-label">Confirm Password:</label>
+              <label className="form-label">Confirm Password</label>
               <input
                 type="password"
-                id="rePassword"
-                name="rePassword"
+                className="form-control"
                 placeholder="Confirm Password"
-                value={rePassword}
                 onChange={(e) => setRePassword(e.target.value)}
-                className={`form-control ${error.rePassword ? 'is-invalid' : ''}`}
               />
-              {error.rePassword && <div className="invalid-feedback">{error.rePassword}</div>}
             </div>
 
-            <button type="submit" className="btn btn-primary w-100">Submit</button>
+            <button type="submit" className="btn btn-success w-100">
+              Register
+            </button>
           </form>
-        </div>
-      )}
+        )}
+      </div>
 
       <Footer />
     </>

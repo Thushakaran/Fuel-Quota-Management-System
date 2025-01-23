@@ -28,12 +28,12 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**",
-                                        "api/fuel-station/**",
-                                        "api/owner/**",
-                                        "api/v1/**",
-                                        "api/admin/**",
-                                        "/api/transactions",
-                                        "/api/vehicles")
+                                        "/api/fuel-station/**",
+                                        "/api/owner/**",
+                                        "/api/v1/**",
+                                        "/api/admin/**",
+                                        "/api/transactions/**",
+                                        "/api/vehicles/**")
                                 .permitAll()
 //                                .requestMatchers("api/fuel-station/**").hasAuthority("station")
 //                                .requestMatchers("api/owner/**").hasAuthority("stationowner")
@@ -44,16 +44,16 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
-        }
+    }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public AuthenticationManager authenticationManager
-            (@NotNull AuthenticationConfiguration configuration) throws Exception{
+            (@NotNull AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 }
