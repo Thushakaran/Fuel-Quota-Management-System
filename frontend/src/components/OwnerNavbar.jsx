@@ -51,7 +51,7 @@ const OwnerNavbar = () => {
               aria-labelledby="profileDropdown"
             >
               <li>
-                <Link to="/profile" className="dropdown-item">
+                <Link to={`/owner/${id}/profile`} className="dropdown-item">
                   Profile
                 </Link>
               </li>

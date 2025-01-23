@@ -6,9 +6,9 @@ import { getfuelInventory, getstationname } from '../api/FuelStationServiceApi.j
 
 const StationHomePage = () => {
   const { id } = useParams();
-  const [fuels, setFuels] = useState([]);     //initialize with an empty array
-
+  const [fuels, setFuels] = useState([]);
   const [name, setName] = useState('');
+  const [lowFuelAlerts, setLowFuelAlerts] = useState([]);
 
   const fetchData = () => {
     // Fetch fuel inventory
@@ -18,13 +18,17 @@ const StationHomePage = () => {
           fuelType,
           quantity,
         }));
-        setFuels(fuelData); //set fuel data as array of objects
+        setFuels(fuelData);
+
+        // Check for low fuel quantities and update the alert state
+        const lowFuel = fuelData.filter((fuel) => fuel.quantity <= 100);
+        setLowFuelAlerts(lowFuel);
       })
       .catch((error) => {
         console.error('Error fetching fuel inventory:', error);
       });
 
-    //fetch station name
+    // Fetch station name
     getstationname(id)
       .then((response) => {
         setName(response.data);
@@ -35,19 +39,10 @@ const StationHomePage = () => {
   };
 
   useEffect(() => {
-    fetchData(); 
-    const intervalId = setInterval(fetchData, 5000); 
-    //refresh the page every 5 seconds
+    fetchData();
+    const intervalId = setInterval(fetchData, 5000); // Refresh the page every 5 seconds
     return () => clearInterval(intervalId);
   }, [id]);
-
-  useEffect(() => {
-    fuels.forEach((fuel) => {
-      if (fuel.quantity <= 100) {
-        alert(`Fuel Type: ${fuel.fuelType} is low. Consider refilling.`);
-      }
-    });
-  }, [fuels]);
 
   return (
     <>
@@ -55,8 +50,19 @@ const StationHomePage = () => {
       <header className="text-black text-left py-1 ps-4 ms-4">
         <h1 className="fw-bold">{name.toLocaleUpperCase()}</h1>
       </header>
+      <br/>
+      <br/>
       <main className="container my-2" style={{ width: '800px' }}>
         <h2 className="fw-bold mb-2">Balance Fuels</h2>
+        {lowFuelAlerts.length > 0 && (
+          <div className="alert alert-warning" role="alert">
+            <ul>
+              {lowFuelAlerts.map((fuel, index) => (
+                <li key={index}>Fuel Type: {fuel.fuelType} is low. Consider refilling.</li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div className="row g-3" style={{ margin: '10px' }}>
           {fuels.length > 0 ? (
             fuels.map((fuel, index) => {
