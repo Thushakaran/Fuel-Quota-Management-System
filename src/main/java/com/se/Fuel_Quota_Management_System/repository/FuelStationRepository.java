@@ -30,4 +30,6 @@ public interface FuelStationRepository extends JpaRepository<FuelStation, Long> 
 
     @Override
     Optional<FuelStation> findById(Long id);
+
+
 }
