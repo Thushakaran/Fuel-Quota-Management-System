@@ -105,13 +105,13 @@ function VehicleOwnerDashboard() {
               </div>
               <div className="card-body">
                 <p className="card-text">
-                  <strong>Fuel Quota:</strong> {latestTransaction?.amount || "Not Available"} liters
+                  <strong>Fuel Quota:</strong> {ownerDetails?.fuelQuota || "Not Available"} liters
                 </p>
                 <p className="card-text">
-                  <strong>Pumped Fuel:</strong> {latestTransaction?.pumpedLiters || "Not Available"} liters
+                  <strong>Pumped Fuel:</strong> {latestTransaction?.amount || "Not Available"} liters
                 </p>
                 <p className="card-text">
-                  <strong>Balance Fuel:</strong> {latestTransaction?.remainingQuota || "Not Available"} liters
+                  <strong>Balance Fuel:</strong> {ownerDetails?.remainingQuota || "Not Available"} liters
                 </p>
               </div>
             </div>

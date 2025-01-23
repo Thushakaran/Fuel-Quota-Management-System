@@ -90,6 +90,8 @@ public class VehicleServiceImp implements VehicleService {
             // Create and populate the Vehicle object
             Vehicle vehicle = new Vehicle();
             vehicle.setVehicleNumber(vehicledto.getVehicleNumber());
+            vehicle.setPhoneNumber(vehicledto.getPhoneNumber());
+            vehicle.setEmail(vehicledto.getEmail());
             vehicle.setOwnerName(dmtVehicle.getOwnerName());
             vehicle.setFuelType(dmtVehicle.getFuelType());
             vehicle.setVehicleType(dmtVehicle.getVehicleType());
