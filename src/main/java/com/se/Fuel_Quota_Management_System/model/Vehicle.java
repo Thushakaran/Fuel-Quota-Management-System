@@ -37,7 +37,9 @@ public class Vehicle {
 
     private String qrCode;
 
-    private String notificationType;
+    private String phoneNumber;
+
+    private String email;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fuel_station_id")
@@ -46,6 +48,7 @@ public class Vehicle {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "loginid", nullable = false)
     private UserLog ownerLog;
+
 //    @ManyToOne
 //    @JoinColumn(name = "vehicle_owner_id")
 //    private VehicleOwner vehicleOwner; // Link to the VehicleOwner entity

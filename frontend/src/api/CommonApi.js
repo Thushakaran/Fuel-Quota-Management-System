@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const REST_API_BASE_URL = 'http://localhost:8082';
+const REST_API_BASE_URL = 'http://localhost:8080';
 
 //Function to login
 export const login = (loginData) => {
