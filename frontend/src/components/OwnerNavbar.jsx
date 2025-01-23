@@ -1,9 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 const OwnerNavbar = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // Hook for navigation in React Router v6
+
+  // Logout function to clear token and navigate to home page
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Remove token from localStorage
+    navigate('/'); // Navigate to the home page
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
@@ -35,7 +42,7 @@ const OwnerNavbar = () => {
               >
                 <i
                   className="bi bi-person-gear"
-                  style={{ color: "#ffdd57", zoom:2}}
+                  style={{ color: "#ffdd57", zoom: 2 }}
                 ></i>
               </div>
             </button>
@@ -57,9 +64,9 @@ const OwnerNavbar = () => {
                 <hr className="dropdown-divider" />
               </li>
               <li>
-                <Link to="/logout" className="dropdown-item">
+                <button onClick={handleLogout} className="dropdown-item">
                   Logout
-                </Link>
+                </button>
               </li>
             </ul>
           </div>

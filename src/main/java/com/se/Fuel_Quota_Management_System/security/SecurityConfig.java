@@ -1,6 +1,5 @@
 package com.se.Fuel_Quota_Management_System.security;
 
-import com.se.Fuel_Quota_Management_System.security.JwtAuthenticationFilter;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,12 +27,16 @@ public class SecurityConfig {
             throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/auth/**"
-                                        ,"api/fuel-station/**"
-                                        ,"/api/owner/**")
+                        auth.requestMatchers("/api/auth/**",
+                                        "api/fuel-station/**",
+                                        "api/owner/**",
+                                        "api/v1/**",
+                                        "api/admin/**",
+                                        "/api/transactions/**",
+                                        "/api/vehicles/**")
                                 .permitAll()
-                                .requestMatchers("api/fuel-station/*").hasAuthority("station")
-                                .requestMatchers("api/owner/*").hasAuthority("stationowner")
+//                                .requestMatchers("api/fuel-station/**").hasAuthority("station")
+//                                .requestMatchers("api/owner/**").hasAuthority("stationowner")
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy

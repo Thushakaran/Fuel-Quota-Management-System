@@ -7,6 +7,7 @@ import com.se.Fuel_Quota_Management_System.service.FuelStationOwnerService;
 import com.se.Fuel_Quota_Management_System.service.FuelStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +41,9 @@ public class FuelStationOwnerController {
 
 
     // find owner name by Id
+    @PreAuthorize("hasAuthority('stationowner')")
     @GetMapping("/findname/{id}")
-    public ResponseEntity<?> getOwnerById(@PathVariable Long id) {
+    public ResponseEntity<?> getOwnerById(@PathVariable("id") Long id) {
         try {
             FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerById(id);
             return ResponseEntity.ok(owner.getName());
@@ -51,6 +53,7 @@ public class FuelStationOwnerController {
     }
 
     // find owner details by Id
+    @PreAuthorize("hasAuthority('stationowner')")
     @GetMapping("finddetail/{id}")
     public ResponseEntity<?> getDetailsbyId(@PathVariable Long id){
         try {
@@ -62,8 +65,9 @@ public class FuelStationOwnerController {
     }
 
     // find fuelstations owned by owner through owner id
+    @PreAuthorize("hasAuthority('stationowner')")
     @GetMapping("findstations/{id}")
-    public ResponseEntity<?> getStationsById(@PathVariable Long id){
+    public ResponseEntity<?> getStationsById(@PathVariable("id") Long id){
         try {
             List<FuelStation> fuelStation = fuelStationService.getByOwnerId(id);
             return ResponseEntity.ok(fuelStation);
@@ -73,6 +77,7 @@ public class FuelStationOwnerController {
     }
 
     // find owner by login Id
+    @PreAuthorize("hasAuthority('stationowner')")
     @GetMapping("/findbyloginid/{id}")
     public ResponseEntity<?> getidbyloginid(@PathVariable("id") Long loginid){
         try {

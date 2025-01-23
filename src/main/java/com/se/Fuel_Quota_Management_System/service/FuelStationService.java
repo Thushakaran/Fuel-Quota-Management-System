@@ -2,6 +2,7 @@ package com.se.Fuel_Quota_Management_System.service;
 
 
 import com.se.Fuel_Quota_Management_System.DTO.FuelStationLogDTO;
+import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
 import com.se.Fuel_Quota_Management_System.controller.AuthController;
 import com.se.Fuel_Quota_Management_System.exception.CustomException;
 import com.se.Fuel_Quota_Management_System.model.*;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -102,6 +104,18 @@ public class FuelStationService {
 
     public FuelStation findFuelStationByStationLog(Long loginid) {
         return fuelStationRepository.findFuelStationOwnerByStationLogId(loginid);
+    }
+
+    public Map<String, Double> getFuelInventory(Long stationId) {
+        Optional<FuelStation> fuelStation = fuelStationRepository.findById(stationId);
+        if (fuelStation.isPresent()) {
+            return fuelStation.get().getFuelInventory();
+        }
+        return null;  // Or throw an exception based on your needs
+    }
+
+    public Optional<FuelStation> findFuelStationById(Long stationid) {
+        return fuelStationRepository.findById(stationid);
     }
 }
 

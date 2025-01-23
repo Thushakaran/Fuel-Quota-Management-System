@@ -3,32 +3,29 @@ import { useParams, Link } from "react-router-dom";
 import OwnerNavbar from "../components/OwnerNavbar";
 import Footer from "../components/Footer";
 import "../css/Layout.css";
-import { getownername, liststations } from "../Services/FuelStationService";
+import { getownername, liststations } from "../api/FuelStationOwnerServiceApi.js";
 
 const OwnerHomePage = () => {
   const { id } = useParams();
   const [ownername, setOwnername] = useState(""); // State to track the owner's name
-  const [stations,setStations] = useState([]);
-
+  const [stations, setStations] = useState([]);
 
   useEffect(() => {
     getownername(id)
       .then((response) => {
-        setOwnername((response.data).toUpperCase()); 
+        setOwnername(response.data.toUpperCase()); 
       })
       .catch((error) => {
         console.error("Error fetching owner name:", error);
       });
 
-    
     liststations(id)
-      .then((response)=>{
+      .then((response) => {
         setStations(response.data);
       })
       .catch((error) => {
         console.error(error);
       });
-
   }, [id]); //ensures the effect runs when `id` changes
 
   return (
@@ -41,10 +38,13 @@ const OwnerHomePage = () => {
       <main className="container my-2">
         <h2 className="fw-bold mb-3">Your Stations</h2>
         <div className="d-flex flex-wrap gap-4">
-          {
-            stations.map((station) => (
+          {stations.map((station) => (
+            <Link 
+              to={`/station/${station.id}`} 
+              key={station.id} 
+              style={{ textDecoration: 'none' }} // Remove underline from links
+            >
               <div 
-                key={station.id} 
                 className="card shadow-sm d-flex flex-column align-items-center justify-content-center"
                 style={{ width: '300px', height: '100px' }}
               >
@@ -55,12 +55,14 @@ const OwnerHomePage = () => {
                   <h5 className="card-title">{station.location}</h5>
                 </div>
               </div>
-            ))
-          }
+            </Link>
+          ))}
         </div>
       </main>
 
-      <Footer />
+      <div style={{position:'absolute',bottom:'0', display:'block', width:'100%'}} >
+        <Footer/>
+      </div>
     </>
   );
 };
