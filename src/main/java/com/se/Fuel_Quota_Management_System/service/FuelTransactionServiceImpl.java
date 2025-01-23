@@ -84,9 +84,11 @@ public class FuelTransactionServiceImpl implements FuelTransactionService {
 
 
     public void DeductFuelQuotaWhenPumpFuel(Long stationId, double amount, Long vehicleId) {
-        startTransaction(vehicleId,amount,stationId);
-        fuelStationService.updateFuelInventory(stationId,amount,vehicleId);
-        vehicleService.updateVehicleFuelQuota(vehicleId,amount);
+            fuelStationService.updateFuelInventory(stationId,amount,vehicleId);
+            vehicleService.updateVehicleFuelQuota(vehicleId,amount);
+            startTransaction(vehicleId,amount,stationId);
+
+
     }
 
 
