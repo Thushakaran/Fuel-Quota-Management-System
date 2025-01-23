@@ -36,6 +36,9 @@ public class FuelStationService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private VehicleRepository vehicleRepository;
+
     @Transactional
     public FuelStation registerFuelStation(FuelStationLogDTO request) throws Exception {
         // Check registration number in the CPST repository or already rgistered
@@ -162,6 +165,44 @@ public class FuelStationService {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
+
+
+
+
+//to update Fuel Inventory
+    @Transactional
+    public void updateFuelInventory(Long stationId, double amount, Long vehicleId) {
+
+        String vehicleFuelType = String.valueOf(vehicleRepository.findFuelTypeByVehicleId(vehicleId));
+        // Retrieve the fuel station entity by station ID
+        FuelStation fuelStation = fuelStationRepository.findById(stationId)
+                .orElseThrow(() -> new RuntimeException("Fuel Station not found with ID: " + stationId));
+
+        // Check if the fuelInventory map contains the vehicle's fuel type
+        Map<String, Double> fuelInventory = fuelStation.getFuelInventory();
+        if (!fuelInventory.containsKey(vehicleFuelType)) {
+            throw new RuntimeException("Fuel type " + vehicleFuelType + " is not available at this station.");
+        }
+
+        // Get the available fuel for the specified fuel type
+        double availableFuel = fuelInventory.get(vehicleFuelType);
+
+        // Check if the station has enough fuel to pump
+        if (availableFuel < amount) {
+            throw new RuntimeException("Insufficient fuel available for type " + vehicleFuelType + ". Available: " + availableFuel);
+        }
+
+        // Deduct the pumped amount from the available fuel
+        double remainingFuel = availableFuel - amount;
+        fuelInventory.put(vehicleFuelType, remainingFuel);
+
+        // Save the updated fuel station entity back to the repository
+        fuelStation.setFuelInventory(fuelInventory);
+        fuelStationRepository.save(fuelStation);
+    }
+
+
+
 }
 
 

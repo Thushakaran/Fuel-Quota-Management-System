@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface FuelTransactionRepository extends JpaRepository<FuelTransaction, Long> {
     List<FuelTransaction> findByVehicleId(Long vehicleId);
-
 }

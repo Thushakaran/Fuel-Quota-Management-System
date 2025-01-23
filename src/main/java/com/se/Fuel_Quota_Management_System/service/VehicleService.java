@@ -5,6 +5,8 @@ import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 
 import java.util.List;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface VehicleService {
@@ -17,6 +19,15 @@ public interface VehicleService {
     double calculateFuelQuota(String vehicleType);
 
     String generateQrCode(String vehicleNumber, double fuelQuota);
+
+
+
+    String getFuelTypeByVehicleId(Long vehicleId);
+
+    public void updateVehicleFuelQuota(Long vehicleId,double amount);
+
+
+
 
     Vehicle findVehicleByOwnerLog(Long loginid);
 
