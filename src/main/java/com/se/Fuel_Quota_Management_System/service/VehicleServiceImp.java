@@ -4,15 +4,20 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.se.Fuel_Quota_Management_System.exception.InsufficientQuotaException;
 import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
 import com.se.Fuel_Quota_Management_System.DTO.VehicleOwnerLogDTO;
 import com.se.Fuel_Quota_Management_System.controller.AuthController;
 import com.se.Fuel_Quota_Management_System.exception.VehicleAlreadyRegisteredException;
 import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
 import com.se.Fuel_Quota_Management_System.model.*;
+import com.se.Fuel_Quota_Management_System.model.DmtVehicle;
+//import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
+import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.se.Fuel_Quota_Management_System.repository.DmtVehicleRepository;
 import com.se.Fuel_Quota_Management_System.repository.FuelTransactionRepository;
 import com.se.Fuel_Quota_Management_System.repository.RoleRepository;
+//import com.se.Fuel_Quota_Management_System.repository.FuelTransactionRepository;
 import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +40,9 @@ public class VehicleServiceImp implements VehicleService {
 
     @Autowired
     private DmtVehicleRepository dmtVehicleRepository;
+
+//    @Autowired
+//    private FuelTransactionRepository fuelTransactionRepository;
 
     @Autowired
     private AuthController authController;
@@ -225,12 +233,42 @@ public class VehicleServiceImp implements VehicleService {
         existingVehicle.setVehicleType(vehicle.getVehicleType());
         existingVehicle.setChassisNumber(vehicle.getChassisNumber());
         existingVehicle.setQrCode(vehicle.getQrCode());
-//        existingVehicle.setNotificationType(vehicle.getNotificationType());
+   //     existingVehicle.setNotificationType(vehicle.getNotificationType());
         // Update additional fields as needed
 
         // Save the updated vehicle
         return vehicleRepository.save(existingVehicle);
     }
+
+
+    @Override
+    public String getFuelTypeByVehicleId(Long vehicleId) {
+        return vehicleRepository.findFuelTypeByVehicleId(vehicleId)
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with id: " + vehicleId));
+    }
+
+
+    //To calculate and save remaining quota for the vehicle
+    @Override
+    @Transactional
+    public void updateVehicleFuelQuota(Long vehicleId, double amount) {
+
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found"));
+        if (amount>0 && vehicle.getRemainingQuota() >= amount) {
+            // Proceed with transaction
+            vehicle.setRemainingQuota((vehicle.getRemainingQuota() - amount));
+            vehicleRepository.save(vehicle);
+
+
+        } else {
+            throw new InsufficientQuotaException("Quota exceeded!");
+        }
+    }
+
+
+
+
 
 
 }
