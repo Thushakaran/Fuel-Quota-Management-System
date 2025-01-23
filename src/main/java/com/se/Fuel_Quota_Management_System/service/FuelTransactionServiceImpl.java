@@ -1,114 +1,102 @@
 package com.se.Fuel_Quota_Management_System.service;
 
-import com.google.zxing.*;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.common.HybridBinarizer;
+
 import com.se.Fuel_Quota_Management_System.exception.InsufficientQuotaException;
-import com.se.Fuel_Quota_Management_System.exception.ResourceNotFoundException;
 import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
-import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
-import com.se.Fuel_Quota_Management_System.model.Quota;
-import com.se.Fuel_Quota_Management_System.model.Vehicle;
-import com.se.Fuel_Quota_Management_System.repository.FuelTransactionRepository;
-import com.se.Fuel_Quota_Management_System.repository.QuotaRepository;
-import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
+import com.se.Fuel_Quota_Management_System.model.*;
+import com.se.Fuel_Quota_Management_System.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Service
 public class FuelTransactionServiceImpl implements FuelTransactionService {
-    @Autowired
-    public FuelTransactionRepository fuelTransactionRepository;
 
     @Autowired
-    public QuotaRepository quotaRepository;
-
+    private FuelTransactionRepository fuelTransactionRepository;
 
     @Autowired
     private VehicleRepository vehicleRepository;
 
+    @Autowired
+    private FuelStationRepository fuelStationRepository;
+
+    private FuelStationService fuelStationService;
 
 
-    @Override
-    public List<FuelTransaction> getAllTransaction() {
-        return fuelTransactionRepository.findAll();
-    }
+    private VehicleService vehicleService;
 
-    @Override
-    public String scanVehicleQR(String qrCodeFilePath) {
-        try {
-            // Read the QR code image file
-            BufferedImage bufferedImage = ImageIO.read(new File(qrCodeFilePath));
-            LuminanceSource source = new BufferedImageLuminanceSource(bufferedImage);
-            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
-            // Decode the QR code
-            Result result = new MultiFormatReader().decode(bitmap);
 
-            // Return the decoded text (e.g., vehicle ID)
-            return result.getText();
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading QR code image file", e);
-        } catch (NotFoundException e) {
-            throw new RuntimeException("No QR code found in the image", e);
-        }
-    }
 
-    @Override
-    public double fetchQuotaByVehicleId(Long vehicleId) {
-        // Find vehicle by ID
-        Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with ID: " + vehicleId));
 
-        // Return the fuel quota for the vehicle
-        return vehicle.getFuelQuota();
-    }
-
+    // Method to initiate a new fuel transaction
     @Override
     @Transactional
-    public void pumpFuel(Long stationId, Long vehicleId, double amount) {
+    public FuelTransaction startTransaction(Long vehicleId, double amount, Long stationId) {
+
+        // Check if the amount in liters is valid
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than zero.");
+        }
+
+        // Retrieve the vehicle entity by its ID
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found"));
-        if (vehicle.getRemainingQuota() >= amount) {
-            // Proceed with transaction
-            vehicle.setRemainingQuota((vehicle.getRemainingQuota() - amount));
-           vehicleRepository.save(vehicle);
+                .orElseThrow(() -> new RuntimeException("Vehicle not found with ID: " + vehicleId));
 
-            //Record the fuel transaction for the station and vehicle
-            FuelTransaction fuelTransaction = new FuelTransaction(stationId, vehicleId, amount, LocalDateTime.now());
-            fuelTransactionRepository.save(fuelTransaction);
+        // Retrieve the fuel station entity by its ID
+        FuelStation station = fuelStationRepository.findById(stationId)
+                .orElseThrow(() -> new RuntimeException("Fuel Station not found with ID: " + stationId));
 
-        } else {
-            throw new InsufficientQuotaException("Quota exceeded!");
-        }
+        // Create a new FuelTransaction object
+        FuelTransaction fuelTransaction = new FuelTransaction();
+        fuelTransaction.setVehicle(vehicle);
+        fuelTransaction.setStation(station);
+        fuelTransaction.setTransactionDate(LocalDateTime.now());
+        fuelTransaction.setAmount(amount);
 
+        return fuelTransactionRepository.save(fuelTransaction);
 
     }
 
 
 
 
-    // Reset every Monday
-    @Scheduled(cron = "0 0 0 * * MON")
-    public void resetQuotas() {
-        List<Quota> quotas = quotaRepository.findAll();
-        for (Quota quota : quotas) {
-            quota.setRemainingQuota(quota.getTotalQuota());
-            quotaRepository.save(quota);
+
+
+    // Method to fetch details of a specific transaction
+    @Override
+    @Transactional
+    public List<FuelTransaction> getTransactionsByVehicleId(Long vehicleId) {
+        List<FuelTransaction> transactions = fuelTransactionRepository.findByVehicleId(vehicleId);
+
+        if (transactions.isEmpty()) {
+            throw new IllegalArgumentException("No transactions found for vehicle with id: " + vehicleId);
         }
+
+        return transactions;
     }
+
+
+    public void DeductFuelQuotaWhenPumpFuel(Long stationId, double amount, Long vehicleId) {
+        startTransaction(vehicleId,amount,stationId);
+        fuelStationService.updateFuelInventory(stationId,amount,vehicleId);
+        vehicleService.updateVehicleFuelQuota(vehicleId,amount);
+    }
+
 
 }
+
+
+
+
+
+
 
 
 
