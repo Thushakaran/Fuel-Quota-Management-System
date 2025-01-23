@@ -21,7 +21,7 @@ const AdminDashboard = () => {
           vehicles: response.data.totalVehicles,
           stations: response.data.totalStations,
           fuelDistributed: response.data.totalFuelDistributed,
-          transactions: response.data.activeTransactions,
+          transactions: response.data.totalTransactions,
         });
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
