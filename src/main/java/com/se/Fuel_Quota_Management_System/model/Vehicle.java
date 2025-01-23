@@ -41,6 +41,10 @@ public class Vehicle {
 
     private String email;
 
+
+    private double remainingQuota;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fuel_station_id")
     private FuelStation fuelStation;
@@ -52,5 +56,6 @@ public class Vehicle {
 //    @ManyToOne
 //    @JoinColumn(name = "vehicle_owner_id")
 //    private VehicleOwner vehicleOwner; // Link to the VehicleOwner entity
+
 
 }
