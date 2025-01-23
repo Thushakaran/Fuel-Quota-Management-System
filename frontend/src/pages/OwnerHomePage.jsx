@@ -7,13 +7,13 @@ import { getownername, liststations } from "../api/FuelStationOwnerServiceApi.js
 
 const OwnerHomePage = () => {
   const { id } = useParams();
-  const [ownername, setOwnername] = useState(""); // State to track the owner's name
+  const [ownername, setOwnername] = useState("");
   const [stations, setStations] = useState([]);
 
   useEffect(() => {
     getownername(id)
       .then((response) => {
-        setOwnername(response.data.toUpperCase()); 
+        setOwnername(response.data.toUpperCase());
       })
       .catch((error) => {
         console.error("Error fetching owner name:", error);
@@ -26,43 +26,67 @@ const OwnerHomePage = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, [id]); //ensures the effect runs when `id` changes
+  }, [id]);
 
   return (
     <>
       <OwnerNavbar />
-      <header className="text-black text-left py-1 ps-4 ms-4">
-        <h1 className="fw-bold">Hi, {ownername}! 👋</h1>
+
+      {/* Hero Section */}
+      <header className="bg-primary text-white text-center py-5">
+        <h1 className="fw-bold">Welcome, {ownername}! 👋</h1>
+        <p className="fs-5">Here are the fuel stations you manage.</p>
+        <div className="mt-3">
+          <span className="badge bg-light text-dark fs-6">
+            Total Stations: {stations.length}
+          </span>
+        </div>
       </header>
 
-      <main className="container my-2">
-        <h2 className="fw-bold mb-3">Your Stations</h2>
-        <div className="d-flex flex-wrap gap-4">
-          {stations.map((station) => (
-            <Link 
-              to={`/station/${station.id}`} 
-              key={station.id} 
-              style={{ textDecoration: 'none' }} // Remove underline from links
-            >
-              <div 
-                className="card shadow-sm d-flex flex-column align-items-center justify-content-center"
-                style={{ width: '300px', height: '100px' }}
-              >
-                <div className="bg-primary text-white fw-bold px-3 py-1 rounded-pill w-100 text-center">
-                  {station.stationName}
-                </div>
-                <div className="card-body text-center">
-                  <h5 className="card-title">{station.location}</h5>
-                </div>
+      {/* Main Content */}
+      <main className="container my-4 homepage">
+        {/* Station Cards */}
+        <h2 className="fw-bold mb-4">Your Stations</h2>
+        <div className="row g-4">
+          {stations.length > 0 ? (
+            stations.map((station) => (
+              <div className="col-md-6 col-lg-4" key={station.id}>
+                <Link
+                  to={`/station/${station.id}`}
+                  className="text-decoration-none"
+                >
+                  <div
+                    className="card shadow-sm h-100 border-0"
+                    style={{ transition: "transform 0.3s" }}
+                    onMouseEnter={(e) => e.currentTarget.classList.add("shadow-lg")}
+                    onMouseLeave={(e) => e.currentTarget.classList.remove("shadow-lg")}
+                  >
+                    <div
+                      className="card-header text-white fw-bold text-center"
+                      style={{ backgroundColor: "#343a40" }}
+                    >
+                      <i className="bi bi-fuel-pump me-2"></i>
+                      {station.stationName.toUpperCase()}
+                    </div>
+                    <div className="card-body text-center">
+                      <p className="text-muted mb-2">
+                        <i className="bi bi-geo-alt"></i> {station.location}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
               </div>
-            </Link>
-          ))}
+            ))
+          ) : (
+            <p className="text-muted">No stations found.</p>
+          )}
         </div>
       </main>
 
-      <div style={{position:'absolute',bottom:'0', display:'block', width:'100%'}} >
-        <Footer/>
-      </div>
+      {/* Footer */}
+      <footer className="bg-light py-3 mt-auto" style={{position:'relative',bottom:'0', display:'block', width:'100%'}}>
+        <Footer />
+      </footer>
     </>
   );
 };
