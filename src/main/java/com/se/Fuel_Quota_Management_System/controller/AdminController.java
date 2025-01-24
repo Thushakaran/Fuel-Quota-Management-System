@@ -3,6 +3,8 @@ package com.se.Fuel_Quota_Management_System.controller;
 //import com.se.Fuel_Quota_Management_System.model.Admin;
 
 import com.se.Fuel_Quota_Management_System.DTO.DashboardData;
+import com.se.Fuel_Quota_Management_System.DTO.FuelStationOwnerLogDTO;
+import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
 import com.se.Fuel_Quota_Management_System.model.FuelStation;
 
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
@@ -10,10 +12,12 @@ import com.se.Fuel_Quota_Management_System.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -157,6 +161,15 @@ public class AdminController {
         return adminService.getDashboardData();
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> registerAdmin(@Validated @RequestBody RegisterRequest registerRequest){
+        try {
+            ResponseEntity<?> registerAdmin = adminService.registerAdmin(registerRequest);
+            return ResponseEntity.ok(registerAdmin.getBody());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
+    }
 }
 
 
