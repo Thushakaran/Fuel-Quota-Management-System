@@ -19,6 +19,8 @@ public class VehicleOwnerLogDTO {
     private String ownerName;
     private String ownerIcNumber;
     private String fuelType;
+    private String phoneNumber;
+    private String email;
 
 
 }
