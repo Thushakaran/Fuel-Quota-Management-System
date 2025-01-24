@@ -63,7 +63,6 @@ public class FuelStationOwnerService {
                 return registerResponse; // Forward error response from the register method
             }
 
-            UserLog registeredLog = (UserLog) registerResponse.getBody();
 
             // Create and save FuelStationOwner
             FuelStationOwner owner = new FuelStationOwner();
@@ -71,7 +70,8 @@ public class FuelStationOwnerService {
             owner.setNicNo(fuelStationOwnerlog.getNicNo());
             owner.setPhoneNumber(fuelStationOwnerlog.getPhoneNumber());
             owner.setEmail(fuelStationOwnerlog.getEmail());
-            owner.setOwnerLog(registeredLog);
+            owner.setAddress(fuelStationOwnerlog.getAddress());
+            owner.setOwnerLog((UserLog) registerResponse.getBody());
 
             fuelStationOwnerRepository.save(owner);
 
@@ -80,11 +80,6 @@ public class FuelStationOwnerService {
             return ResponseEntity.internalServerError().body(Map.of("message", "An error occurred", "error", e.getMessage()));
         }
     }
-
-
-//    public FuelStationOwner findAllByNicOrEmail(String nicNo, String email) {
-//        return fuelStationOwnerRepository.findByNicNoOrEmail(nicNo,email);
-//    }
 
 
     public FuelStationOwner findFuelStationOwnerById(Long Id) {
