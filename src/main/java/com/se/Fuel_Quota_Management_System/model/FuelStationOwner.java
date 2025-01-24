@@ -23,6 +23,8 @@ public class FuelStationOwner {
 
     private String email;
 
+    private String address;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "loginid", nullable = false)
     @JsonIgnore

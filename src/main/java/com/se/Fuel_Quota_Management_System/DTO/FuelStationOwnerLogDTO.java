@@ -18,5 +18,6 @@ public class FuelStationOwnerLogDTO {
     private String nicNo;
     private String phoneNumber;
     private String email;
+    private String address;
 
 }

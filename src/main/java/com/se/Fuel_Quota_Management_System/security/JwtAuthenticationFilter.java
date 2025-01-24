@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,8 +20,10 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    @Autowired
     JwtUtil jwtUtil;
 
+    @Autowired
     CustomUserDetailService customUserDetailService;
 
     @Override
@@ -29,7 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
              HttpServletResponse response,
              FilterChain filterChain) throws ServletException, IOException
     {
-        String token = request.getHeader("Authorization");
+        String token;
+        token = request.getHeader("Authorization");
 
         if( token != null && token.startsWith("Bearer ")){
             token = token.substring(7);
@@ -40,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             {
                 UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
 
-                if(jwtUtil.isTokenValid(token))
+                if(JwtUtil.isTokenValid(token))
                 {
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());

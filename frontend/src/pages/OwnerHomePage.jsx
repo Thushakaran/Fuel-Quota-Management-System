@@ -84,7 +84,7 @@ const OwnerHomePage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-light py-3 mt-auto" style={{position:'relative',bottom:'0', display:'block', width:'100%'}}>
+      <footer className="bg-light py-3 mt-auto" style={{position:'absolute',bottom:'0', width:'100%'}}>
         <Footer />
       </footer>
     </>

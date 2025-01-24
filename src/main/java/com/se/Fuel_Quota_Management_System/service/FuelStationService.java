@@ -51,6 +51,9 @@ public class FuelStationService {
         FuelStationOwner owner = ownerRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new CustomException("Owner not found with ID: " + request.getOwnerId()));
 
+        //check details are same
+        checkDetails(request.getStationName(),request.getRegistrationNumber(),request.getLocation());
+
         // Create FuelStation entity
         FuelStation fuelStation = new FuelStation();
         fuelStation.setStationName(request.getStationName());
@@ -81,6 +84,14 @@ public class FuelStationService {
 
         // Save to database
         return registeredfuelStation;
+    }
+
+    private void checkDetails(String stationName, String registrationNumber, String location) {
+        CPST_Stations cpstStation = cpstStationsRepository.findByRegistrationNumber(registrationNumber);
+        if((!stationName.equalsIgnoreCase(cpstStation.getStationName())) ||
+                !location.equalsIgnoreCase(cpstStation.getLocation())){
+            throw new CustomException("Details do not match");
+        }
     }
 
     private void validateRegistrationNumber(String registrationNumber) {
@@ -115,7 +126,7 @@ public class FuelStationService {
         if (fuelStation.isPresent()) {
             return fuelStation.get().getFuelInventory();
         }
-        return null;  // Or throw an exception based on your needs
+        throw new CustomException("Fuel Inventory not Found");
     }
 
     public Optional<FuelStation> findFuelStationById(Long stationid) {
@@ -124,41 +135,33 @@ public class FuelStationService {
 
     public ResponseEntity<?> addFuels(Long id, Map<String, Double> fuelDetails) {
         try {
-            //find the fuel station by its ID
+            //find fuel station by station ID
             FuelStation fuelStation = fuelStationRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Fuel Station not found"));
 
-            // validate the fuel quantities
-            for (Map.Entry<String, Double> entry : fuelDetails.entrySet()) {
-                String fuelType = entry.getKey();
-                Double quantityToAdd = entry.getValue();
+            //validate the fuel quantity
+            String fuelType = fuelDetails.keySet().iterator().next();
+            Double quantityToAdd = fuelDetails.get(fuelType);
 
-                if (quantityToAdd == null || quantityToAdd < 0) {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Invalid quantity for fuel type: " + fuelType));
-                }
+            if (quantityToAdd == null || quantityToAdd < 0) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Invalid quantity for fuel type: " + fuelType));
             }
 
-            //udate the fuel inventory for each fuel type in the provided fuelDetails
-            for (Map.Entry<String, Double> entry : fuelDetails.entrySet()) {
-                String fuelType = entry.getKey();
-                Double quantityToAdd = entry.getValue();
-
-                //check if the fuel type exists in the inventory
-                Map<String, Double> inventory = fuelStation.getFuelInventory();
-                if (inventory.containsKey(fuelType)) {
-                    //add the quantity to the existing one
-                    Double currentQuantity = inventory.get(fuelType);
-                    inventory.put(fuelType, currentQuantity + quantityToAdd);
-                } else {
-                    //if fuel type doesn't exist, return an error message
-                    return ResponseEntity.badRequest().body(Map.of("message", "Fuel type " + fuelType + " not found in inventory"));
-                }
+            //update the fuel for the provided type
+            Map<String, Double> inventory = fuelStation.getFuelInventory();
+            if (inventory.containsKey(fuelType)) {
+                //add the quantity
+                Double currentQuantity = inventory.get(fuelType);
+                inventory.put(fuelType, currentQuantity + quantityToAdd);
+            } else {
+                //if fuel type doesn't exist, return error
+                return ResponseEntity.badRequest().body(Map.of("message", "Fuel type " + fuelType + " not found in inventory"));
             }
 
             //save the updated fuel station
             fuelStationRepository.save(fuelStation);
 
-            // return a success response
+            //return
             return ResponseEntity.ok(Map.of("message", "Fuel added successfully"));
 
         } catch (Exception e) {
@@ -169,7 +172,7 @@ public class FuelStationService {
 
 
 
-//to update Fuel Inventory
+    //to update Fuel Inventory
     @Transactional
     public void updateFuelInventory(Long stationId, double amount, Long vehicleId) {
 

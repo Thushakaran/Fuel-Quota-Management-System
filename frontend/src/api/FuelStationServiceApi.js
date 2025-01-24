@@ -12,7 +12,7 @@ export const fuelstationregister = (fuelStationData) => {
 // //function to get ownerid by login id
 export const getstationid = (loginid) => {
   const token = localStorage.getItem("token");
-  return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findbyloginid/${loginid}`, {
+  return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findByLoginId/${loginid}`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -24,7 +24,7 @@ export const getstationid = (loginid) => {
 // function to get station name 
 export const getstationname = (stationId) => {
   const token = localStorage.getItem("token");
-  return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findname/${stationId}`, {
+  return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findName/${stationId}`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -35,7 +35,7 @@ export const getstationname = (stationId) => {
 //function to get fuelTypes
 export const getfuelInventory = (stationId) => {
   const token = localStorage.getItem("token");
-  return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findfuels/${stationId}`, {
+  return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findFuels/${stationId}`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,

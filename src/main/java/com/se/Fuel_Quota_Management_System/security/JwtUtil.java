@@ -7,6 +7,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +22,9 @@ public class JwtUtil {
     //secret key
     private static final SecretKey secretkey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-    //expiration date
-    private final int jwtExpirationMilliSecond = 86400000;
+    private final UserLogRepository userlogRepository;
 
-    private UserLogRepository userlogRepository;
-
+    @Autowired
     public JwtUtil(UserLogRepository userlogRepository) {
         this.userlogRepository = userlogRepository;
     }
@@ -35,6 +34,8 @@ public class JwtUtil {
         Optional<UserLog> userOpt = userlogRepository.findByUserName(username);
         if (userOpt.isPresent()) {
             Role role = userOpt.get().getRole();
+            //expiration date
+            int jwtExpirationMilliSecond = 86400000;
             return Jwts.builder()
                     .setSubject(username)
                     .claim("role", role.getName())
@@ -60,17 +61,16 @@ public class JwtUtil {
 
     //extract Role
     public String extractRole(String token) {
-        String rolesString = Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(secretkey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .get("role", String.class);
-        return rolesString;
     }
 
     //JWT token validation
-    public boolean isTokenValid(String token) {
+    public static  boolean isTokenValid(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secretkey)
