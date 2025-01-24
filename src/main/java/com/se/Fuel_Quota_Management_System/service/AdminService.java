@@ -1,20 +1,21 @@
 package com.se.Fuel_Quota_Management_System.service;
 
 import com.se.Fuel_Quota_Management_System.DTO.DashboardData;
+import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
+import com.se.Fuel_Quota_Management_System.controller.AuthController;
 import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
 
 import com.se.Fuel_Quota_Management_System.exception.FuelStationNotFoundException;
-import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
+import com.se.Fuel_Quota_Management_System.model.*;
 
-import com.se.Fuel_Quota_Management_System.model.FuelStation;
-import com.se.Fuel_Quota_Management_System.model.Vehicle;
-import com.se.Fuel_Quota_Management_System.repository.FuelStationRepository;
+import com.se.Fuel_Quota_Management_System.repository.*;
 
-import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
@@ -27,6 +28,17 @@ public class AdminService {
     @Autowired
     private FuelStationRepository fuelStationRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private AuthController authController;
+
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private UserLogRepository userLogRepository;
 
     public List<Vehicle> getAllVehicles() {
         return vehicleRepository.findAll();
@@ -154,7 +166,22 @@ public class AdminService {
 
         return data;
     }
+
+    public ResponseEntity<?> registerAdmin(RegisterRequest registerRequest) {
+
+        ResponseEntity<?> registerResponse = authController.register(registerRequest);
+        if (!registerResponse.getStatusCode().is2xxSuccessful()) {
+            return registerResponse;
+        }
+        UserLog adminLog = (UserLog) registerResponse.getBody();
+
+        userLogRepository.save(adminLog);
+
+        return ResponseEntity.ok(adminLog.getId());
+    }
+
 }
+
 
 
 
