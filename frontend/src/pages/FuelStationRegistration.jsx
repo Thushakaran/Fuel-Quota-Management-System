@@ -48,13 +48,30 @@ const FuelStationRegistration = () => {
   };
 
   const validateStep1 = () => {
+    const customRegex = /^FSS-\d{2}-\d{7}$/; // Correct regex declaration
     const errors = {};
-    if (!fuelStationData.stationName) errors.stationName = 'Station name is required.';
-    if (!fuelStationData.registrationNumber) errors.registrationNumber = 'Registration number is required.';
-    if (!fuelStationData.location) errors.location = 'Location is required.';
-    if (Object.keys(fuelStationData.fuelTypes).length === 0) errors.fuelTypes = 'At least one fuel type must be selected.';
+
+    if (!fuelStationData.stationName) {
+        errors.stationName = 'Station name is required.';
+    }
+
+    if (!fuelStationData.registrationNumber) {
+        errors.registrationNumber = 'Registration number is required.';
+    } else if (!customRegex.test(fuelStationData.registrationNumber)) {
+        errors.registrationNumber = 'Registration number must be in the format of "FSS-XX-XXXXXXX".';
+    }
+
+    if (!fuelStationData.location) {
+        errors.location = 'Location is required.';
+    }
+
+    if (Object.keys(fuelStationData.fuelTypes).length === 0) {
+        errors.fuelTypes = 'At least one fuel type must be selected.';
+    }
+
     return errors;
-  };
+};
+
 
   const validateStep2 = () => {
     const errors = {};
@@ -66,13 +83,16 @@ const FuelStationRegistration = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  
     if (path === 1) {
+      setError({}); // Clear previous errors
       const errors = validateStep1();
+      console.log('Validation Errors:', errors); // Debugging
       if (Object.keys(errors).length > 0) {
         setError(errors);
+        console.log(errors)
         return;
       }
-      setError({});
       setPath(2);
     } else {
       const errors = validateStep2();
@@ -82,13 +102,18 @@ const FuelStationRegistration = () => {
       }
       setError({});
       fuelstationregister({ ...fuelStationData, ownerId: id })
-        .then(() => {
+        .then((response) => {
+          const stationId = response.data
           alert('Fuel station registered successfully!');
-          navigate(`/station/${id}`);
+          navigate(`/station/${stationId}`);
         })
-        .catch(() => alert('Registration failed. Try again.'));
+        .catch((error) => {
+          console.error('Registration Error:', error);
+          alert('Registration failed. Try again.');
+        });
     }
   };
+  
 
   return (
     <>
@@ -116,6 +141,7 @@ const FuelStationRegistration = () => {
               <input
                 type="text"
                 name="stationName"
+                value={fuelStationData.stationName}
                 className={`form-control ${error.stationName ? 'is-invalid' : ''}`}
                 placeholder="Enter Station Name"
                 onChange={handleStationChange}
@@ -128,6 +154,7 @@ const FuelStationRegistration = () => {
               <input
                 type="text"
                 name="registrationNumber"
+                value={fuelStationData.registrationNumber}
                 className={`form-control ${error.registrationNumber ? 'is-invalid' : ''}`}
                 placeholder="Enter Registration Number"
                 onChange={handleStationChange}
@@ -141,6 +168,7 @@ const FuelStationRegistration = () => {
                 type="text"
                 name="location"
                 className={`form-control ${error.location ? 'is-invalid' : ''}`}
+                value={fuelStationData.location}
                 placeholder="Enter Location"
                 onChange={handleStationChange}
               />
@@ -218,20 +246,24 @@ const FuelStationRegistration = () => {
                 type="text"
                 name="userName"
                 className={`form-control ${error.userName ? 'is-invalid' : ''}`}
+                value={fuelStationData.userName}
                 placeholder="Enter Username"
                 onChange={handleStationChange}
               />
-              </div>
+              {error.userName && <div className="text-danger">{error.userName}</div>}
+            </div>
 
             <div className="mb-3">
               <label className="form-label">Password</label>
               <input
                 type="password"
                 name="password"
+                value={fuelStationData.password}
                 className="form-control"
                 placeholder="Enter Password"
                 onChange={handleStationChange}
               />
+              {error.password && <div className="text-danger">{error.password}</div>}
             </div>
 
             <div className="mb-3">
@@ -239,9 +271,11 @@ const FuelStationRegistration = () => {
               <input
                 type="password"
                 className="form-control"
+                value={rePassword}
                 placeholder="Confirm Password"
                 onChange={(e) => setRePassword(e.target.value)}
               />
+              {error.rePassword && <div className="text-danger">{error.rePassword}</div>}
             </div>
 
             <button type="submit" className="btn btn-success w-100">

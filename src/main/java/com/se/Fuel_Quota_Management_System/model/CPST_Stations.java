@@ -21,6 +21,6 @@ public class CPST_Stations {
 
     private String location;
 
-    private String ownerNicNo;
+
 }
 

@@ -17,6 +17,7 @@ public class RoleSeeder implements CommandLineRunner {
             roleRepository.save(new Role(null, "admin"));
             roleRepository.save(new Role(null, "station"));
             roleRepository.save(new Role(null, "stationowner"));
+            roleRepository.save(new Role(null, "vehicle"));
         }
     }
 }

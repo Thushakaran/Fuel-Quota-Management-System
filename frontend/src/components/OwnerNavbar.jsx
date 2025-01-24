@@ -6,10 +6,16 @@ const OwnerNavbar = () => {
   const { id } = useParams();
   const navigate = useNavigate(); // Hook for navigation in React Router v6
 
-  // Logout function to clear token and navigate to home page
+  //clear token and navigate to home page
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove token from localStorage
-    navigate('/'); // Navigate to the home page
+    const userConfirmed = window.confirm("Are you sure you want to log out?");
+    
+    if (userConfirmed) {
+      localStorage.removeItem('token'); //remove token from localStorage
+      navigate('/'); //navigate to the home page
+    } else {
+      console.log("Logout canceled");
+    }
   };
 
   return (
