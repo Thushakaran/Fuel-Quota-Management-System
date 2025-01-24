@@ -1,9 +1,12 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
+import com.se.Fuel_Quota_Management_System.DTO.FuelQuotaUpdateRequest;
 import com.se.Fuel_Quota_Management_System.exception.InsufficientQuotaException;
 import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
 import com.se.Fuel_Quota_Management_System.service.FuelTransactionServiceImpl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api/transactions")
 public class FuelTransactionController {
 
-
+    @Autowired
    private FuelTransactionServiceImpl fuelTransactionService;
 
 
@@ -49,19 +52,35 @@ public class FuelTransactionController {
 
 
 
+//    @PostMapping("/updateFuelQuota")
+//    public ResponseEntity<String> updateFuelInventory(@RequestParam Long stationId,
+//                                                      @RequestParam Long vehicleId,
+//                                                      @RequestParam double amount)
+//    {
+//        try {
+//            // Call the service method to update the fuel inventory
+//            fuelTransactionService.DeductFuelQuotaWhenPumpFuel(stationId, amount, vehicleId);
+//            return ResponseEntity.ok("Fuel  updated successfully.");
+//        } catch (Exception e) {
+//            // Handle any exceptions and return an error response
+//            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+//        }
+//    }
+
+
     @PostMapping("/updateFuelQuota")
-    public ResponseEntity<String> updateFuelInventory(@RequestParam Long stationId,
-                                                      @RequestParam Long vehicleId,
-                                                      @RequestParam double amount)
-    {
+    public ResponseEntity<String> updateFuelInventory(@RequestBody FuelQuotaUpdateRequest request) {
         try {
             // Call the service method to update the fuel inventory
-            fuelTransactionService.DeductFuelQuotaWhenPumpFuel(stationId, amount, vehicleId);
-            return ResponseEntity.ok("Fuel  updated successfully.");
+            fuelTransactionService.DeductFuelQuotaWhenPumpFuel(request.getStationId(), request.getAmount(), request.getVehicleId());
+            return ResponseEntity.ok("Fuel updated successfully.");
         } catch (Exception e) {
             // Handle any exceptions and return an error response
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+
+
 
 }

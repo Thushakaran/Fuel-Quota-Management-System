@@ -26,9 +26,11 @@ public class FuelTransactionServiceImpl implements FuelTransactionService {
     @Autowired
     private FuelStationRepository fuelStationRepository;
 
+    @Autowired
     private FuelStationService fuelStationService;
 
 
+    @Autowired
     private VehicleService vehicleService;
 
 
