@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -47,17 +46,17 @@ public class FuelStationController {
         }
     }
 
-    // Find is any Fuel station registered on this RegisteredNumber
+    //find is any Fuel station registered on this RegisteredNumber
     @PreAuthorize("hasAuthority('station')")
-    @GetMapping("{regnum}")
+    @GetMapping("{regNum}")
     public boolean existsByRegisNumById(@PathVariable("regnum") String registrationNumber) {
         return fuelStationService.existsByRegistrationNumber(registrationNumber);
     }
 
-    // find station by login Id
+    // find station by login id
     @PreAuthorize("hasAuthority('station')")
-    @GetMapping("/findbyloginid/{id}")
-    public ResponseEntity<?> getidbyloginid(@PathVariable("id") Long loginid){
+    @GetMapping("/findByLoginId/{id}")
+    public ResponseEntity<?> getIdByLoginId(@PathVariable("id") Long loginid){
         try {
             FuelStation station = fuelStationService.findFuelStationByStationLog(loginid);
             return ResponseEntity.ok(station.getId());
@@ -67,7 +66,7 @@ public class FuelStationController {
     }
 
     @PreAuthorize(("hasAuthority('station')"))
-    @GetMapping("/findfuels/{id}")
+    @GetMapping("/findFuels/{id}")
     public ResponseEntity<?> getFuels(@PathVariable("id") Long stationId){
         try {
             Map<String,Double> availablefuel = fuelStationService.getFuelInventory(stationId);
@@ -78,8 +77,8 @@ public class FuelStationController {
     }
 
     @PreAuthorize("hasAuthority('station')")
-    @GetMapping("/findname/{id}")
-    public ResponseEntity<?> getnamebyid(@PathVariable("id") Long stationid){
+    @GetMapping("/findName/{id}")
+    public ResponseEntity<?> getNameById(@PathVariable("id") Long stationid){
         try {
             Optional<FuelStation> station = fuelStationService.findFuelStationById(stationid);
             return ResponseEntity.ok(station.get().getStationName());

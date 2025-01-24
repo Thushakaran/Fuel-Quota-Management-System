@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import '../css/Registration.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { FaUser, FaPhoneAlt, FaEnvelope, FaKey } from 'react-icons/fa';
+import { FaUser, FaPhoneAlt, FaEnvelope, FaKey} from 'react-icons/fa';
+import { FaLocationDot } from "react-icons/fa6";
 
 const FuelOwnerRegistration = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const FuelOwnerRegistration = () => {
     nicNo: '',
     phoneNumber: '',
     email: '',
+    address: '',
     userName: '',
     password: '',
   });
@@ -33,9 +35,18 @@ const FuelOwnerRegistration = () => {
   const validateStep1 = () => {
     const errors = {};
     if (!ownerData.ownerName) errors.ownerName = 'Owner name is required.';
-    if (!ownerData.nicNo) errors.nicNo = 'NIC number is required.';
-    if (!ownerData.phoneNumber) errors.phoneNumber = 'Phone number is required.';
+    if (!ownerData.nicNo) {
+      errors.nicNo = 'NIC number is required.';
+    } else if (!(ownerData.nicNo.length === 10 || ownerData.nicNo.length === 12)) {
+      errors.nicNo = 'NIC number must be 10 or 12 characters long.';
+    }
+    if (!ownerData.phoneNumber) {
+      errors.phoneNumber = 'Phone number is required.';
+    } else if (ownerData.phoneNumber.length !== 10) {
+      errors.phoneNumber = 'Phone number must be 10 digits.';
+    }
     if (!ownerData.email) errors.email = 'Email is required.';
+    if (!ownerData.address) errors.address = 'Address is required.';
     return errors;
   };
 
@@ -102,8 +113,8 @@ const FuelOwnerRegistration = () => {
                   onChange={handleOwnerChange}
                   className={`form-control ${error.ownerName ? 'is-invalid' : ''}`}
                 />
+                {error.ownerName && <div className="invalid-feedback">{error.ownerName}</div>}
               </div>
-              {error.ownerName && <div className="invalid-feedback">{error.ownerName}</div>}
             </div>
 
             <div className="mb-3">
@@ -119,8 +130,8 @@ const FuelOwnerRegistration = () => {
                   onChange={handleOwnerChange}
                   className={`form-control ${error.nicNo ? 'is-invalid' : ''}`}
                 />
+                {error.nicNo && <div className="invalid-feedback">{error.nicNo}</div>}
               </div>
-              {error.nicNo && <div className="invalid-feedback">{error.nicNo}</div>}
             </div>
 
             <div className="mb-3">
@@ -131,13 +142,15 @@ const FuelOwnerRegistration = () => {
                   type="text"
                   id="phoneNumber"
                   name="phoneNumber"
+                  length='10'
                   placeholder="Enter Phone Number"
                   value={ownerData.phoneNumber}
                   onChange={handleOwnerChange}
                   className={`form-control ${error.phoneNumber ? 'is-invalid' : ''}`}
                 />
+                {error.phoneNumber && <div className="invalid-feedback">{error.phoneNumber}</div>}
               </div>
-              {error.phoneNumber && <div className="invalid-feedback">{error.phoneNumber}</div>}
+              
             </div>
 
             <div className="mb-3">
@@ -153,8 +166,25 @@ const FuelOwnerRegistration = () => {
                   onChange={handleOwnerChange}
                   className={`form-control ${error.email ? 'is-invalid' : ''}`}
                 />
+                 {error.email && <div className="invalid-feedback">{error.email}</div>}
               </div>
-              {error.email && <div className="invalid-feedback">{error.email}</div>}
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="address" className="form-label">Address:</label>
+              <div className="input-group">
+                <span className="input-group-text"><FaLocationDot /></span>
+                <input
+                  type="address"
+                  id="address"
+                  name="address"
+                  placeholder="Enter Address"
+                  value={ownerData.address}
+                  onChange={handleOwnerChange}
+                  className={`form-control ${error.address ? 'is-invalid' : ''}`}
+                />
+                {error.email && <div className="invalid-feedback">{error.address}</div>}
+              </div>
             </div>
 
             <button type="submit" className="btn btn-primary w-100">Next</button>
@@ -191,8 +221,8 @@ const FuelOwnerRegistration = () => {
                   onChange={handleOwnerChange}
                   className={`form-control ${error.userName ? 'is-invalid' : ''}`}
                 />
+                {error.userName && <div className="invalid-feedback">{error.userName}</div>}
               </div>
-              {error.userName && <div className="invalid-feedback">{error.userName}</div>}
             </div>
 
             <div className="mb-3">
@@ -208,8 +238,8 @@ const FuelOwnerRegistration = () => {
                   onChange={handleOwnerChange}
                   className={`form-control ${error.password ? 'is-invalid' : ''}`}
                 />
+                {error.password && <div className="invalid-feedback">{error.password}</div>}
               </div>
-              {error.password && <div className="invalid-feedback">{error.password}</div>}
             </div>
 
             <div className="mb-3">
@@ -232,9 +262,9 @@ const FuelOwnerRegistration = () => {
 
       <br />
       <br />
-      <div style={{ position: 'relative', bottom: '0', display: 'block', width: '100%' }}>
+      <footer style={{ position: 'absolute', bottom: '0', display: 'block', width: '100%' }}>
         <Footer />
-      </div>
+      </footer>
     </>
   );
 };
