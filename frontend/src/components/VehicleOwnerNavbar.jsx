@@ -2,20 +2,14 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
-const OwnerNavbar = () => {
+const VehicleOwnerNavbar = () => {
   const { id } = useParams();
   const navigate = useNavigate(); // Hook for navigation in React Router v6
 
-  //clear token and navigate to home page
+  // Logout function to clear token and navigate to home page
   const handleLogout = () => {
-    const userConfirmed = window.confirm("Are you sure you want to log out?");
-    
-    if (userConfirmed) {
-      localStorage.removeItem('token'); //remove token from localStorage
-      navigate('/'); //navigate to the home page
-    } else {
-      console.log("Logout canceled");
-    }
+    localStorage.removeItem('token'); // Remove token from localStorage
+    navigate('/'); // Navigate to the home page
   };
 
   return (
@@ -62,11 +56,6 @@ const OwnerNavbar = () => {
                 </Link>
               </li>
               <li>
-                <Link to={`/owner/${id}/stationreg`} className="dropdown-item">
-                  Register Station
-                </Link>
-              </li>
-              <li>
                 <hr className="dropdown-divider" />
               </li>
               <li>
@@ -82,4 +71,4 @@ const OwnerNavbar = () => {
   );
 };
 
-export default OwnerNavbar;
+export default VehicleOwnerNavbar;

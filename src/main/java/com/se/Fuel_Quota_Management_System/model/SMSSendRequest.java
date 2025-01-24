@@ -1,12 +1,14 @@
 package com.se.Fuel_Quota_Management_System.model;
 
-import lombok.Getter;
-import lombok.Setter;
+public class SMSSendRequest {
+    private String phoneNumber;
 
-@Getter
-@Setter
-public class SMSSendRequest{
-private String destinationSMSNumber;
-private String smsMessage;
+    // Getters and Setters
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

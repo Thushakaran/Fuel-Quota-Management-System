@@ -6,11 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 // Ceylon Petrolium Storage Terimial
 public interface CPST_StationsRepository extends JpaRepository<CPST_Stations, Long> {
 
-    boolean findByRegistrationNumber(String registrationNumber);
+    CPST_Stations findByRegistrationNumber(String registrationNumber);
 
-    boolean findByOwnerNicNo(String nicNo);
 
     boolean existsByRegistrationNumber(String registrationNumber);
 
-    boolean existsByOwnerNicNo(String nicNo);
+
 }

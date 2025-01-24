@@ -28,7 +28,7 @@ public class FuelStation {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "loginid" , nullable = false)
-//    @JsonIgnore
+    @JsonIgnore
     private UserLog stationLog;
 
     // fuel station have only one owner
