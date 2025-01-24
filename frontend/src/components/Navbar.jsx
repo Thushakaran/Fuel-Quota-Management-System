@@ -107,7 +107,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link className="dropdown-item" to="/adminDashboard">
+                <Link className="dropdown-item" to="/adminlogin">
                   Admin 
                 </Link>
               </li>

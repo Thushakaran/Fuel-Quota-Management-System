@@ -7,7 +7,7 @@ import {getownerid }from '../api/FuelStationOwnerServiceApi.js'
 
 import Navbar from "../components/Navbar";
 
-const LoginComponent = ({ heading, registrationLink, registrationText, image }) => {
+const LoginComponent = ({ heading, registrationLink, registrationText, image, Notregistered }) => {
   const [loginData, setLoginData] = useState({ userName: "", password: "" });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -51,7 +51,8 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image }) 
       setError("Failed to fetch vehicle details.");
     }
   };
-  
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -68,7 +69,7 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image }) 
 
       switch (role) {
         case "admin":
-          navigate("/admin-dashboard");
+          navigate("/adminDashboard");
           break;
         case "stationowner":
           await fetchOwnerDetails(loginId);
@@ -147,7 +148,7 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image }) 
                   </button>
                 </form>
                 <p className="mt-3">
-                  Not registered?{" "}
+                  {Notregistered}
                   <Link to={registrationLink} className="text-primary">
                     {registrationText}
                   </Link>
@@ -163,6 +164,7 @@ export const OwnerLogin = () => (
   <LoginComponent
     heading="FuelStation Owner Login"
     image="https://png.pngtree.com/png-clipart/20230914/original/pngtree-business-owner-vector-png-image_11243661.png"
+    Notregistered = "Notregistered  "
     registrationLink="/ownerreg"
     registrationText="Owner Registration"
   />
@@ -172,6 +174,7 @@ export const StationLogin = () => (
   <LoginComponent
     heading="FuelStation Login"
     image="https://mummyfever.co.uk/wp-content/uploads/2020/07/crop-woman-taking-refueling-pistol-gun-4173096-1024x1536.jpg.webp"
+    Notregistered = "Notregistered  "
     registrationLink="/stationreg"
     registrationText="Station Registration"
   />
@@ -181,8 +184,18 @@ export const VehicleLogin = () => (
   <LoginComponent
     heading="Vehicle Login"
     image="https://files.oaiusercontent.com/file-RBz1eqcSUumAXYaRYsapiq?se=2025-01-21T09%3A52%3A29Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D04800321-b05b-4039-a339-fe2f4c26d4ce.webp&sig=TyMooMIuoI9G5NCwrGZyqnh3M9Yei%2B9Byj3f%2BijyP/c%3D"
+    Notregistered = "Notregistered  "
     registrationLink="/vehicle-registration"
     registrationText="Vehicle Registration"
   />
 );
 
+export const AdminLogin = () => (
+  <LoginComponent 
+    heading="Admin Login"
+    image="https://thumbs.dreamstime.com/z/illustration-software-development-d-web-programming-art-programmer-eyeglasses-sitting-laptop-working-coding-278740366.jpg"
+    Notregistered = " "
+    registrationLink=" "
+    registrationText=" "
+    />
+);
