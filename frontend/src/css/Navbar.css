@@ -1,6 +1,11 @@
+:root{
+  --transition: : all 0.3s linear;
+}
+
+
 /* Change dropdown background to white and text color to black */
 .dropdown-menu {
-  background-color: #ffffff !important;
+  background-color: #86898c !important;
   color: #000000 !important;
 }
 
@@ -15,15 +20,40 @@
   color: #000000 !important; /* Keep text color black when clicked */
 }
 
+
 /* Change hover color */
 .dropdown-item:hover {
    /* background-color: #a3cbf3 !important;Change background color on hover */
-  color: #448b30 !important; /* Change text color on hover */
+  color: #fbfdfd !important; /* Change text color on hover */
+  background-color: #5a5b5b;
 }
 
 /* Open dropdown on hover */
 .navbar-nav .dropdown:hover .dropdown-menu {
   display: block;
   margin-top: 0; /* Remove margin from the dropdown menu */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+li:hover{
+  background-color: #4f5153;
+}
+
+.navbar{
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
 }
 
