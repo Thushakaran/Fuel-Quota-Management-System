@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import axios from "../api/axiosInstance";
 import { useParams } from "react-router-dom";
-import OwnerNavbar from "../components/OwnerNavbar";
+import VehicleOwnerNavbar from "../components/VehicleOwnerNavbar";
 
 function VehicleOwnerDashboard() {
   const { id } = useParams();
@@ -40,7 +40,11 @@ function VehicleOwnerDashboard() {
         setFuelInfo(fuelResponse.data || []); // Ensure it's an array
       })
       .catch((err) => {
-        setError(`Failed to load data. Error: ${err.response?.data?.message || "Please try again."}`);
+        setError(
+          `Failed to load data. Error: ${
+            err.response?.data?.message || "Please try again."
+          }`
+        );
         console.error("Error fetching data:", err);
       });
   }, [id]);
@@ -64,7 +68,7 @@ function VehicleOwnerDashboard() {
 
   return (
     <div>
-      <OwnerNavbar/>
+      <VehicleOwnerNavbar />
       <div className="container mt-5">
         <h2 className="text-center mb-5 text-primary">
           <i className="fas fa-car-side"></i> Vehicle Owner Dashboard
@@ -80,16 +84,20 @@ function VehicleOwnerDashboard() {
               </div>
               <div className="card-body">
                 <p className="card-text">
-                  <strong>Full Name:</strong> {ownerDetails?.ownerName || "Not Available"}
+                  <strong>Full Name:</strong>{" "}
+                  {ownerDetails?.ownerName || "Not Available"}
                 </p>
                 <p className="card-text">
-                  <strong>IC Number:</strong> {ownerDetails?.ownerIcNumber || "Not Available"}
+                  <strong>IC Number:</strong>{" "}
+                  {ownerDetails?.ownerIcNumber || "Not Available"}
                 </p>
                 <p className="card-text">
-                  <strong>Phone Number:</strong> {ownerDetails?.phoneNumber || "Not Available"}
+                  <strong>Phone Number:</strong>{" "}
+                  {ownerDetails?.phoneNumber || "Not Available"}
                 </p>
                 <p className="card-text">
-                  <strong>Email:</strong> {ownerDetails?.email || "Not Available"}
+                  <strong>Email:</strong>{" "}
+                  {ownerDetails?.email || "Not Available"}
                 </p>
               </div>
             </div>
@@ -105,13 +113,16 @@ function VehicleOwnerDashboard() {
               </div>
               <div className="card-body">
                 <p className="card-text">
-                  <strong>Fuel Quota:</strong> {ownerDetails?.fuelQuota || "Not Available"} liters
+                  <strong>Fuel Quota:</strong>{" "}
+                  {ownerDetails?.fuelQuota || "Not Available"} liters
                 </p>
                 <p className="card-text">
-                  <strong>Pumped Fuel:</strong> {latestTransaction?.amount || "Not Available"} liters
+                  <strong>Pumped Fuel:</strong>{" "}
+                  {latestTransaction?.amount || "Not Available"} liters
                 </p>
                 <p className="card-text">
-                  <strong>Balance Fuel:</strong> {ownerDetails?.remainingQuota || "Not Available"} liters
+                  <strong>Balance Fuel:</strong>{" "}
+                  {ownerDetails?.remainingQuota || "Not Available"} liters
                 </p>
               </div>
             </div>
