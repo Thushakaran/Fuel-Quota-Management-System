@@ -1,15 +1,29 @@
 package com.se.Fuel_Quota_Management_System.config;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix="twilio")
-@Data
 public class TwilioConfig {
-    private String account_sid;
-    private String auth_token;
-    private String trial_number;
 
+    @Value("${twilio.account.sid}")
+    private String accountSid;
+
+    @Value("${twilio.auth.token}")
+    private String authToken;
+
+    @Value("${twilio.trial.number}")
+    private String trialNumber;
+
+    public String getAccountSid() {
+        return accountSid;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public String getTrialNumber() {
+        return trialNumber;
+    }
 }

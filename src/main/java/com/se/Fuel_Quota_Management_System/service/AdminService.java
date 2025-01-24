@@ -10,6 +10,9 @@ import com.se.Fuel_Quota_Management_System.model.*;
 
 import com.se.Fuel_Quota_Management_System.repository.*;
 
+import com.se.Fuel_Quota_Management_System.repository.FuelTransactionRepository;
+import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ public class AdminService {
     private FuelStationRepository fuelStationRepository;
 
     @Autowired
+
     private RoleRepository roleRepository;
 
     @Autowired
@@ -39,6 +43,10 @@ public class AdminService {
 
     @Autowired
     private UserLogRepository userLogRepository;
+
+    private FuelTransactionRepository fuelTransactionRepository;
+
+
 
     public List<Vehicle> getAllVehicles() {
         return vehicleRepository.findAll();
@@ -161,7 +169,8 @@ public class AdminService {
         // Fetch totals from the database
         data.setTotalVehicles(vehicleRepository.count());
         data.setTotalStations(fuelStationRepository.count());
-        data.setTotalFuelDistributed(vehicleRepository.sumFuelQuota()); // Implement a custom query
+        data.setTotalFuelDistributed(fuelTransactionRepository.sumAmount()); // Implement a custom query
+        data.setTotalTransactions(fuelTransactionRepository.count());
 //      data.setActiveTransactions(vehicleRepository.countActiveTransactions()); // Implement a custom query
 
         return data;

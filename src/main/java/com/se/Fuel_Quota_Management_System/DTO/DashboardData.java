@@ -9,5 +9,5 @@ public class DashboardData {
     private long totalVehicles;
     private long totalStations;
     private double totalFuelDistributed;
-    private long activeTransactions;
+    private long totalTransactions;
 }

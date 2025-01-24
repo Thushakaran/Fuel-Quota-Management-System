@@ -41,9 +41,6 @@ public class VehicleServiceImp implements VehicleService {
     @Autowired
     private DmtVehicleRepository dmtVehicleRepository;
 
-//    @Autowired
-//    private FuelTransactionRepository fuelTransactionRepository;
-
     @Autowired
     private AuthController authController;
 
@@ -93,6 +90,8 @@ public class VehicleServiceImp implements VehicleService {
             // Create and populate the Vehicle object
             Vehicle vehicle = new Vehicle();
             vehicle.setVehicleNumber(vehicledto.getVehicleNumber());
+            vehicle.setPhoneNumber(vehicledto.getPhoneNumber());
+            vehicle.setEmail(vehicledto.getEmail());
             vehicle.setOwnerName(dmtVehicle.getOwnerName());
             vehicle.setFuelType(dmtVehicle.getFuelType());
             vehicle.setVehicleType(dmtVehicle.getVehicleType());
@@ -124,13 +123,6 @@ public class VehicleServiceImp implements VehicleService {
         return vehicleRepository.findByVehicleNumber(vehicleNumber)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found with number: " + vehicleNumber));
     }
-
-//    public Vehicle getVehicleByType(String vehicleType) {
-//        // Find the vehicle by its number or throw an exception if not found
-//        return vehicleRepository.findByVehicleType(vehicleType)
-//                .orElseThrow(() -> new RuntimeException("Vehicle not found with number: " + vehicleType));
-//    }
-
 
     // Determines the fuel quota based on the type of vehicle.
     // @return The fuel quota for the given vehicle type.
@@ -165,12 +157,6 @@ public class VehicleServiceImp implements VehicleService {
     }
 
     // Generates a QR code string containing the vehicle number and fuel quota.
-    // @return The formatted QR code string.
-//    private String generateQrCode(String vehicleNumber, double fuelQuota) {
-//        // Format the QR code to include vehicle number and fuel quota
-//        return String.format("QR|VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
-//    }
-
     public String generateQrCode(String vehicleNumber, double fuelQuota) {
         try {
             String qrContent = String.format("VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
@@ -192,12 +178,6 @@ public class VehicleServiceImp implements VehicleService {
     public Optional<Vehicle> getVehicleById(Long vehicleId) {
         return vehicleRepository.findById(vehicleId); // Use findById, not getById
     }
-//
-//    @Override
-//    public Vehicle getVehicleById(Long vehicleId) {
-//        return vehicleRepository.getById(vehicleId);
-//
-//    }
 
     @Override
     public List<FuelTransaction> getFuelTransactions(Long vehicleId) {
@@ -233,8 +213,6 @@ public class VehicleServiceImp implements VehicleService {
         existingVehicle.setVehicleType(vehicle.getVehicleType());
         existingVehicle.setChassisNumber(vehicle.getChassisNumber());
         existingVehicle.setQrCode(vehicle.getQrCode());
-   //     existingVehicle.setNotificationType(vehicle.getNotificationType());
-        // Update additional fields as needed
 
         // Save the updated vehicle
         return vehicleRepository.save(existingVehicle);
@@ -255,7 +233,7 @@ public class VehicleServiceImp implements VehicleService {
 
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found"));
-        if (amount>0 && vehicle.getRemainingQuota() >= amount) {
+        if (amount > 0 && vehicle.getRemainingQuota() >= amount) {
             // Proceed with transaction
             vehicle.setRemainingQuota((vehicle.getRemainingQuota() - amount));
             vehicleRepository.save(vehicle);
@@ -265,10 +243,6 @@ public class VehicleServiceImp implements VehicleService {
             throw new InsufficientQuotaException("Quota exceeded!");
         }
     }
-
-
-
-
 
 
 }
