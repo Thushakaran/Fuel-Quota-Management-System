@@ -18,7 +18,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import VehicleOwnerDashboard from "./pages/VehicleOwnerDashboard";
 
 import FuelStationManagement from "./components/FuelStationManagement";
-// import OwnerProfile from "./components/OwnerProfile";
+import OwnerProfile from "./components/OwnerProfile";
 import AddFuelForm from "./components/AddFuelForm";
 
 function App() {
@@ -49,7 +49,7 @@ function App() {
 
 
           <Route path="/owner/:id/stationreg" element={<FuelStationRegistration />} />
-          {/* <Route path="owner/:id/profile" element={<OwnerProfile/>} /> */}
+          <Route path="owner/:id/profile" element={<OwnerProfile/>} />
           
 
 

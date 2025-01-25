@@ -262,7 +262,7 @@ const FuelOwnerRegistration = () => {
 
       <br />
       <br />
-      <footer style={{ position: 'absolute', bottom: '0', display: 'block', width: '100%' }}>
+      <footer style={{ position: 'relative', bottom: '0', display: 'block', width: '100%' }}>
         <Footer />
       </footer>
     </>
