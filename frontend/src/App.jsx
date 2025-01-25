@@ -20,6 +20,7 @@ import VehicleOwnerDashboard from "./pages/VehicleOwnerDashboard";
 import FuelStationManagement from "./components/FuelStationManagement";
 // import OwnerProfile from "./components/OwnerProfile";
 import AddFuelForm from "./components/AddFuelForm";
+import FuelTransactionManagement from "./components/FuelTransactionManagement";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutUsPage />} />
           <Route path="/vehicleManagement" element={<VehicleManagement />} />
+          <Route path="/transactionManagement" element={<FuelTransactionManagement />} />
           <Route path="/adminlogin" element={<AdminLogin/>}/>
           <Route path="/adminDashboard" element={<AdminDashboard />} />
           <Route
