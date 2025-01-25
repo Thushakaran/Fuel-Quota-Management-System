@@ -44,6 +44,7 @@ public class AdminService {
     @Autowired
     private UserLogRepository userLogRepository;
 
+    @Autowired
     private FuelTransactionRepository fuelTransactionRepository;
 
 
@@ -188,6 +189,21 @@ public class AdminService {
 
         return ResponseEntity.ok(adminLog.getId());
     }
+
+
+    public List<FuelTransaction> getFuelTransactions() {
+        return fuelTransactionRepository.findAll();
+    }
+
+    public FuelTransaction getTransactionById(Long id) {
+        return fuelTransactionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transaction not found with ID: " + id));
+    }
+
+    public void deleteTransaction(Long id) {
+        fuelTransactionRepository.deleteById(id);
+    }
+
 
 }
 
