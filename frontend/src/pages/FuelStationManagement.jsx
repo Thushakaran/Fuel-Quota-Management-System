@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "../api/axiosInstance";
-import FuelStationTable from "./FuelStationTable";
-import AdminNavbar from "./AdminNavbar";
-import AdminFooter from "./AdminFooter";
-// import EditFuelStationModal from "./EditFuelStationModal";
+import FuelStationTable from "../components/FuelStationTable";
+import AdminNavbar from "../components/AdminNavbar";
+import AdminFooter from "../components/AdminFooter";
+import EditFuelStationModal from "../components/EditFuelStationModal";
+
 
 const FuelStationManagement = () => {
     const [fuelStations, setFuelStations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [editingFuelStation, setEditingFuelStation] = useState(null);
+    const [editingStation, setEditingStation] = useState(null); // Track the station being edited
 
     useEffect(() => {
         loadFuelStations();
     }, []);
 
+    // Load fuel stations from the backend
     const loadFuelStations = () => {
         setLoading(true);
         axios
-            .get("/admin/station") // Update to match your backend route
+            .get("/admin/station")
             .then((response) => {
                 setFuelStations(response.data || []);
                 setLoading(false);
@@ -29,22 +31,32 @@ const FuelStationManagement = () => {
             });
     };
 
-    const handleEdit = (fuelStation) => {
-        setEditingFuelStation(fuelStation);
-    };
 
-    const handleCloseModal = () => {
-        setEditingFuelStation(null);
+    const updateFuelStation = (updatedStation) => {
+        setLoading(true);
+        axios
+            .put(`/admin/station/${updatedStation.id}`, updatedStation)
+            .then(() => {
+                setFuelStations((prevStations) =>
+                    prevStations.map((station) =>
+                        station.id === updatedStation.id ? updatedStation : station
+                    )
+                );
+                setEditingStation(null); // Close the modal after a successful update
+                setLoading(false);
+            })
+            .catch(() => {
+                setError("Failed to update fuel station");
+                setLoading(false);
+            });
     };
+    
 
-    const handleUpdate = () => {
-        loadFuelStations(); // Reload fuel stations after an update
-    };
-
+    // Delete a fuel station
     const deleteFuelStation = (fuelStationId) => {
         setLoading(true);
         axios
-            .delete(`/admin/station/${fuelStationId}`) // Backend delete endpoint
+            .delete(`/admin/station/${fuelStationId}`)
             .then(() => {
                 setFuelStations((prevStations) =>
                     prevStations.filter((station) => station.id !== fuelStationId)
@@ -63,23 +75,23 @@ const FuelStationManagement = () => {
 
     return (
         <div>
-            <AdminNavbar/>
+            <AdminNavbar />
             <div className="container mt-5">
                 <h2>Manage Fuel Stations</h2>
                 <FuelStationTable
                     fuelStations={fuelStations}
-                    onEdit={handleEdit} // Pass edit handler to the table
-                    onDelete={deleteFuelStation} // Pass delete handler to the table
+                    onDelete={deleteFuelStation}
+                    onEdit={setEditingStation} // Pass edit handler to the table
                 />
-                {/* {editingFuelStation && (
+                {editingStation && (
                     <EditFuelStationModal
-                        fuelStation={editingFuelStation}
-                        onClose={handleCloseModal}
-                        onUpdate={handleUpdate}
+                        station={editingStation}
+                        onSave={updateFuelStation}
+                        onCancel={() => setEditingStation(null)}
                     />
-                )} */}
+                )}
             </div>
-            <AdminFooter/>
+            <AdminFooter />
         </div>
     );
 };

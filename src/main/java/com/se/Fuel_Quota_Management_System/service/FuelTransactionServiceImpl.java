@@ -1,18 +1,17 @@
 package com.se.Fuel_Quota_Management_System.service;
 
 
-import com.se.Fuel_Quota_Management_System.exception.InsufficientQuotaException;
-import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
+import com.se.Fuel_Quota_Management_System.DTO.FuelTransactionDTO;
 import com.se.Fuel_Quota_Management_System.model.*;
 import com.se.Fuel_Quota_Management_System.repository.*;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class FuelTransactionServiceImpl implements FuelTransactionService {
@@ -71,18 +70,28 @@ public class FuelTransactionServiceImpl implements FuelTransactionService {
 
 
 
-    // Method to fetch details of a specific transaction
+
+
+  // Method to fetch details of a specific transaction
+
     @Override
     @Transactional
-    public List<FuelTransaction> getTransactionsByVehicleId(Long vehicleId) {
+    public List<FuelTransactionDTO> getTransactionsByVehicleId(Long vehicleId) {
         List<FuelTransaction> transactions = fuelTransactionRepository.findByVehicleId(vehicleId);
 
         if (transactions.isEmpty()) {
             throw new IllegalArgumentException("No transactions found for vehicle with id: " + vehicleId);
         }
 
-        return transactions;
+        // Map entities to DTOs
+        return transactions.stream()
+                .map(tx -> new FuelTransactionDTO(tx.getId(),tx.getVehicle().getId(), tx.getAmount(), tx.getTransactionDate(), tx.getStation().getId()))
+                .collect(Collectors.toList());
     }
+
+
+
+
 
 
     public void DeductFuelQuotaWhenPumpFuel(Long stationId, double amount, Long vehicleId) {

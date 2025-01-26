@@ -33,5 +33,5 @@ public interface VehicleService {
 
     Optional<Vehicle> getVehicleById(Long vehicleId);
 
-    public List<FuelTransaction> getFuelTransactions(Long vehicleId);
+   public List<FuelTransaction> getFuelTransactions(Long vehicleId);
 }
