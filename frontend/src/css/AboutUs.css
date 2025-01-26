@@ -44,3 +44,9 @@
    text-shadow: 2px 3px 5px var(--clr-warm-white);
 
 }
+
+
+.features h2{
+    font-family: var(--ff-secondary);
+    color: var(--clr-primary);
+}
