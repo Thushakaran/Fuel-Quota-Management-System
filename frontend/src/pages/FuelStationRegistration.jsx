@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import '../css/Registration.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FuelStationRegistration = () => {
   const { id } = useParams();
@@ -103,13 +105,15 @@ const FuelStationRegistration = () => {
       setError({});
       fuelstationregister({ ...fuelStationData, ownerId: id })
         .then((response) => {
-          const stationId = response.data
-          alert('Fuel station registered successfully!');
+          console.log(response);
+          localStorage.setItem("token", response.data.token);
+          const stationId = response.data.id;       
+          toast.success('Fuel station registered successfully!');
           navigate(`/station/${stationId}`);
         })
         .catch((error) => {
-          console.error('Registration Error:', error);
-          alert('Registration failed. Try again.');
+          const errorMessage = error.response?.data || "An unexpected error occurred.";
+          toast.error(errorMessage);
         });
     }
   };
@@ -118,6 +122,7 @@ const FuelStationRegistration = () => {
   return (
     <>
       <Navbar />
+      <ToastContainer position="top-center" autoClose={10000} />
       <div className="container mt-5">
         <div className="progress mb-4">
           <div

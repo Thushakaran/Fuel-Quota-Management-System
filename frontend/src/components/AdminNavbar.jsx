@@ -37,7 +37,7 @@ const AdminNavbar = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#transactions">
+              <a className="nav-link" href="/transactionManagement">
                 <i className="bi bi-credit-card-2-front me-2"></i>Transactions
               </a>
             </li>

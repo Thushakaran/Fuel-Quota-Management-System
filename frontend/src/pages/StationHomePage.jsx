@@ -4,6 +4,9 @@ import StationNavbar from '../components/StationNavbar';
 import Footer from '../components/Footer';
 import '../css/Layout.css'
 import { getfuelInventory, getstationname } from '../api/FuelStationServiceApi.js';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const StationHomePage = () => {
   const { id } = useParams();
@@ -25,15 +28,16 @@ const StationHomePage = () => {
         setLowFuelAlerts(lowFuel);
       })
       .catch((error) => {
-        console.error('Error fetching fuel inventory:', error);
+        toast.error(`Error fetching fuel inventory: ${error.response?.data?.message || error.message || 'Unknown error'}`);
       });
+      
 
     getstationname(id)
       .then((response) => {
         setName(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching station name:', error);
+        toast.error(`Error fetching station name: ${error.message || 'Unknown error'}`);
       });
   };
 
@@ -46,6 +50,7 @@ const StationHomePage = () => {
   return (
     <>
       <StationNavbar />
+      <ToastContainer position="top-center" autoClose={5000} />
       <header className="bg-primary text-white text-center py-4">
         <h1 className="fw-bold">{name.toLocaleUpperCase()}</h1>
       </header>
@@ -84,7 +89,7 @@ const StationHomePage = () => {
                       <div
                         className={`progress-bar ${fuel.quantity > 250 ? 'bg-success' : 'bg-danger'}`}
                         role="progressbar"
-                        style={{ width: `${(fuel.quantity / MAX_FUEL_CAPACITY) * 200}%` }}
+                        style={{ width: `${(fuel.quantity / MAX_FUEL_CAPACITY) * 100}%` }}
                         aria-valuenow={fuel.quantity}
                         aria-valuemin="0"
                         aria-valuemax={MAX_FUEL_CAPACITY}
@@ -99,7 +104,7 @@ const StationHomePage = () => {
           )}
         </div>
       </main>
-      <footer style={{position:'absolute',bottom:'0', display:'block', width:'100%'}}>
+      <footer style={{ position: 'relative', bottom: '0', width: '100%' }}>
         <Footer />
       </footer>
     </>
