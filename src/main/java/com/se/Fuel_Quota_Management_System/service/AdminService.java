@@ -3,6 +3,7 @@ package com.se.Fuel_Quota_Management_System.service;
 import com.se.Fuel_Quota_Management_System.DTO.DashboardData;
 import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
 import com.se.Fuel_Quota_Management_System.controller.AuthController;
+import com.se.Fuel_Quota_Management_System.exception.ResourceNotFoundException;
 import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
 
 import com.se.Fuel_Quota_Management_System.exception.FuelStationNotFoundException;
@@ -44,6 +45,7 @@ public class AdminService {
     @Autowired
     private UserLogRepository userLogRepository;
 
+    @Autowired
     private FuelTransactionRepository fuelTransactionRepository;
 
 
@@ -74,15 +76,26 @@ public class AdminService {
 
 
     public Vehicle updateVehicle(Long id, Vehicle updatedVehicle) {
-        Vehicle existingVehicle = getVehicleById(id);
+        Vehicle existingVehicle = getVehicleById(id);  // Fetch the existing vehicle by ID
 
-        // Update only the fields that are allowed to be modified
-        existingVehicle.setFuelQuota(updatedVehicle.getFuelQuota());
+        if (existingVehicle == null) {
+            throw new ResourceNotFoundException("Vehicle not found with id " + id);
+        }
+
+        // Update fields that are allowed to be modified
+        existingVehicle.setVehicleNumber(updatedVehicle.getVehicleNumber());
+        existingVehicle.setOwnerName(updatedVehicle.getOwnerName());
+        existingVehicle.setVehicleType(updatedVehicle.getVehicleType());
         existingVehicle.setFuelType(updatedVehicle.getFuelType());
-//        existingVehicle.setNotificationType(updatedVehicle.getNotificationType());
+        existingVehicle.setFuelQuota(updatedVehicle.getFuelQuota());
+        existingVehicle.setChassisNumber(updatedVehicle.getChassisNumber());
+        // Add other fields as necessary
 
+        // Save the updated vehicle and return it
         return vehicleRepository.save(existingVehicle);
     }
+
+
 
     public void deleteVehicle(Long id) {
         // Check if the vehicle exists
@@ -133,14 +146,31 @@ public class AdminService {
 
     // Update FuelStation details by ID.
 
+//    public FuelStation updateFuelStation(Long id, FuelStation updatedFuelStation) {
+//        FuelStation existingFuelStation = getFuelStationById(id);
+//
+//        // Update only the fields that are allowed to be modified
+//        existingFuelStation.setLocation(updatedFuelStation.getLocation());
+//        existingFuelStation.setOwner(updatedFuelStation.getOwner());
+//        existingFuelStation.setStationName(updatedFuelStation.getStationName());
+//        existingFuelStation.setRegistrationNumber(updatedFuelStation.getRegistrationNumber());
+//
+//        return fuelStationRepository.save(existingFuelStation);
+//    }
+
     public FuelStation updateFuelStation(Long id, FuelStation updatedFuelStation) {
         FuelStation existingFuelStation = getFuelStationById(id);
 
-        // Update only the fields that are allowed to be modified
+        // Update allowed fields
         existingFuelStation.setLocation(updatedFuelStation.getLocation());
         existingFuelStation.setOwner(updatedFuelStation.getOwner());
         existingFuelStation.setStationName(updatedFuelStation.getStationName());
         existingFuelStation.setRegistrationNumber(updatedFuelStation.getRegistrationNumber());
+
+        // Update fuel inventory
+        if (updatedFuelStation.getFuelInventory() != null) {
+            existingFuelStation.setFuelInventory(updatedFuelStation.getFuelInventory());
+        }
 
         return fuelStationRepository.save(existingFuelStation);
     }
@@ -188,6 +218,42 @@ public class AdminService {
 
         return ResponseEntity.ok(adminLog.getId());
     }
+
+
+    public List<FuelTransaction> getFuelTransactions() {
+        return fuelTransactionRepository.findAll();
+    }
+
+    public FuelTransaction getTransactionById(Long id) {
+        return fuelTransactionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transaction not found with ID: " + id));
+    }
+
+    public void deleteTransaction(Long id) {
+        fuelTransactionRepository.deleteById(id);
+    }
+
+public FuelTransaction updateFuelTransaction(Long id, FuelTransaction updatedFuelTransaction) {
+    // Fetch the existing transaction
+    FuelTransaction existingFuelTransaction = getTransactionById(id);
+
+    if (existingFuelTransaction == null) {
+        throw new RuntimeException("Transaction not found");
+    }
+
+    // Lookup the existing station by ID
+    Long stationId = updatedFuelTransaction.getStation().getId();
+    FuelStation station = fuelStationRepository.findById(stationId)
+            .orElseThrow(() -> new RuntimeException("Station not found"));
+
+    // Update fields
+    existingFuelTransaction.setAmount(updatedFuelTransaction.getAmount());
+    existingFuelTransaction.setStation(station);
+
+    // Save and return
+    return fuelTransactionRepository.save(existingFuelTransaction);
+}
+
 
 }
 
