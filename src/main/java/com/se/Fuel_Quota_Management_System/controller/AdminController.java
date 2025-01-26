@@ -187,6 +187,12 @@ public class AdminController {
         adminService.deleteTransaction(id);
         return ResponseEntity.ok("FuelTransactions with ID " + id + " deleted successfully.");
     }
+
+    @PutMapping("/transactions/{id}")
+    public ResponseEntity<FuelTransaction> updateFuelTransaction(@PathVariable Long id, @RequestBody FuelTransaction updatedFuelTransaction) {
+        FuelTransaction fuelTransaction = adminService.updateFuelTransaction(id, updatedFuelTransaction);
+        return ResponseEntity.ok(fuelTransaction);
+    }
 }
 
 
