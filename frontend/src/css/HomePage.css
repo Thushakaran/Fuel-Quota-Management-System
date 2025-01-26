@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Margarine&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Satisfy&display=swap');
 
-home-body{
+/* home-body{
 background-image: linear-gradient(180deg,var(--clr-gray-4)25%,var(--clr-warm-white)) ;
-}
+} */
 
 :root {
    
@@ -82,18 +82,23 @@ background-image: linear-gradient(180deg,var(--clr-gray-4)25%,var(--clr-warm-whi
 
 
 .features,.container{
-    background-color:var(--clr-gray-4-);
+    background-color:rgb(236, 249, 249);
 }
 
 
 .out-divider{
-    background-color: var(--clr-gray-4--);
+    background-color: rgb(236, 249, 249);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .feature-card{
-    background-color: var(--clr-gray-4--);
+    flex: 1;
+    background-color: rgb(236, 249, 249);
+    margin-bottom: 20px;
+   
+   
 }
 
 .feature-card:hover{
-    background-color:rgb(137, 160, 177) ;
+    background-color:rgb(228, 241, 241) ;
 }
