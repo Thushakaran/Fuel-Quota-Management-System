@@ -29,10 +29,11 @@ public class FuelStationOwnerController {
     @PostMapping("/register")
     public ResponseEntity<?> registerOwner(@Validated @RequestBody FuelStationOwnerLogDTO request) {
         try {
-            ResponseEntity<?> registeredowner = fuelStationOwnerService.registerOwner(request);
-            return ResponseEntity.ok(registeredowner.getBody());
-        } catch (Exception e) {
-            // Log the error (use a logger in production)
+            ResponseEntity<?> registeredOwner;
+            registeredOwner = fuelStationOwnerService.registerOwner(request);
+            return ResponseEntity.ok(registeredOwner.getBody());
+        }
+        catch (Exception e) {
             System.err.println("Error during registration: " + e.getMessage());
             return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
         }
@@ -42,7 +43,7 @@ public class FuelStationOwnerController {
 
     // find owner name by Id
     @PreAuthorize("hasAuthority('stationowner')")
-    @GetMapping("/findname/{id}")
+    @GetMapping("/findName/{id}")
     public ResponseEntity<?> getOwnerById(@PathVariable("id") Long id) {
         try {
             FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerById(id);
@@ -54,7 +55,7 @@ public class FuelStationOwnerController {
 
     // find owner details by Id
     @PreAuthorize("hasAuthority('stationowner')")
-    @GetMapping("finddetail/{id}")
+    @GetMapping("findDetail/{id}")
     public ResponseEntity<?> getDetailsbyId(@PathVariable Long id){
         try {
             FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerById(id);
@@ -66,7 +67,7 @@ public class FuelStationOwnerController {
 
     // find fuelstations owned by owner through owner id
     @PreAuthorize("hasAuthority('stationowner')")
-    @GetMapping("findstations/{id}")
+    @GetMapping("findStations/{id}")
     public ResponseEntity<?> getStationsById(@PathVariable("id") Long id){
         try {
             List<FuelStation> fuelStation = fuelStationService.getByOwnerId(id);
@@ -78,8 +79,8 @@ public class FuelStationOwnerController {
 
     // find owner by login Id
     @PreAuthorize("hasAuthority('stationowner')")
-    @GetMapping("/findbyloginid/{id}")
-    public ResponseEntity<?> getidbyloginid(@PathVariable("id") Long loginid){
+    @GetMapping("/findByLoginId/{id}")
+    public ResponseEntity<?> getIdByLoginId(@PathVariable("id") Long loginid){
         try {
             FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerByOwnerLog(loginid);
             return ResponseEntity.ok(owner.getId());
@@ -89,11 +90,16 @@ public class FuelStationOwnerController {
     }
 
 
-//
-//    @GetMapping("search")
-//    public FuelStationOwner findOwnerByNicOrEmail(@RequestParam(value="nicNo",required = false) String nicNo,
-//                                                             @RequestParam(value= "email",required = false) String email){
-//        return fuelStationOwnerService.findAllByNicOrEmail(nicNo,email);
-//
-//    }
+    // save details when update profile
+    @PreAuthorize("hasAuthority('stationowner')")
+    @PostMapping("saveDetails/{id}")
+    public ResponseEntity<?> saveEditDetails(@PathVariable("id") Long id, @RequestBody FuelStationOwner fuelStationOwner){
+        try {
+            FuelStationOwner owner = fuelStationOwnerService.saveEditDetails(id,fuelStationOwner);
+            return ResponseEntity.ok("sucess");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
+    }
+
 }

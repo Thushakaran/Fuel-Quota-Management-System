@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Margarine&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Satisfy&display=swap');
+
+home-body{
+background-image: linear-gradient(180deg,var(--clr-gray-4)25%,var(--clr-warm-white)) ;
+}
+
+:root {
+   
+   
+    /*-------------------font Family*/
+    --ff-primary: "Roboto", sans-serif;
+    --ff-secondary: "Inter" , sans-serif;
+    --ff-design: "Satisfy" , cursive;
+    --ff-brand: "Margarine" , sans-serif;
+    
+    
+    /*----------------colors------------------*/
+    --clr-white:#fff;
+    --clr-dark:#333;
+    --clr-gray-1:#102a42 ;
+    --clr-gray-2:#617d98 ;
+    --clr-gray-3: #f1f5f8;
+    --clr-gray-4:#2d4d6b ;
+    --clr-gray-4-:#748ca3 ;
+    --clr-gray-4--:#8499ad ;
+    --clr-primary:rgb(25, 74, 90) ;
+    --clr-primary-dark:#4912b7;
+    --clr-secondary: #e9b949 ;
+    --clr-light-cyan: #E0FFFF;
+    --clr-warm-white: #f8f8f8;
+    --clr-soft-yellow: #FFD700;
+    --clr-pale-mint: #029eb3;
+    --clr-sky-blue:#87CEEB;
+
+}
+
+.hero{
+    min-height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),url(../photo/04.jpg) center/cover no-repeat fixed;
+}
+
+
+.banner{
+
+ position: absolute;
+ top:50%;
+ left: 50%;
+ transform: translate(-50%,-50%);
+}
+
+
+.banner h1{
+    font-family: Arial, Helvetica, sans-serif;
+    color: transparent;
+    background-image: linear-gradient(180deg,var(--clr-sky-blue),var(--clr-warm-white));
+    background-clip: text;
+  }
+
+
+.banner p{
+    font-family: var(--ff-design);
+   font-weight: 550;
+   font-size: x-large;
+   color:  rgb(236, 249, 249);
+   text-shadow: 2px 3px 5px var(--clr-warm-white);
+
+}
+
+.banner .btn{
+    font-size: 1.25rem;
+    padding: 0.75rem 2rem;
+    border-radius: 1rem;
+    background-image: linear-gradient(180deg,var(--clr-primary), var(--clr-sky-blue) );
+}
+
+.banner .btn:hover{
+    outline: 0.125rem solid var(--clr-pale-mint);
+    outline-offset: 0.10rem;
+}
+
+
+
+
+.features,.container{
+    background-color:var(--clr-gray-4-);
+}
+
+
+.out-divider{
+    background-color: var(--clr-gray-4--);
+}
+
+.feature-card{
+    background-color: var(--clr-gray-4--);
+}
+
+.feature-card:hover{
+    background-color:rgb(137, 160, 177) ;
+}

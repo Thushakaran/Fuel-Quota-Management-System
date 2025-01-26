@@ -63,7 +63,6 @@ public class FuelStationOwnerService {
                 return registerResponse; // Forward error response from the register method
             }
 
-            UserLog registeredLog = (UserLog) registerResponse.getBody();
 
             // Create and save FuelStationOwner
             FuelStationOwner owner = new FuelStationOwner();
@@ -71,7 +70,8 @@ public class FuelStationOwnerService {
             owner.setNicNo(fuelStationOwnerlog.getNicNo());
             owner.setPhoneNumber(fuelStationOwnerlog.getPhoneNumber());
             owner.setEmail(fuelStationOwnerlog.getEmail());
-            owner.setOwnerLog(registeredLog);
+            owner.setAddress(fuelStationOwnerlog.getAddress());
+            owner.setOwnerLog((UserLog) registerResponse.getBody());
 
             fuelStationOwnerRepository.save(owner);
 
@@ -82,11 +82,6 @@ public class FuelStationOwnerService {
     }
 
 
-//    public FuelStationOwner findAllByNicOrEmail(String nicNo, String email) {
-//        return fuelStationOwnerRepository.findByNicNoOrEmail(nicNo,email);
-//    }
-
-
     public FuelStationOwner findFuelStationOwnerById(Long Id) {
         return fuelStationOwnerRepository.findFuelStationOwnerById(Id);
     }
@@ -94,5 +89,26 @@ public class FuelStationOwnerService {
 
     public FuelStationOwner findFuelStationOwnerByOwnerLog(Long loginid) {
         return fuelStationOwnerRepository.findFuelStationOwnerByOwnerLogId(loginid);
+    }
+
+    public FuelStationOwner saveEditDetails(Long id, FuelStationOwner fuelStationOwner) {
+        FuelStationOwner existingOwner = fuelStationOwnerRepository
+                .findById(id).orElseThrow();
+        // Update only the provided fields
+        if(fuelStationOwner.getName() != null){
+            existingOwner.setName(fuelStationOwner.getName());
+        }
+        if(fuelStationOwner.getEmail() != null) {
+            existingOwner.setEmail(fuelStationOwner.getEmail());
+        }
+        if(fuelStationOwner.getPhoneNumber() != null) {
+            existingOwner.setPhoneNumber(fuelStationOwner.getPhoneNumber());
+        }
+        if(fuelStationOwner.getAddress() != null){
+            existingOwner.setAddress(fuelStationOwner.getAddress());
+        }
+
+        // Save the updated owner
+        return fuelStationOwnerRepository.save(existingOwner);
     }
 }
