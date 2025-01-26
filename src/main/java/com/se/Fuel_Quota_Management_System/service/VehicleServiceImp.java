@@ -12,16 +12,15 @@ import com.se.Fuel_Quota_Management_System.exception.VehicleAlreadyRegisteredExc
 import com.se.Fuel_Quota_Management_System.exception.VehicleNotFoundException;
 import com.se.Fuel_Quota_Management_System.model.*;
 import com.se.Fuel_Quota_Management_System.model.DmtVehicle;
-//import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.se.Fuel_Quota_Management_System.repository.DmtVehicleRepository;
 import com.se.Fuel_Quota_Management_System.repository.FuelTransactionRepository;
 import com.se.Fuel_Quota_Management_System.repository.RoleRepository;
-//import com.se.Fuel_Quota_Management_System.repository.FuelTransactionRepository;
 import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -243,6 +242,38 @@ public class VehicleServiceImp implements VehicleService {
             throw new InsufficientQuotaException("Quota exceeded!");
         }
     }
+
+
+
+
+//    // Reset remaining fuel quota every week (Sunday at midnight)
+//    @Scheduled(cron = "0 0 0 * * SUN")
+//    public void resetWeeklyFuelQuota() {
+//        List<Vehicle> vehicles = vehicleRepository.findAll(); // Fetch all vehicles
+//
+//        vehicles.forEach(vehicle -> vehicle.setRemainingQuota(vehicle.getFuelQuota())); // Reset remaining quota
+//
+//        vehicleRepository.saveAll(vehicles); // Save updated vehicles to the database
+//
+//        System.out.println("Weekly fuel quota reset for all vehicles.");
+//    }
+
+
+    // Reset remaining fuel quota every week (Sunday at midnight)
+    @Scheduled(cron = "0 0 0 * * SUN")
+    public void resetWeeklyFuelQuota() {
+        List<Vehicle> vehicles = vehicleRepository.findAll(); // Fetch all vehicles
+
+        // Update the remaining quota based on the calculated fuel quota
+        vehicles.forEach(vehicle -> {
+            double newQuota = calculateFuelQuota(vehicle.getVehicleType());
+            vehicle.setRemainingQuota(newQuota);
+        });
+
+        vehicleRepository.saveAll(vehicles); // Save updated vehicles to the database
+        System.out.println("Weekly fuel quota reset for all vehicles.");
+    }
+
 
 
 }
