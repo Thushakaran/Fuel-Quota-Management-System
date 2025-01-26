@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { addFuel } from '../api/FuelStationServiceApi';
+import {ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FUEL_TYPES = ["92-Octane", "95-Octane", "Auto Diesel", "Super Diesel"];
 
@@ -31,23 +33,32 @@ const AddFuelForm = ({ setFuels }) => {
 
     addFuel(id, fuelDetails)
       .then((response) => {
-        console.log(response.data);
+        toast.success(response.data.message);
         setFuelType('');
         setQuantity('');
-        navigate(`/station/${id}`);
+        setError(null);
+        setTimeout(() => {
+          navigate(`/station/${id}`);
+        }, 2000);
       })
       .catch((error) => {
-        console.error('Error adding fuel:', error);
-        setError('Failed to add fuel. Please try again.');
+        const errorMessage = error.response?.data?.message || "Failed to add fuel.";
+        toast.error(errorMessage);
+        setError(errorMessage);
       })
       .finally(() => setIsLoading(false));
   };
 
   return (
     <div className="container mt-4">
+      <ToastContainer position="top-center" autoClose={10000} />
       <div className="card shadow-sm p-4">
         <h2 className="text-center mb-4">Add Fuel</h2>
-        {error && <div className="alert alert-danger">{error}</div>}
+        {error && (
+          <div className="alert alert-danger" role="alert" aria-live="polite">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="fuelType" className="form-label">Fuel Type</label>
@@ -57,7 +68,7 @@ const AddFuelForm = ({ setFuels }) => {
               value={fuelType}
               onChange={(e) => setFuelType(e.target.value)}
             >
-              <option value="">Select a fuel type</option>
+              <option value="" disabled>Select a fuel type</option>
               {FUEL_TYPES.map((type) => (
                 <option key={type} value={type}>{type}</option>
               ))}
@@ -73,6 +84,7 @@ const AddFuelForm = ({ setFuels }) => {
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
               placeholder="Enter quantity"
+              min="1"
             />
           </div>
 

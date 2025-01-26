@@ -1,6 +1,9 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const StationNavbar = () => {
   const { id } = useParams();  // Accessing the id from URL params
@@ -14,12 +17,13 @@ const StationNavbar = () => {
       localStorage.removeItem('token'); // Remove token from localStorage
       navigate('/'); // Navigate to the home page
     } else {
-      console.log("Logout canceled");
+      toast.error("Logout canceled");
     }
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm" style={{position:"relative"}}>
+      <ToastContainer position="top-center" autoClose={4000} />
       <div className="container-fluid">
         <a
           className="navbar-brand d-flex align-items-center ps-3 ms-3"
