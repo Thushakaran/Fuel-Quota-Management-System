@@ -95,8 +95,7 @@ const VehicleRegistration = () => {
       resetForm();
     } catch (error) {
       const errorMessage =
-        error.response?.data?.message ||
-        "Failed to register vehicle. Please try again.";
+        error.response?.data?.message;
       setErrorMessages({ general: errorMessage });
     } finally {
       setLoading(false); // Reset loading state after request

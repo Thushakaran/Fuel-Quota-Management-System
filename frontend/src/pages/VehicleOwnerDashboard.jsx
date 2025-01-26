@@ -70,10 +70,6 @@ function VehicleOwnerDashboard() {
     );
   }
 
-  if (!ownerDetails || fuelInfo.length === 0) {
-    return <p className="text-center mt-5">Loading...</p>;
-  }
-
   // Extract latest fuel transaction
   const latestTransaction = fuelInfo[0] || {}; // Take the first transaction if exists
 
