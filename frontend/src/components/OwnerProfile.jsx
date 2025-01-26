@@ -42,6 +42,21 @@ const OwnerProfile = () => {
       alert("Please fill in all fields before saving.");
       return;
     }
+
+    //check NIC number in 10 or 12 digits
+    const nicRegex = /^\d{10}(\d{2})?$/;
+    if (!nicRegex.test(owner.nicNo)) {
+      alert("NIC Number must be either 10 or 12 digits.");
+      return;
+    }
+
+    //check Phone Number in 10 digits
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(owner.phoneNumber)) {
+      alert("Phone Number must be exactly 10 digits.");
+      return;
+    }
+
     if (window.confirm("Are you sure you want to update your profile?")) {
       try {
         await editdetails(id, owner);
