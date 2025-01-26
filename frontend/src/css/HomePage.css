@@ -82,6 +82,13 @@ background-image: linear-gradient(180deg,var(--clr-blue)25%,var(--clr-warm-white
    
 }
 
+
+.features h2{
+    font-family:var(--ff-secondary) ;
+    text-decoration:underline;
+
+} 
+
 .feature-card{
     flex: 1;
     background-color: var( --clr-green-blue);
