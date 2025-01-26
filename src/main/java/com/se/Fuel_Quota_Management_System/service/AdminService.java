@@ -44,8 +44,8 @@ public class AdminService {
     @Autowired
     private UserLogRepository userLogRepository;
 
+    @Autowired
     private FuelTransactionRepository fuelTransactionRepository;
-
 
 
     public List<Vehicle> getAllVehicles() {
