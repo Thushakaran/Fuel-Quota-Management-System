@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Margarine&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Satisfy&display=swap');
 
-/* home-body{
-background-image: linear-gradient(180deg,var(--clr-gray-4)25%,var(--clr-warm-white)) ;
-} */
+body{
+background-image: linear-gradient(180deg,var(--clr-blue)25%,var(--clr-warm-white)) ;
+}
 
 :root {
    
@@ -15,22 +15,13 @@ background-image: linear-gradient(180deg,var(--clr-gray-4)25%,var(--clr-warm-whi
     
     
     /*----------------colors------------------*/
-    --clr-white:#fff;
-    --clr-dark:#333;
-    --clr-gray-1:#102a42 ;
-    --clr-gray-2:#617d98 ;
-    --clr-gray-3: #f1f5f8;
-    --clr-gray-4:#2d4d6b ;
-    --clr-gray-4-:#748ca3 ;
-    --clr-gray-4--:#8499ad ;
+    --clr-blue:#e3f2ff ;
     --clr-primary:rgb(25, 74, 90) ;
-    --clr-primary-dark:#4912b7;
-    --clr-secondary: #e9b949 ;
-    --clr-light-cyan: #E0FFFF;
     --clr-warm-white: #f8f8f8;
-    --clr-soft-yellow: #FFD700;
     --clr-pale-mint: #029eb3;
     --clr-sky-blue:#87CEEB;
+
+    --clr-green-blue: #daedf4;
 
 }
 
@@ -82,23 +73,24 @@ background-image: linear-gradient(180deg,var(--clr-gray-4)25%,var(--clr-warm-whi
 
 
 .features,.container{
-    background-color:rgb(236, 249, 249);
+    background-color:var( --clr-green-blue);
 }
 
 
 .out-divider{
-    background-color: rgb(236, 249, 249);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color:  var(--clr-green-blue);
+   
 }
 
 .feature-card{
     flex: 1;
-    background-color: rgb(236, 249, 249);
+    background-color: var( --clr-green-blue);
     margin-bottom: 20px;
+    height: 230px;
    
    
 }
 
 .feature-card:hover{
-    background-color:rgb(228, 241, 241) ;
+    background-color:#d4eaf3;
 }
