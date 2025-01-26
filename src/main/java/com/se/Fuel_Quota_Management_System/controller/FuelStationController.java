@@ -37,6 +37,7 @@ public class FuelStationController {
     }
 
     //add fuel
+    @PreAuthorize("station")
     @PostMapping("/addFuel/{id}")
     public ResponseEntity<?> addFuel(@PathVariable("id") Long id,  @RequestBody Map<String, Double> fuelDetails) {
         try {
@@ -65,7 +66,7 @@ public class FuelStationController {
         }
     }
 
-    @PreAuthorize(("hasAuthority('station')"))
+    @PreAuthorize(("hasAuthority('stationowner')"))
     @GetMapping("/findFuels/{id}")
     public ResponseEntity<?> getFuels(@PathVariable("id") Long stationId){
         try {

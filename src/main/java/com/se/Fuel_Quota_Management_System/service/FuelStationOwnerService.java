@@ -90,4 +90,25 @@ public class FuelStationOwnerService {
     public FuelStationOwner findFuelStationOwnerByOwnerLog(Long loginid) {
         return fuelStationOwnerRepository.findFuelStationOwnerByOwnerLogId(loginid);
     }
+
+    public FuelStationOwner saveEditDetails(Long id, FuelStationOwner fuelStationOwner) {
+        FuelStationOwner existingOwner = fuelStationOwnerRepository
+                .findById(id).orElseThrow();
+        // Update only the provided fields
+        if(fuelStationOwner.getName() != null){
+            existingOwner.setName(fuelStationOwner.getName());
+        }
+        if(fuelStationOwner.getEmail() != null) {
+            existingOwner.setEmail(fuelStationOwner.getEmail());
+        }
+        if(fuelStationOwner.getPhoneNumber() != null) {
+            existingOwner.setPhoneNumber(fuelStationOwner.getPhoneNumber());
+        }
+        if(fuelStationOwner.getAddress() != null){
+            existingOwner.setAddress(fuelStationOwner.getAddress());
+        }
+
+        // Save the updated owner
+        return fuelStationOwnerRepository.save(existingOwner);
+    }
 }
