@@ -89,4 +89,17 @@ public class FuelStationOwnerController {
         }
     }
 
+
+    // save details when update profile
+    @PreAuthorize("hasAuthority('stationowner')")
+    @PostMapping("saveDetails/{id}")
+    public ResponseEntity<?> saveEditDetails(@PathVariable("id") Long id, @RequestBody FuelStationOwner fuelStationOwner){
+        try {
+            FuelStationOwner owner = fuelStationOwnerService.saveEditDetails(id,fuelStationOwner);
+            return ResponseEntity.ok("sucess");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
+    }
+
 }
