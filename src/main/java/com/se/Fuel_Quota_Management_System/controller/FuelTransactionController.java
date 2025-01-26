@@ -1,13 +1,12 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
 import com.se.Fuel_Quota_Management_System.DTO.FuelQuotaUpdateRequest;
-import com.se.Fuel_Quota_Management_System.exception.InsufficientQuotaException;
+import com.se.Fuel_Quota_Management_System.DTO.FuelTransactionDTO;
 import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
 import com.se.Fuel_Quota_Management_System.service.FuelTransactionServiceImpl;
-
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -26,7 +25,7 @@ public class FuelTransactionController {
     //initiate a new fuel transaction
     @PostMapping("/start")
    public ResponseEntity<FuelTransaction> startTransaction(@RequestParam Long vehicleId,
-                                                           @RequestParam double amount,
+                                                           @RequestParam Double amount,
                                                            @RequestParam Long stationId) {
        try {
            FuelTransaction fuelTransaction = fuelTransactionService.startTransaction(vehicleId, amount, stationId);
@@ -40,10 +39,11 @@ public class FuelTransactionController {
 
 
     // get all transactions for a specific vehicle
+    @Transactional
     @GetMapping("/vehicle/{vehicleId}")
-    public ResponseEntity<List<FuelTransaction>> getTransactionsByVehicleId(@PathVariable Long vehicleId) {
+    public ResponseEntity<List<FuelTransactionDTO>> getTransactionsByVehicleId(@PathVariable Long vehicleId) {
         try {
-            List<FuelTransaction> transactions = fuelTransactionService.getTransactionsByVehicleId(vehicleId);
+            List<FuelTransactionDTO> transactions = fuelTransactionService.getTransactionsByVehicleId(vehicleId);
             return ResponseEntity.ok(transactions);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
@@ -52,20 +52,6 @@ public class FuelTransactionController {
 
 
 
-//    @PostMapping("/updateFuelQuota")
-//    public ResponseEntity<String> updateFuelInventory(@RequestParam Long stationId,
-//                                                      @RequestParam Long vehicleId,
-//                                                      @RequestParam double amount)
-//    {
-//        try {
-//            // Call the service method to update the fuel inventory
-//            fuelTransactionService.DeductFuelQuotaWhenPumpFuel(stationId, amount, vehicleId);
-//            return ResponseEntity.ok("Fuel  updated successfully.");
-//        } catch (Exception e) {
-//            // Handle any exceptions and return an error response
-//            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-//        }
-//    }
 
 
     @PostMapping("/updateFuelQuota")
