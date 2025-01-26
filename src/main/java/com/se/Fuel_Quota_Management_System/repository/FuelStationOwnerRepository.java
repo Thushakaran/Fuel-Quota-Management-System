@@ -5,13 +5,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 
 public interface FuelStationOwnerRepository extends JpaRepository<FuelStationOwner,Long> {
 
     FuelStationOwner findByNicNoOrEmail(String nicNo, String email);
 
 
-    FuelStationOwner findFuelStationOwnerById(Long id);
+    Optional<FuelStationOwner> findFuelStationOwnerById(Long id);
 
     boolean existsByNicNo(String nicNo);
 

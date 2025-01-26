@@ -23,35 +23,45 @@ public class FuelStationController {
     @Autowired
     private JwtUtil jwtUtil;
 
-
+    // register fuel station
     @PostMapping("/register")
     public ResponseEntity<?> registerFuelStation(@Validated @RequestBody FuelStationLogDTO request) {
         try {
+            // Register the fuel station
             FuelStation registeredStation = fuelStationService.registerFuelStation(request);
-            return ResponseEntity.ok(registeredStation.getId());
+
+            // Generate JWT token for the registered fuel station
+            String token = jwtUtil.generateToken(registeredStation.getStationLog().getUserName());
+
+            // Return the response with the station ID and token
+            return ResponseEntity.ok(Map.of("id", registeredStation.getId(), "token", token));
         } catch (Exception e) {
             // Log the error
             System.err.println("Error during registration: " + e.getMessage());
-            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 
-    //add fuel
+
+    //pump fuel to station 
+    @PreAuthorize("station")
     @PostMapping("/addFuel/{id}")
-    public ResponseEntity<?> addFuel(@PathVariable("id") Long id,  @RequestBody Map<String, Double> fuelDetails) {
+    public ResponseEntity<?> addFuel(@PathVariable("id") Long id, @RequestBody Map<String,Double> fuelDetails) {
         try {
-           return fuelStationService.addFuels(id,fuelDetails);
+            return fuelStationService.addFuels(id, fuelDetails);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
+
 
     //find is any Fuel station registered on this RegisteredNumber
     @PreAuthorize("hasAuthority('station')")
     @GetMapping("{regNum}")
-    public boolean existsByRegisNumById(@PathVariable("regnum") String registrationNumber) {
+    public boolean existsByRegistrationNumber(@PathVariable("regNum") String registrationNumber) {
         return fuelStationService.existsByRegistrationNumber(registrationNumber);
     }
+
 
     // find station by login id
     @PreAuthorize("hasAuthority('station')")
@@ -65,20 +75,22 @@ public class FuelStationController {
         }
     }
 
-    @PreAuthorize(("hasAuthority('station')"))
+    //find fuels in the fuelStation by id  
+    @PreAuthorize(("hasAuthority('stationowner')"))
     @GetMapping("/findFuels/{id}")
     public ResponseEntity<?> getFuels(@PathVariable("id") Long stationId){
         try {
-            Map<String,Double> availablefuel = fuelStationService.getFuelInventory(stationId);
-            return ResponseEntity.ok(availablefuel);
+            Map<String,Double> availableFuel = fuelStationService.getFuelInventory(stationId);
+            return ResponseEntity.ok(availableFuel);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
         }
     }
 
+    // find station name by station id
     @PreAuthorize("hasAuthority('station')")
     @GetMapping("/findName/{id}")
-    public ResponseEntity<?> getNameById(@PathVariable("id") Long stationid){
+    public ResponseEntity<?> getNameById (@PathVariable("id") Long stationid){
         try {
             Optional<FuelStation> station = fuelStationService.findFuelStationById(stationid);
             return ResponseEntity.ok(station.get().getStationName());

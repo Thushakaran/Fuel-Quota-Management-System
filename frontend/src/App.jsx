@@ -17,8 +17,13 @@ import VehicleManagement from "./pages/VehicleManagement";
 import AdminDashboard from "./pages/AdminDashboard";
 import VehicleOwnerDashboard from "./pages/VehicleOwnerDashboard";
 
+
 import FuelStationManagement from "./pages/FuelStationManagement";
 // import OwnerProfile from "./components/OwnerProfile";
+
+import FuelStationManagement from "./components/FuelStationManagement";
+import OwnerProfile from "./components/OwnerProfile";
+
 import AddFuelForm from "./components/AddFuelForm";
 import FuelTransactionManagement from "./pages/FuelTransactionManagement";
 
@@ -51,7 +56,7 @@ function App() {
 
 
           <Route path="/owner/:id/stationreg" element={<FuelStationRegistration />} />
-          {/* <Route path="owner/:id/profile" element={<OwnerProfile/>} /> */}
+          <Route path="owner/:id/profile" element={<OwnerProfile/>} />
           
 
 

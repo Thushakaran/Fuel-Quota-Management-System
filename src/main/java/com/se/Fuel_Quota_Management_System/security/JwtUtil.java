@@ -35,12 +35,12 @@ public class JwtUtil {
         if (userOpt.isPresent()) {
             Role role = userOpt.get().getRole();
             //expiration date
-            int jwtExpirationMilliSecond = 86400000;
+            long jwtExpirationMilliSecond = 24 * 60 * 60 * 1000L;// for 1 day
             return Jwts.builder()
                     .setSubject(username)
                     .claim("role", role.getName())
                     .setIssuedAt(new Date())
-                    .setExpiration(new Date(new Date().getTime() + jwtExpirationMilliSecond))
+                    .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMilliSecond))
                     .signWith(secretkey)
                     .compact();
         } else {

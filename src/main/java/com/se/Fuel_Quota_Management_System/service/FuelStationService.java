@@ -31,13 +31,13 @@ public class FuelStationService {
     private FuelStationOwnerRepository ownerRepository;
 
     @Autowired
-    private AuthController authController;
-
-    @Autowired
     private RoleRepository roleRepository;
 
     @Autowired
     private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private AuthController authController;
 
     @Transactional
     public FuelStation registerFuelStation(FuelStationLogDTO request) throws Exception {
@@ -176,8 +176,11 @@ public class FuelStationService {
     @Transactional
     public void updateFuelInventory(Long stationId, double amount, Long vehicleId) {
 
-        String vehicleFuelType = String.valueOf(vehicleRepository.findFuelTypeByVehicleId(vehicleId));
+//        String vehicleFuelType = String.valueOf(vehicleRepository.findFuelTypeByVehicleId(vehicleId));
         // Retrieve the fuel station entity by station ID
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Fuel Type not Found"));
+        String vehicleFuelType = vehicle.getFuelType();
         FuelStation fuelStation = fuelStationRepository.findById(stationId)
                 .orElseThrow(() -> new RuntimeException("Fuel Station not found with ID: " + stationId));
 
@@ -207,13 +210,4 @@ public class FuelStationService {
 
 
 }
-
-
-
-
-
-
-
-
-
 

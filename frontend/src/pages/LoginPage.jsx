@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { getstationid} from "../api/FuelStationServiceApi.js";
-import {login} from '../api/CommonApi.js'
-import {getownerid }from '../api/FuelStationOwnerServiceApi.js'
+import { getstationid } from "../api/FuelStationServiceApi.js";
+import { login } from "../api/CommonApi.js";
+import { getownerid } from "../api/FuelStationOwnerServiceApi.js";
 import { getvehicleid } from "../api/vehicleApi.js";
+import fuelStationOwnerImage from "../Photo/fuelstationOwner.png";
+import fuelStationImage from "../Photo/fuelstation.webp";
+import vehicleImage from "../Photo/vehiclelogin.jpeg";
+import adminImage from "../Photo/admin.png"
 
 import Navbar from "../components/Navbar";
 
 const LoginComponent = ({ heading, registrationLink, registrationText, image, Notregistered }) => {
   const [loginData, setLoginData] = useState({ userName: "", password: "" });
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -21,50 +26,35 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image, No
   const fetchOwnerDetails = async (loginId) => {
     try {
       const response = await getownerid(loginId);
-      const ownerId = response.data;
-      navigate(`/owner/${ownerId}`);
+      navigate(`/owner/${response.data}`);
     } catch (error) {
-      console.error("Error fetching owner details:", error);
-      setError("Failed to fetch owner details.");
+      toast.error("Failed to fetch owner details!");
     }
   };
 
   const fetchStationDetails = async (loginId) => {
     try {
       const response = await getstationid(loginId);
-      const stationId = response.data;
-      navigate(`/station/${stationId}`);
+      navigate(`/station/${response.data}`);
     } catch (error) {
-      console.error("Error fetching station details:", error);
-      setError("Failed to fetch station details.");
+      toast.error("Failed to fetch station details!");
     }
   };
 
-  
   const fetchVehicleDetails = async (loginId) => {
     try {
       const response = await getvehicleid(loginId);
-      const vehicleId = response.data; // Change variable name
-      console.log(vehicleId);
-      navigate(`/vehicle/${vehicleId}`);
+      navigate(`/vehicle/${response.data}`);
     } catch (error) {
-      console.error("Error fetching vehicle details:", error);
-      setError("Failed to fetch vehicle details.");
+      toast.error("Failed to fetch vehicle details!");
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    console.log(loginData);
     try {
       const response = await login(loginData);
-      const {
-        token,
-        role: { name: role },
-        id: loginId,
-      } = response.data;
+      const { token, role: { name: role }, id: loginId } = response.data;
 
       localStorage.setItem("token", token);
 
@@ -80,83 +70,83 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image, No
           break;
         case "vehicle":
           await fetchVehicleDetails(loginId);
-
-
           break;
         default:
-          setError("Unknown role, cannot navigate.");
+          toast.error("Unknown role, cannot navigate!");
       }
     } catch (error) {
-      console.error("Login error:", error);
-      setError("Login failed. Please check your credentials.");
+      toast.error("Login failed. Please check your credentials!");
     }
   };
 
   return (
     <>
-    <Navbar/>
-    <br/>
-    <div className="container justify-content-center card shadow-sm col-md-4 col-lg-5">
-            <div className="row g-0">
-              <div
-                className="col-md-6"
-                style={{
-                  backgroundImage: `url(${image})`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  backgroundSize: "cover",
-                }}
-              ></div>
-              <div className="col-md-6 p-4">
-                <h2>{heading}</h2>
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-3">
-                    <label htmlFor="userName" className="form-label">
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      id="userName"
-                      name="userName"
-                      placeholder="Enter your username"
-                      value={loginData.userName}
-                      onChange={handleChange}
-                      required
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="password" className="form-label">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      placeholder="Enter your password"
-                      value={loginData.password}
-                      onChange={handleChange}
-                      required
-                      className="form-control"
-                    />
-                  </div>
-                  {error && <p className="text-danger">{error}</p>}
-                  <button
-                    type="submit"
-                    className="btn btn-primary w-100 py-2"
-                  >
-                    Submit
-                  </button>
-                </form>
-                <p className="mt-3">
+      <Navbar />
+      <ToastContainer position="top-center" autoClose={10000} />
+      <div className="container d-flex justify-content-center align-items-center min-vh-100">
+        <div className="card shadow-lg border-0 col-md-8 col-lg-6 p-4">
+          <div className="row g-0">
+            <div
+              className="col-md-6 d-none d-md-block"
+              style={{
+                backgroundImage: `url('${image}')`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                borderRadius: "10px 0 0 10px",
+              }}
+            ></div>
+            <div className="col-md-6 p-4">
+              <h2 className="text-center mb-4">{heading}</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="userName" className="form-label">
+                    <i className="fas fa-user me-2"></i>Username
+                  </label>
+                  <input
+                    type="text"
+                    id="userName"
+                    name="userName"
+                    placeholder="Enter your username"
+                    value={loginData.userName}
+                    onChange={handleChange}
+                    required
+                    className="form-control rounded-pill"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="password" className="form-label">
+                    <i className="fas fa-lock me-2"></i>Password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    value={loginData.password}
+                    onChange={handleChange}
+                    required
+                    className="form-control rounded-pill"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100 py-2 rounded-pill shadow-sm"
+                >
+                  Login
+                </button>
+              </form>
+              {Notregistered && (
+                <p className="mt-3 text-center">
                   {Notregistered}
-                  <Link to={registrationLink} className="text-primary">
+                  <Link to={registrationLink} className="text-primary fw-bold">
                     {registrationText}
                   </Link>
                 </p>
-              </div>
+              )}
             </div>
-    </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
@@ -164,39 +154,36 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image, No
 export const OwnerLogin = () => (
   <LoginComponent
     heading="FuelStation Owner Login"
-    image="https://png.pngtree.com/png-clipart/20230914/original/pngtree-business-owner-vector-png-image_11243661.png"
-    Notregistered = "Notregistered  "
+    image={fuelStationOwnerImage}
+    Notregistered="Not registered yet? "
     registrationLink="/ownerreg"
-    registrationText="Owner Registration"
+    registrationText="Register as Owner"
   />
 );
 
 export const StationLogin = () => (
   <LoginComponent
     heading="FuelStation Login"
-    image="https://mummyfever.co.uk/wp-content/uploads/2020/07/crop-woman-taking-refueling-pistol-gun-4173096-1024x1536.jpg.webp"
-    Notregistered = "Notregistered  "
+    image={fuelStationImage}
+    Notregistered="Not registered yet? "
     registrationLink="/stationreg"
-    registrationText="Station Registration"
+    registrationText="Register as Station"
   />
 );
 
 export const VehicleLogin = () => (
   <LoginComponent
     heading="Vehicle Login"
-    image="https://files.oaiusercontent.com/file-RBz1eqcSUumAXYaRYsapiq?se=2025-01-21T09%3A52%3A29Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D04800321-b05b-4039-a339-fe2f4c26d4ce.webp&sig=TyMooMIuoI9G5NCwrGZyqnh3M9Yei%2B9Byj3f%2BijyP/c%3D"
-    Notregistered = "Notregistered  "
+    image={vehicleImage}
+    Notregistered="Not registered yet? "
     registrationLink="/vehicle-registration"
-    registrationText="Vehicle Registration"
-  />
+    registrationText="Register your Vehicle"
+  />
 );
 
 export const AdminLogin = () => (
-  <LoginComponent 
+  <LoginComponent
     heading="Admin Login"
-    image="https://thumbs.dreamstime.com/z/illustration-software-development-d-web-programming-art-programmer-eyeglasses-sitting-laptop-working-coding-278740366.jpg"
-    Notregistered = " "
-    registrationLink=" "
-    registrationText=" "
-    />
+    image={adminImage}
+  />
 );

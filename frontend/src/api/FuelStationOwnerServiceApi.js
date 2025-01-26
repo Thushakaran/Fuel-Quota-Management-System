@@ -36,4 +36,26 @@ export const getownerid = (loginid) => {
       }
     });
   };
+
+export const getdetailbyid = (id) => {
+  const token = localStorage.getItem("token");
+  return axios.get(`${REST_API_BASE_URL}${OWNER_CASE}/findDetail/${id}`,{
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    }
+  });
+};
+
+
+export const editdetails = (id,ownerData) => {
+  const token = localStorage.getItem("token");
+  return axios.post(`${REST_API_BASE_URL}${OWNER_CASE}/saveDetails/${id}`,ownerData,{
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    }
+  });
+};
+
   
