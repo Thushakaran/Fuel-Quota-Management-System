@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 .permitAll()
 //                                .requestMatchers("api/fuel-station/**").hasAuthority("station")
 //                                .requestMatchers("api/owner/**").hasAuthority("stationowner")
+//                                .requestMatchers("/api/admin/**").hasRole("admin")
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy

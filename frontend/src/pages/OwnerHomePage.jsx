@@ -4,6 +4,8 @@ import OwnerNavbar from "../components/OwnerNavbar";
 import Footer from "../components/Footer";
 import "../css/Layout.css";
 import { getownername, liststations } from "../api/FuelStationOwnerServiceApi.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const OwnerHomePage = () => {
   const { id } = useParams();
@@ -16,7 +18,7 @@ const OwnerHomePage = () => {
         setOwnername(response.data.toUpperCase());
       })
       .catch((error) => {
-        console.error("Error fetching owner name:", error);
+        toast.error(`Error fetching owner name: ${error.message || "Unknown error"}`);
       });
 
     liststations(id)
@@ -24,17 +26,18 @@ const OwnerHomePage = () => {
         setStations(response.data);
       })
       .catch((error) => {
-        console.error(error);
+        console.error(`Error fetching stations: ${error.message || "Unknown error"}`);
       });
   }, [id]);
 
   return (
     <>
       <OwnerNavbar />
+      <ToastContainer position="top-center" autoClose={6000} closeOnClick draggable/>
 
       {/* Hero Section */}
       <header className="bg-primary text-white text-center py-5">
-        <h1 className="fw-bold">Welcome, {ownername}! 👋</h1>
+      <h1 className="fw-bold">Welcome, {ownername || "Owner"}! 👋</h1>
         <p className="fs-5">Here are the fuel stations you manage.</p>
         <div className="mt-3">
           <span className="badge bg-light text-dark fs-6">
@@ -78,7 +81,12 @@ const OwnerHomePage = () => {
               </div>
             ))
           ) : (
-            <p className="text-muted">No stations found.</p>
+            <div className="text-center">
+              <p className="text-muted">No stations found. Add a new station to get started!</p>
+                <Link to="/add-station" className="btn btn-primary">
+                  Add Station
+                </Link>
+            </div>
           )}
         </div>
       </main>

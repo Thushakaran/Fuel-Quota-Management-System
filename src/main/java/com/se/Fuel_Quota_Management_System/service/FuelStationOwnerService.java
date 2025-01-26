@@ -34,35 +34,32 @@ public class FuelStationOwnerService {
 
 
     @Transactional
-    public ResponseEntity<?> registerOwner( FuelStationOwnerLogDTO fuelStationOwnerlog) {
+    public FuelStationOwner registerOwner(FuelStationOwnerLogDTO fuelStationOwnerlog) {
         try {
             // Check if NIC number already exists
             if (fuelStationOwnerRepository.existsByNicNo(fuelStationOwnerlog.getNicNo())) {
-                return ResponseEntity.badRequest().body(Map.of("message", "NIC number already registered"));
+                throw new IllegalArgumentException("NIC number already registered");
             }
 
             // Check if username already exists
             if (userLogRepository.existsByUserName(fuelStationOwnerlog.getUserName())) {
-                return ResponseEntity.badRequest().body(Map.of("message", "Username already exists"));
+                throw new IllegalArgumentException("Username already exists");
             }
 
             // Create and validate OwnerLog registration request
-            Optional<Role> roleOptional = roleRepository.findByName("stationowner");
-            if (roleOptional.isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("message", "Invalid role name"));
-            }
+            Role role = roleRepository.findByName("stationowner")
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid role name"));
 
             RegisterRequest ownerLog = new RegisterRequest();
             ownerLog.setUserName(fuelStationOwnerlog.getUserName());
             ownerLog.setPassword(fuelStationOwnerlog.getPassword());
-            ownerLog.setRole(roleOptional.get().getName());
+            ownerLog.setRole(role.getName());
 
             // Register the OwnerLog using the auth controller's register method
             ResponseEntity<?> registerResponse = authController.register(ownerLog);
             if (!registerResponse.getStatusCode().is2xxSuccessful()) {
-                return registerResponse; // Forward error response from the register method
+                throw new RuntimeException("Error during registration: " + registerResponse.getBody());
             }
-
 
             // Create and save FuelStationOwner
             FuelStationOwner owner = new FuelStationOwner();
@@ -73,16 +70,16 @@ public class FuelStationOwnerService {
             owner.setAddress(fuelStationOwnerlog.getAddress());
             owner.setOwnerLog((UserLog) registerResponse.getBody());
 
-            fuelStationOwnerRepository.save(owner);
+            return fuelStationOwnerRepository.save(owner);
 
-            return ResponseEntity.ok(Map.of("message", "Owner registered successfully", "owner", owner));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("message", "An error occurred", "error", e.getMessage()));
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 
 
-    public FuelStationOwner findFuelStationOwnerById(Long Id) {
+
+    public Optional<FuelStationOwner>findFuelStationOwnerById(Long Id) {
         return fuelStationOwnerRepository.findFuelStationOwnerById(Id);
     }
 
