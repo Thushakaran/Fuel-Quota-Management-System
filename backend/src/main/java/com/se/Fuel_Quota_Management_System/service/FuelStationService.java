@@ -208,6 +208,33 @@ public class FuelStationService {
     }
 
 
+    public FuelStation saveEditDetails(Long id, FuelStation fuelStation) {
+        // Fetch the existing FuelStation entity from the database
+        FuelStation existing = fuelStationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Fuel Station with ID " + id + " not found"));
+
+        // Update fields only if the new values are not null
+        if (fuelStation.getStationName() != null) {
+            existing.setStationName(fuelStation.getStationName());
+        }
+        if (fuelStation.getRegistrationNumber() != null) {
+            existing.setRegistrationNumber(fuelStation.getRegistrationNumber());
+        }
+        if (fuelStation.getLocation() != null) {
+            existing.setLocation(fuelStation.getLocation());
+        }
+
+        if (fuelStation.getFuelInventory() != null) {
+            // Merge the existing fuelInventory with the new values
+            Map<String, Double> updatedInventory = existing.getFuelInventory();
+            updatedInventory.putAll(fuelStation.getFuelInventory()); // Overwrite existing or add new fuel types
+            existing.setFuelInventory(updatedInventory);
+        }
+
+        // Save and return the updated FuelStation entity
+        return fuelStationRepository.save(existing);
+    }
 
 }
+
 

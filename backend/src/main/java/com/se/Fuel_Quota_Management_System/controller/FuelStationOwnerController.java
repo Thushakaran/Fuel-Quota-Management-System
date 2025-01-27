@@ -112,7 +112,7 @@ public class FuelStationOwnerController {
 
     // save details when update profile
     @PreAuthorize("hasAuthority('stationowner')")
-    @PostMapping("saveDetails/{id}")
+    @PutMapping("saveDetails/{id}")
     public ResponseEntity<?> saveEditDetails(@PathVariable("id") Long id, @RequestBody FuelStationOwner fuelStationOwner){
         try {
             FuelStationOwner owner = fuelStationOwnerService.saveEditDetails(id,fuelStationOwner);
