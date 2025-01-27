@@ -1,4 +1,3 @@
-
 import { CameraView } from "expo-camera";
 import { Stack } from "expo-router";
 import {
@@ -20,6 +19,7 @@ export default function Home() {
   const appState = useRef(AppState.currentState);
   const [scannedData, setScannedData] = useState(null); // State to hold scanned QR data
   const [liters, setLiters] = useState(""); // State to hold liters input
+  const [fuelStationId, setFuelStationId] = useState(""); // State to hold fuel station ID
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
@@ -47,7 +47,9 @@ export default function Home() {
   const handleConfirm = () => {
     console.log("Scanned QR Data:", scannedData);
     console.log("Liters pumped:", liters);
+    console.log("Fuel Station ID:", fuelStationId);
     setLiters("");
+    setFuelStationId("");
     setScannedData(null); // Reset after confirmation
     qrLock.current = false;
   };
@@ -76,6 +78,13 @@ export default function Home() {
             placeholder="Enter liters"
             value={liters}
             onChangeText={setLiters}
+          />
+          <Text style={styles.label}>Enter Fuel Station ID</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter fuel station ID"
+            value={fuelStationId}
+            onChangeText={setFuelStationId}
           />
           <Button title="Confirm" onPress={handleConfirm} />
         </View>
