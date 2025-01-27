@@ -25,5 +25,4 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     @Query("SELECT v.fuelType FROM Vehicle v WHERE v.id = :vehicleId")
     Optional<String> findFuelTypeByVehicleId(@Param("vehicleId") Long vehicleId);
 
-
 }

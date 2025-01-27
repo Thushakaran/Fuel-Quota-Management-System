@@ -33,9 +33,6 @@ public class FuelTransactionServiceImpl implements FuelTransactionService {
     private VehicleService vehicleService;
 
 
-
-
-
     // Method to initiate a new fuel transaction
     @Override
     @Transactional
@@ -60,19 +57,15 @@ public class FuelTransactionServiceImpl implements FuelTransactionService {
         fuelTransaction.setStation(station);
         fuelTransaction.setTransactionDate(LocalDateTime.now());
         fuelTransaction.setAmount(amount);
+        fuelTransaction.setSavedstationId(stationId);
+
 
         return fuelTransactionRepository.save(fuelTransaction);
 
     }
 
 
-
-
-
-
-
-
-  // Method to fetch details of a specific transaction
+    // Method to fetch details of a specific transaction
 
     @Override
     @Transactional
@@ -85,19 +78,15 @@ public class FuelTransactionServiceImpl implements FuelTransactionService {
 
         // Map entities to DTOs
         return transactions.stream()
-                .map(tx -> new FuelTransactionDTO(tx.getId(),tx.getVehicle().getId(), tx.getAmount(), tx.getTransactionDate(), tx.getStation().getId()))
+                .map(tx -> new FuelTransactionDTO(tx.getId(), tx.getVehicle().getId(), tx.getAmount(), tx.getTransactionDate(), tx.getStation().getId()))
                 .collect(Collectors.toList());
     }
 
 
-
-
-
-
     public void DeductFuelQuotaWhenPumpFuel(Long stationId, double amount, Long vehicleId) {
-            fuelStationService.updateFuelInventory(stationId,amount,vehicleId);
-            vehicleService.updateVehicleFuelQuota(vehicleId,amount);
-            startTransaction(vehicleId,amount,stationId);
+        fuelStationService.updateFuelInventory(stationId, amount, vehicleId);
+        vehicleService.updateVehicleFuelQuota(vehicleId, amount);
+        startTransaction(vehicleId, amount, stationId);
 
 
     }

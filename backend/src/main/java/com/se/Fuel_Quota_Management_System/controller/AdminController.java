@@ -97,7 +97,7 @@ public class AdminController {
 
     // Get a specific fuel station by ID.
 
-    @GetMapping("/station/serch_id/{id}")
+    @GetMapping("/station/search_id/{id}")
     public ResponseEntity<FuelStation> getFuelStationById(@PathVariable Long id) {
         FuelStation fuelStation = adminService.getFuelStationById(id);
         return ResponseEntity.ok(fuelStation);
@@ -113,8 +113,7 @@ public class AdminController {
     }
 
 
-
-     // Get fuel station by location.
+    // Get fuel station by location.
 
     @GetMapping("/station/serch_location/{location}")
     public ResponseEntity<FuelStation> getFuelStationByLocation(@PathVariable String location) {
@@ -149,8 +148,7 @@ public class AdminController {
     }
 
 
-
-     // Delete a FuelStation details by ID.
+    // Delete a FuelStation details by ID.
 
 
     @DeleteMapping("/station/{id}")
@@ -166,13 +164,13 @@ public class AdminController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerAdmin(@Validated @RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<?> registerAdmin(@Validated @RequestBody RegisterRequest registerRequest) {
         try {
             ResponseEntity<?> registerAdmin = adminService.registerAdmin(registerRequest);
             String token = jwtUtil.generateToken(registerRequest.getUserName());
-            return ResponseEntity.ok(Map.of("admin",registerAdmin.getBody(),"token",token));
+            return ResponseEntity.ok(Map.of("admin", registerAdmin.getBody(), "token", token));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 
