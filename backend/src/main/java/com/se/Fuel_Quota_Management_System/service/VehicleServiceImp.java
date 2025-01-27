@@ -172,6 +172,10 @@ public class VehicleServiceImp implements VehicleService {
             vehicle.setChassisNumber(dmtVehicle.getChassisNumber());
             vehicle.setOwnerLog(registeredLog);
 
+            // Assign the fuel quota based on the vehicle type
+            double fuelQuota = calculateFuelQuota(dmtVehicle.getVehicleType());
+            vehicle.setFuelQuota(fuelQuota);
+
             // Generate a unique 8-character QR Code ID
             String qrCodeId = generateQrCodeId(8);
             vehicle.setQrCodeId(qrCodeId); // Store in the vehicle entity
