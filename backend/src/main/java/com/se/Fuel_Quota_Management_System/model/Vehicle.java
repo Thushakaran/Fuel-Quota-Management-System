@@ -35,6 +35,7 @@ public class Vehicle {
 
     private double fuelQuota;
 
+    @Column(length = 512)
     private String qrCode;
 
     private String phoneNumber;
@@ -44,18 +45,13 @@ public class Vehicle {
 
     private double remainingQuota;
 
+    @Column(unique = true)
+    private String qrCodeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fuel_station_id")
-    private FuelStation fuelStation;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "loginid", nullable = false)
     private UserLog ownerLog;
-
-//    @ManyToOne
-//    @JoinColumn(name = "vehicle_owner_id")
-//    private VehicleOwner vehicleOwner; // Link to the VehicleOwner entity
 
 
 }

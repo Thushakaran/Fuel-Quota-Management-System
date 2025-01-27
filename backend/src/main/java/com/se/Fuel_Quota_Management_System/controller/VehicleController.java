@@ -43,6 +43,7 @@ public class VehicleController {
         }
     }
 
+
     // Get vehicle details by vehicle number
     @GetMapping("/{vehicleNumber}")
     public ResponseEntity<Vehicle> getVehicle(@PathVariable String vehicleNumber) {
@@ -61,13 +62,6 @@ public class VehicleController {
             return ResponseEntity.notFound().build();
         }
     }
-
-//    @GetMapping("/dashboard/{vehicleId}")
-//    @Transactional
-//    public ResponseEntity<Vehicle> getVehicle(@PathVariable Long vehicleId) {
-//        Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
-//        return ResponseEntity.ok(vehicle);
-//    }
 
     @GetMapping("/dashboard/transactions/{vehicleId}")
     public ResponseEntity<List<FuelTransaction>> getFuelTransactions(@PathVariable Long vehicleId) {

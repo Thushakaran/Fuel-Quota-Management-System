@@ -21,17 +21,15 @@ public interface VehicleService {
     String generateQrCode(String vehicleNumber, double fuelQuota);
 
 
-
     String getFuelTypeByVehicleId(Long vehicleId);
 
-    public void updateVehicleFuelQuota(Long vehicleId,double amount);
-
-
+    public void updateVehicleFuelQuota(Long vehicleId, double amount);
 
 
     Vehicle findVehicleByOwnerLog(Long loginid);
 
     Optional<Vehicle> getVehicleById(Long vehicleId);
 
-   public List<FuelTransaction> getFuelTransactions(Long vehicleId);
+    public List<FuelTransaction> getFuelTransactions(Long vehicleId);
+
 }

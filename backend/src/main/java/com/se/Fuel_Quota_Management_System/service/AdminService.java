@@ -14,6 +14,7 @@ import com.se.Fuel_Quota_Management_System.repository.*;
 import com.se.Fuel_Quota_Management_System.repository.FuelTransactionRepository;
 import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -93,7 +94,6 @@ public class AdminService {
         // Save the updated vehicle and return it
         return vehicleRepository.save(existingVehicle);
     }
-
 
 
     public void deleteVehicle(Long id) {
@@ -176,8 +176,8 @@ public class AdminService {
 
 
     // Deletes a FuelStation by its ID.
-
-
+    
+    @Transactional
     public void deleteFuelStation(Long id) {
         // Check if the vehicle exists
         if (!fuelStationRepository.existsById(id)) {
@@ -186,6 +186,11 @@ public class AdminService {
 
         // Delete the FuelStation
         else {
+            // Detach transactions from the fuel station
+            fuelTransactionRepository.detachTransactions(id);
+
+            // Now, delete the fuel station
+            fuelStationRepository.deleteById(id);
             fuelStationRepository.deleteById(id);
         }
 
@@ -232,26 +237,26 @@ public class AdminService {
         fuelTransactionRepository.deleteById(id);
     }
 
-public FuelTransaction updateFuelTransaction(Long id, FuelTransaction updatedFuelTransaction) {
-    // Fetch the existing transaction
-    FuelTransaction existingFuelTransaction = getTransactionById(id);
+    public FuelTransaction updateFuelTransaction(Long id, FuelTransaction updatedFuelTransaction) {
+        // Fetch the existing transaction
+        FuelTransaction existingFuelTransaction = getTransactionById(id);
 
-    if (existingFuelTransaction == null) {
-        throw new RuntimeException("Transaction not found");
+        if (existingFuelTransaction == null) {
+            throw new RuntimeException("Transaction not found");
+        }
+
+        // Lookup the existing station by ID
+        Long stationId = updatedFuelTransaction.getStation().getId();
+        FuelStation station = fuelStationRepository.findById(stationId)
+                .orElseThrow(() -> new RuntimeException("Station not found"));
+
+        // Update fields
+        existingFuelTransaction.setAmount(updatedFuelTransaction.getAmount());
+        existingFuelTransaction.setStation(station);
+
+        // Save and return
+        return fuelTransactionRepository.save(existingFuelTransaction);
     }
-
-    // Lookup the existing station by ID
-    Long stationId = updatedFuelTransaction.getStation().getId();
-    FuelStation station = fuelStationRepository.findById(stationId)
-            .orElseThrow(() -> new RuntimeException("Station not found"));
-
-    // Update fields
-    existingFuelTransaction.setAmount(updatedFuelTransaction.getAmount());
-    existingFuelTransaction.setStation(station);
-
-    // Save and return
-    return fuelTransactionRepository.save(existingFuelTransaction);
-}
 
 
 }
