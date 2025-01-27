@@ -18,7 +18,7 @@ public interface VehicleService {
 
     double calculateFuelQuota(String vehicleType);
 
-    String generateQrCode(String vehicleNumber, double fuelQuota);
+    public String generateQrCode(String qrCodeId);
 
 
     String getFuelTypeByVehicleId(Long vehicleId);
