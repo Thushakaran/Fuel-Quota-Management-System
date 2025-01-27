@@ -1,9 +1,4 @@
-import React from "react";
-
-
-const FuelStationTable = ({ fuelStations, onEdit, onDelete }) => {
-    const fuelStationList = Array.isArray(fuelStations) ? fuelStations : [];
-
+const FuelStationTable = ({ fuelStations, onDelete, onEdit }) => {
     return (
         <table className="table table-striped table-bordered table-hover">
             <thead className="table-dark">
@@ -12,22 +7,32 @@ const FuelStationTable = ({ fuelStations, onEdit, onDelete }) => {
                     <th>Location</th>
                     <th>Station Name</th>
                     <th>Registration Number</th>
+                    <th>Fuel Inventory</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
-                {fuelStationList.length === 0 ? (
+                {fuelStations.length === 0 ? (
                     <tr>
-                        <td colSpan="6">No fuel stations found</td>
+                        <td colSpan="7">No fuel stations found</td>
                     </tr>
                 ) : (
-                    fuelStationList.map((station) => (
+                    fuelStations.map((station) => (
                         <tr key={station.id}>
                             <td>{station.id}</td>
                             <td>{station.location}</td>
                             <td>{station.stationName}</td>
                             <td>{station.registrationNumber}</td>
+                            <td>
+                                {station.fuelInventory
+                                    ? Object.entries(station.fuelInventory).map(([fuelType, qty]) => (
+                                        <div key={fuelType}>
+                                            <strong>{fuelType}:</strong> {qty} liters
+                                        </div>
+                                    ))
+                                    : "No data"}
+                            </td>
                             <td>
                                 <button
                                     className="btn btn-primary btn-sm"
@@ -39,7 +44,11 @@ const FuelStationTable = ({ fuelStations, onEdit, onDelete }) => {
                             <td>
                                 <button
                                     className="btn btn-danger btn-sm"
-                                    onClick={() => onDelete(station.id)}
+                                    onClick={() => {
+                                        if (window.confirm("Are you sure you want to delete this fuel station?")) {
+                                            onDelete(station.id);
+                                        }
+                                    }}
                                 >
                                     Delete
                                 </button>

@@ -6,6 +6,8 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { FaUser, FaPhoneAlt, FaEnvelope, FaKey} from 'react-icons/fa';
 import { FaLocationDot } from "react-icons/fa6";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FuelOwnerRegistration = () => {
   const navigate = useNavigate();
@@ -80,13 +82,14 @@ const FuelOwnerRegistration = () => {
       setError({});
       ownerregister(ownerData)
         .then((response) => {
-          const id = response.data.owner.id;
-          alert('Fuel owner registered successfully!');
+          console.log(response);
+          const id = response.data.id;
+          localStorage.setItem("token", response.data.token);
+          toast.success('Fuel owner registered successfully!');
           navigate(`/owner/${id}`);
         })
         .catch((error) => {
-          console.error('Error registering owner:', error);
-          alert('Registration failed. Please try again.');
+          toast.error('Error registering owner:', error);
         });
     }
   };
@@ -94,6 +97,7 @@ const FuelOwnerRegistration = () => {
   return (
     <>
       <Navbar />
+      <ToastContainer position="top-center" autoClose={10000} />
 
       {path === 1 && (
         <div className="register-container container mt-5">
@@ -262,7 +266,7 @@ const FuelOwnerRegistration = () => {
 
       <br />
       <br />
-      <footer style={{ position: 'absolute', bottom: '0', display: 'block', width: '100%' }}>
+      <footer style={{ position: 'relative', bottom: '0', display: 'block', width: '100%' }}>
         <Footer />
       </footer>
     </>

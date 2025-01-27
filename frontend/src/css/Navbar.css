@@ -38,22 +38,26 @@
 
 
 
-
-
-
-
-
-
-
+.nav-item:hover{
+  border-radius: 0.25rem;
+}
 
 li:hover{
   background-color: #4f5153;
 }
 
 .navbar{
-  position: fixed;
+  /* position: fixed; */
+  text-decoration: none;
   width: 100%;
   top: 0;
   left: 0;
+  z-index: 1000; /*Ensures it stays above content*/
 }
+
+
+
+
+
+
 

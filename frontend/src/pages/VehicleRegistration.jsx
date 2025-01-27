@@ -91,6 +91,7 @@ const VehicleRegistration = () => {
       const result = await registerVehicle(formData);
       setSuccessMessage("Vehicle registered successfully!");
       if (result.qrCode) setQrCode(result.qrCode);
+      localStorage.setItem("token", response.data.token);
       resetForm();
     } catch (error) {
       const errorMessage =
@@ -112,7 +113,7 @@ const VehicleRegistration = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mt-5 bg-light p-4 rounded">
+      <div className="container-form bg-light p-4 rounded">
         <div className="header text-center mb-4 text-primary">
           <h2>Vehicle Registration</h2>
         </div>
@@ -230,9 +231,10 @@ const VehicleRegistration = () => {
               onChange={handleChange}
             >
               <option value="">Select Fuel Type</option>
-              <option value="Petrol">Petrol</option>
-              <option value="Diesel">Diesel</option>
-              <option value="CNG">CNG</option>
+              <option value="92-Octane">92-Octane</option>
+              <option value="95-Octane">95-Octane</option>
+              <option value="Auto Diesel">Auto Diesel</option>
+              <option value="Super Diesel">Super Diesel</option>
             </select>
             {errorMessages.fuelType && (
               <div className="text-danger">{errorMessages.fuelType}</div>

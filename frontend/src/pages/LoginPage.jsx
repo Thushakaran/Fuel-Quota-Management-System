@@ -82,7 +82,7 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image, No
   return (
     <>
       <Navbar />
-      <ToastContainer position="top-center" autoClose={3000} />
+      <ToastContainer position="top-center" autoClose={10000} />
       <div className="container d-flex justify-content-center align-items-center min-vh-100">
         <div className="card shadow-lg border-0 col-md-8 col-lg-6 p-4">
           <div className="row g-0">
