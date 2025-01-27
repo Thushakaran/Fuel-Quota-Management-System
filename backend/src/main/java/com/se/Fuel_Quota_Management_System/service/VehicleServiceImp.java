@@ -172,16 +172,12 @@ public class VehicleServiceImp implements VehicleService {
             vehicle.setChassisNumber(dmtVehicle.getChassisNumber());
             vehicle.setOwnerLog(registeredLog);
 
-            // Assign the fuel quota based on the vehicle type
-            double fuelQuota = calculateFuelQuota(dmtVehicle.getVehicleType());
-            vehicle.setFuelQuota(fuelQuota);
-
             // Generate a unique 8-character QR Code ID
             String qrCodeId = generateQrCodeId(8);
             vehicle.setQrCodeId(qrCodeId); // Store in the vehicle entity
 
             // Generate QR code using the unique QR Code ID instead of the vehicle number
-            String qrCode = generateQrCode(qrCodeId, fuelQuota);
+            String qrCode = generateQrCode(qrCodeId);
             vehicle.setQrCode(qrCode);
 
             // Save the vehicle to the repository and return
@@ -255,9 +251,9 @@ public class VehicleServiceImp implements VehicleService {
 //        }
 //    }
 
-    public String generateQrCode(String qrCodeId, double fuelQuota) {
+    public String generateQrCode(String qrCodeId) {
         try {
-            String qrContent = String.format("QR Code ID:%s|FuelQuota:%.2f", qrCodeId, fuelQuota);
+            String qrContent = String.format("QR Code ID:%s", qrCodeId);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             BitMatrix matrix = new MultiFormatWriter().encode(qrContent, BarcodeFormat.QR_CODE, 200, 200);
             MatrixToImageWriter.writeToStream(matrix, "PNG", baos);
