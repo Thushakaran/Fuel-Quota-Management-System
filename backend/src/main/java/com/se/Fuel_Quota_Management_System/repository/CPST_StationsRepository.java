@@ -1,0 +1,15 @@
+package com.se.Fuel_Quota_Management_System.repository;
+
+import com.se.Fuel_Quota_Management_System.model.CPST_Stations;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+// Ceylon Petrolium Storage Terimial
+public interface CPST_StationsRepository extends JpaRepository<CPST_Stations, Long> {
+
+    CPST_Stations findByRegistrationNumber(String registrationNumber);
+
+
+    boolean existsByRegistrationNumber(String registrationNumber);
+
+
+}
