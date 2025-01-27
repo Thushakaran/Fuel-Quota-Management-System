@@ -61,4 +61,11 @@
     font-size: 14px; /* Keep the font size consistent */
     margin-top: 10px; /* Add spacing above download button */
   }
+
+
+  .container-form{
+     margin-left: 15% ;
+     margin-right: 15%;
+     margin-top: 100px;
+  }
   
