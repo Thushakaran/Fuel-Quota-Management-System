@@ -1,20 +1,22 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import "../css/animate.css";
+import "../css/AboutUs.css"
 
 const AboutUsPage = () => {
   return (
     <div>
       <Navbar />
-      <header className="hero bg-primary text-white text-center py-5">
-        <div>
-          <h1 className="display-4">About Us</h1>
+      <header className="hero bg-primary text-white text-center py-5 ">
+        <div className="text-cent">
+          <h1 className="display-4 mt-5 pt-5 ">About Us</h1>
           <p className="lead">
             Empowering fuel management for a better tomorrow.
           </p>
         </div>
       </header>
-      <main className="container my-5">
+      <main className="features container my-5">
         <section>
           <h2 className="text-center mb-4">Our Mission</h2>
           <p className="text-center">

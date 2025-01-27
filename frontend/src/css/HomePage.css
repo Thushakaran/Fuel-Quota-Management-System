@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Margarine&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Satisfy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playwrite+VN:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+body{
+background-image: linear-gradient(180deg,var(--clr-blue)25%,var(--clr-warm-white)) ;
+}
+
+:root {   
+    /*-------------------font Family*/
+    --ff-primary: "Roboto", sans-serif;
+    --ff-secondary: "Inter" , sans-serif;
+    --ff-design: "Satisfy" , cursive;
+    --ff-brand: "Margarine" , sans-serif;
+    --ff-Playwrite : "Playwrite Việt Nam", sans-serif ;
+
+    
+    /*----------------colors------------------*/
+    --clr-blue:#e3f2ff ;
+    --clr-primary:rgb(25, 74, 90) ;
+    --clr-warm-white: #f8f8f8;
+    --clr-pale-mint: #029eb3;
+    --clr-sky-blue:#87CEEB;
+
+    --clr-green-blue: #daedf4;
+
+}
+
+.hero{
+    min-height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),url(../photo/04.jpg) center/cover no-repeat fixed;
+}
+
+
+.banner{
+
+ position: absolute;
+ top:50%;
+ left: 50%;
+ transform: translate(-50%,-50%);
+}
+
+
+.banner h1{
+    font-family:  --ff-Playwrite ;
+    color: transparent;
+    background-image: linear-gradient(190deg,var(--clr-sky-blue),var(--clr-warm-white));
+    background-clip: text;
+  }
+
+
+.banner p{
+    font-family: var(--ff-design);
+   font-weight: 550;
+   font-size: x-large;
+   color:  rgb(236, 249, 249);
+   text-shadow: 2px 3px 5px var(--clr-warm-white);
+
+}
+
+.banner .btn{
+    font-size: 1.25rem;
+    padding: 0.75rem 2rem;
+    border-radius: 1rem;
+    background-image: linear-gradient(180deg,var(--clr-primary), var(--clr-sky-blue) );
+}
+
+.banner .btn:hover{
+    outline: 0.125rem solid var(--clr-pale-mint);
+    outline-offset: 0.10rem;
+}
+
+
+
+
+.features,.container{
+    background-color:var( --clr-green-blue);
+}
+
+
+.out-divider{
+    background-color:  var(--clr-green-blue);
+   
+}
+
+
+.features h2{
+    font-family:var(--ff-secondary) ;
+    text-decoration:underline;
+
+} 
+
+.feature-card{
+    flex: 1;
+    background-color: var( --clr-green-blue);
+    margin-bottom: 20px;
+    height: 230px;
+   
+   
+}
+
+.feature-card:hover{
+    background-color:#d4eaf3;
+}

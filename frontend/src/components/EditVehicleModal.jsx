@@ -1,154 +1,125 @@
-import React, { useState } from "react";
-import axios from "../api/axiosInstance";
+import React, { useState, useEffect } from "react";
 
-const EditVehicleModal = ({ vehicle, onClose, onUpdate }) => {
-  const [updatedVehicle, setUpdatedVehicle] = useState({
-    vehicleNumber: vehicle.vehicleNumber || "",
-    ownerName: vehicle.ownerName || "",
-    vehicleType: vehicle.vehicleType || "",
-    fuelType: vehicle.fuelType || "",
-    fuelQuota: vehicle.fuelQuota || "",
-    fuelQuota: vehicle.chassisNumber || "",
-  });
+const EditVehicleModal = ({ vehicle, onSave, onCancel }) => {
+    const [formData, setFormData] = useState({ ...vehicle });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUpdatedVehicle({ ...updatedVehicle, [name]: value });
-  };
+    useEffect(() => {
+        setFormData({ ...vehicle }); // Re-populate form data when vehicle changes
+    }, [vehicle]);
 
-  // const handleSubmit = () => {
-  //     // Validate required fields
-  //     if (!updatedVehicle.vehicleNumber || !updatedVehicle.ownerName) {
-  //         alert("Vehicle number and owner name are required.");
-  //         return;
-  //     }
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
 
-  //     axios
-  //         .put(/admin/vehicles/${vehicle.id}, updatedVehicle)
-  //         .then(() => {
-  //             alert("Vehicle updated successfully!");
-  //             onUpdate(); // Refresh the vehicle list
-  //             onClose(); // Close the modal
-  //         })
-  //         .catch((error) => {
-  //             console.error("Error updating vehicle:", error);
-  //             alert("Failed to update vehicle.");
-  //         });
-  // };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSave(formData); // Pass the updated form data to the parent
+    };
 
-  const handleSubmit = () => {
-    axios
-      .put(`/admin/vehicles/${vehicle.id}`, updatedVehicle)
-      .then((response) => {
-        alert("Vehicle details updated successfully!");
-        onUpdate();
-        onClose();
-      })
-      .catch((error) => {
-        console.error("Error updating vehicle:", error);
-        if (error.response) {
-          alert(`Failed to update vehicle: ${error.response.data.message}`);
-        } else {
-          alert("Failed to connect to the server.");
-        }
-      });
-  };
+    return (
+        <div className="modal show d-block" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title">Edit Vehicle</h5>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            onClick={onCancel}
+                        ></button>
+                    </div>
+                    <form onSubmit={handleSubmit}>
+                        <div className="modal-body">
+                            {/* Vehicle Number */}
+                            <div className="mb-3">
+                                <label className="form-label">Vehicle Number</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="vehicleNumber"
+                                    value={formData.vehicleNumber}
+                                    onChange={handleChange}
+                                />
+                            </div>
 
-  return (
-    <div className="modal show d-block" tabIndex="-1">
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">Edit Vehicle</h5>
-            <button
-              type="button"
-              className="btn-close"
-              onClick={onClose}
-            ></button>
-          </div>
-          <div className="modal-body">
-            <div className="mb-3">
-              <label>Vehicle Number</label>
-              <input
-                type="text"
-                name="vehicleNumber"
-                className="form-control"
-                value={updatedVehicle.vehicleNumber}
-                onChange={handleChange}
-              />
+                            {/* Owner Name */}
+                            <div className="mb-3">
+                                <label className="form-label">Owner</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="ownerName"
+                                    value={formData.ownerName}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            {/* Vehicle Type */}
+                            <div className="mb-3">
+                                <label className="form-label">Vehicle Type</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="vehicleType"
+                                    value={formData.vehicleType}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            {/* Fuel Type */}
+                            <div className="mb-3">
+                                <label className="form-label">Fuel Type</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="fuelType"
+                                    value={formData.fuelType}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            {/* Fuel Quota */}
+                            <div className="mb-3">
+                                <label className="form-label">Fuel Quota</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    name="fuelQuota"
+                                    value={formData.fuelQuota}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            {/* Chassis Number */}
+                            <div className="mb-3">
+                                <label className="form-label">Chassis Number</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    name="chassisNumber"
+                                    value={formData.chassisNumber}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={onCancel}
+                            >
+                                Cancel
+                            </button>
+                            <button type="submit" className="btn btn-primary">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div className="mb-3">
-              <label>Chassis Number</label>
-              <input
-                type="text"
-                name="chassisNumber"
-                className="form-control"
-                value={updatedVehicle.chassisNumber}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label>Owner Name</label>
-              <input
-                type="text"
-                name="ownerName"
-                className="form-control"
-                value={updatedVehicle.ownerName}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-3">
-              <label>Vehicle Type</label>
-              <input
-                type="text"
-                name="vehicleType"
-                className="form-control"
-                value={updatedVehicle.vehicleType}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-3">
-              <label>Fuel Type</label>
-              <input
-                type="text"
-                name="fuelType"
-                className="form-control"
-                value={updatedVehicle.fuelType}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-3">
-              <label>Fuel Quota</label>
-              <input
-                type="number"
-                name="fuelQuota"
-                className="form-control"
-                value={updatedVehicle.fuelQuota}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onClose}
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSubmit}
-            >
-              Save Changes
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default EditVehicleModal;

@@ -3,17 +3,22 @@ package com.se.Fuel_Quota_Management_System.controller;
 //import com.se.Fuel_Quota_Management_System.model.Admin;
 
 import com.se.Fuel_Quota_Management_System.DTO.DashboardData;
+import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
 import com.se.Fuel_Quota_Management_System.model.FuelStation;
 
+import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
+import com.se.Fuel_Quota_Management_System.security.JwtUtil;
 import com.se.Fuel_Quota_Management_System.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -25,6 +30,9 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
     /* Get all Vehicle*/
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @GetMapping("/vehicles")
     public List<Vehicle> getAllVehicles() {
@@ -89,7 +97,7 @@ public class AdminController {
 
     // Get a specific fuel station by ID.
 
-    @GetMapping("/fuelStation/{id}")
+    @GetMapping("/station/serch_id/{id}")
     public ResponseEntity<FuelStation> getFuelStationById(@PathVariable Long id) {
         FuelStation fuelStation = adminService.getFuelStationById(id);
         return ResponseEntity.ok(fuelStation);
@@ -98,60 +106,97 @@ public class AdminController {
 
     // Get a specific fuel station by owner_ID.
 
-    @GetMapping("/fuelStation/{owner_id}")
+    @GetMapping("/station/serch_owner_id/{owner_id}")
     public ResponseEntity<FuelStation> getFuelStationByOwnerId(@PathVariable Long owner_id) {
         FuelStation fuelStation = adminService.getFuelStationByOwnerId(owner_id);
         return ResponseEntity.ok(fuelStation);
     }
 
 
-    // Get vehicles by location.
 
-    @GetMapping("/FuelStation/{location}")
+     // Get fuel station by location.
+
+    @GetMapping("/station/serch_location/{location}")
     public ResponseEntity<FuelStation> getFuelStationByLocation(@PathVariable String location) {
         FuelStation fuelStation = adminService.getFuelStationByLocation(location);
         return ResponseEntity.ok(fuelStation);
     }
 
 
-    // Get vehicles by station_name.
+    // Get fuel station by station_name.
 
-    @GetMapping("/FuelStation/{station_name}")
+    @GetMapping("/station/serch_station_name/{station_name}")
     public ResponseEntity<FuelStation> getFuelStationByStationName(@PathVariable String station_name) {
         FuelStation fuelStation = adminService.getFuelStationByStationName(station_name);
         return ResponseEntity.ok(fuelStation);
     }
 
 
-// Get vehicles by registration_number.
+    // Get fuel station by registration_number.
 
-    @GetMapping("/FuelStation/{registration_number}")
+    @GetMapping("/station/serch_registration_number/{registration_number}")
     public ResponseEntity<FuelStation> getFuelStationByRegistrationNumber(@PathVariable String registration_number) {
         FuelStation fuelStation = adminService.getFuelStationByRegistrationNumber(registration_number);
         return ResponseEntity.ok(fuelStation);
     }
 
-
     // Update FuelStation details by ID.
 
-    @PutMapping("/FuelStation/{id}")
+    @PutMapping("/station/{id}")
     public ResponseEntity<FuelStation> updateFuelStation(@PathVariable Long id, @RequestBody FuelStation updatedFuelStation) {
         FuelStation fuelStation = adminService.updateFuelStation(id, updatedFuelStation);
         return ResponseEntity.ok(fuelStation);
     }
 
 
-    // Delete a FuelStation details by ID.
 
-    @DeleteMapping("/FuelStation/{id}")
+     // Delete a FuelStation details by ID.
+
+
+    @DeleteMapping("/station/{id}")
     public ResponseEntity<String> deleteFuelStation(@PathVariable Long id) {
         adminService.deleteFuelStation(id);
         return ResponseEntity.ok("FuelStation with ID " + id + " deleted successfully.");
     }
 
+
     @GetMapping("/dashboard-data")
     public DashboardData getDashboardData() {
         return adminService.getDashboardData();
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerAdmin(@Validated @RequestBody RegisterRequest registerRequest){
+        try {
+            ResponseEntity<?> registerAdmin = adminService.registerAdmin(registerRequest);
+            String token = jwtUtil.generateToken(registerRequest.getUserName());
+            return ResponseEntity.ok(Map.of("admin",registerAdmin.getBody(),"token",token));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message",e.getMessage()));
+        }
+    }
+
+    @GetMapping("/transactions/{id}")
+    public ResponseEntity<Optional<FuelTransaction>> getTransactionById(@PathVariable Long id) {
+        Optional<FuelTransaction> transactions = Optional.ofNullable(adminService.getTransactionById(id));
+        return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/transactions")
+    public List<FuelTransaction> getFuelTransactions() {
+        return adminService.getFuelTransactions();
+    }
+
+    @DeleteMapping("/transactions/{id}")
+    public ResponseEntity<String> deleteTransaction(@PathVariable Long id) {
+        adminService.deleteTransaction(id);
+        return ResponseEntity.ok("FuelTransactions with ID " + id + " deleted successfully.");
+    }
+
+    @PutMapping("/transactions/{id}")
+    public ResponseEntity<FuelTransaction> updateFuelTransaction(@PathVariable Long id, @RequestBody FuelTransaction updatedFuelTransaction) {
+        FuelTransaction fuelTransaction = adminService.updateFuelTransaction(id, updatedFuelTransaction);
+        return ResponseEntity.ok(fuelTransaction);
     }
 }
 
