@@ -44,15 +44,47 @@ export default function Home() {
     }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+
+    if (!scannedData || !liters || !fuelStationId) {
+      alert("Please make sure all fields are filled.");
+      return;
+    }
     console.log("Scanned QR Data:", scannedData);
     console.log("Liters pumped:", liters);
     console.log("Fuel Station ID:", fuelStationId);
-    setLiters("");
-    setFuelStationId("");
-    setScannedData(null); // Reset after confirmation
-    qrLock.current = false;
-  };
+
+
+    try {
+      const response = await fetch("http://your-backend-url/api/transactions/updateFuelQuota", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          stationId: fuelStationId,
+          amount: liters,
+          vehicleId: scannedData, // Assuming scannedData contains the vehicleId
+        }),
+      });
+
+       const data = await response.json();
+
+    if (response.ok) {
+      alert("Fuel updated successfully!");
+      setLiters("");
+      setFuelStationId("");
+      setScannedData(null);
+      qrLock.current = false;
+    } else {
+      alert(`Error: ${data.message}`);
+    }
+  } catch (error) {
+    console.error("Error while updating fuel quota:", error);
+    alert("Something went wrong. Please try again.");
+  }
+};
+  
 
   return (
     <SafeAreaView style={StyleSheet.absoluteFillObject}>
