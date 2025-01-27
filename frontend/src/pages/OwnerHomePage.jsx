@@ -36,7 +36,7 @@ const OwnerHomePage = () => {
       <ToastContainer position="top-center" autoClose={6000} closeOnClick draggable/>
 
       {/* Hero Section */}
-      <header className="bg-primary text-white text-center py-5">
+      <header className="text-white text-center py-5" style={{backgroundColor:"#429cbf"}}>
       <h1 className="fw-bold">Welcome, {ownername || "Owner"}! 👋</h1>
         <p className="fs-5">Here are the fuel stations you manage.</p>
         <div className="mt-3">
@@ -92,7 +92,7 @@ const OwnerHomePage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-light py-3 mt-auto" style={{position:'absolute',bottom:'0', width:'100%'}}>
+      <footer className="bg-light mt-5 mt-auto mb-0" style={{position:'bottom',bottom:'0', width:'100%'}}>
         <Footer />
       </footer>
     </>
