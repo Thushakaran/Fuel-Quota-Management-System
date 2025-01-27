@@ -12,12 +12,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FuelStationOwnerLogDTO {
 
-    private String ownerUserName;
+    private String UserName;
     private String password;
     private String ownerName;
     private String nicNo;
     private String phoneNumber;
     private String email;
-
+    private String address;
 
 }
