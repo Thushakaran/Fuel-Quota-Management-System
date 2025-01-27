@@ -16,7 +16,7 @@ const AboutUsPage = () => {
           </p>
         </div>
       </header>
-      <main className="container my-5">
+      <main className="features container my-5">
         <section>
           <h2 className="text-center mb-4">Our Mission</h2>
           <p className="text-center">

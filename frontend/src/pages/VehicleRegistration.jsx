@@ -113,7 +113,7 @@ const VehicleRegistration = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mt-5 bg-light p-4 rounded">
+      <div className="container-form bg-light p-4 rounded">
         <div className="header text-center mb-4 text-primary">
           <h2>Vehicle Registration</h2>
         </div>

@@ -49,7 +49,6 @@ public class AdminService {
     private FuelTransactionRepository fuelTransactionRepository;
 
 
-
     public List<Vehicle> getAllVehicles() {
         return vehicleRepository.findAll();
     }
