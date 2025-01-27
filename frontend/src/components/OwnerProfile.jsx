@@ -38,9 +38,8 @@ const OwnerProfile = () => {
   };
 
   const handleSaveClick = async () => {
-    // Validation
-    if (!station.name || !station.location || !station.contactNumber || !station.stationCode) {
-      setError("Please fill in all fields before saving.");
+    if (!owner.name || !owner.email || !owner.phoneNumber || !owner.nicNo) {
+      alert("Please fill in all fields before saving.");
       return;
     }
 

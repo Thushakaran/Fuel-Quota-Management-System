@@ -12,30 +12,35 @@ const OwnerHomePage = () => {
   const [ownername, setOwnername] = useState("");
   const [stations, setStations] = useState([]);
 
-  useEffect(() => {
-    getownername(id)
-      .then((response) => {
-        setOwnername(response.data.toUpperCase());
-      })
-      .catch((error) => {
-        toast.error(`Error fetching owner name: ${error.message || "Unknown error"}`);
-      });
+  const [loading, setLoading] = useState(true);
 
-    liststations(id)
-      .then((response) => {
-        setStations(response.data);
-      })
-      .catch((error) => {
-        console.error(`Error fetching stations: ${error.message || "Unknown error"}`);
-      });
+  useEffect(() => {
+      Promise.all([
+          getownername(id).then((response) => {
+              setOwnername(response.data.toString().toUpperCase());
+          }),
+          liststations(id).then((response) => {
+              setStations(response.data);
+          }),
+      ])
+          .catch((error) => {
+              toast.error(`Error: ${error.message || "Unknown error"}`);
+          })
+          .finally(() => {
+              setLoading(false);
+          });
   }, [id]);
+
+  if (loading) {
+      return <div className="text-center py-5">Loading...</div>;
+  }
+
 
   return (
     <>
       <OwnerNavbar />
       <ToastContainer position="top-center" autoClose={6000} closeOnClick draggable/>
 
-      {/* Hero Section */}
       <header className="bg-primary text-white text-center py-5">
       <h1 className="fw-bold">Welcome, {ownername || "Owner"}! 👋</h1>
         <p className="fs-5">Here are the fuel stations you manage.</p>
@@ -92,7 +97,7 @@ const OwnerHomePage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-light py-3 mt-auto" style={{position:'absolute',bottom:'0', width:'100%'}}>
+      <footer className="bg-light py-3 mt-auto" style={{position:'relative',bottom:'0', width:'100%'}}>
         <Footer />
       </footer>
     </>
