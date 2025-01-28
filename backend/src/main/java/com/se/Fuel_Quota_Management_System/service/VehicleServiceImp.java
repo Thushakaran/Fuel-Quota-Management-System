@@ -56,71 +56,6 @@ public class VehicleServiceImp implements VehicleService {
     // ensuring the vehicle is not already registered, assigning a fuel quota, and generating a QR code.
     // @return The registered vehicle with all necessary details set.
 
-//    @Transactional
-//    public Vehicle registerVehicle(VehicleOwnerLogDTO vehicledto) {
-//        try {
-//            // Validate the vehicle details in the DMT mock database
-//            DmtVehicle dmtVehicle = dmtVehicleRepository
-//                    .findByVehicleNumber(vehicledto.getVehicleNumber())
-//                    .orElseThrow(() -> new VehicleNotFoundException("Vehicle details not found in the Department of Motor Traffic database"));
-//
-//            // Ensure the vehicle is not already registered in the system
-//            vehicleRepository.findByVehicleNumber(vehicledto.getVehicleNumber())
-//                    .ifPresent(v -> {
-//                        throw new VehicleAlreadyRegisteredException("Vehicle already registered");
-//                    });
-//
-//            // Verify that the owner name matches the DMT record
-//            if (!dmtVehicle.getOwnerName().equals(vehicledto.getOwnerName())) {
-//                throw new RuntimeException("Owner details do not match");
-//            }
-//
-//            // Ensure the role exists
-//            Role role = roleRepository.findByName("vehicle")
-//                    .orElseThrow(() -> new RuntimeException("Role Not Found"));
-//
-//            // Register the vehicle owner in the authentication system
-//            RegisterRequest vehicleLog = new RegisterRequest();
-//            vehicleLog.setUserName(vehicledto.getUserName());
-//            vehicleLog.setPassword(vehicledto.getPassword());
-//            vehicleLog.setRole(role.getName());
-//
-//            ResponseEntity<?> registerResponse = authController.register(vehicleLog);
-//            if (!registerResponse.getStatusCode().is2xxSuccessful()) {
-//                throw new RuntimeException("Error registering user");
-//            }
-//
-//            UserLog registeredLog = (UserLog) registerResponse.getBody();
-//
-//            // Create and populate the Vehicle object
-//            Vehicle vehicle = new Vehicle();
-//            vehicle.setVehicleNumber(vehicledto.getVehicleNumber());
-//            vehicle.setPhoneNumber(vehicledto.getPhoneNumber());
-//            vehicle.setEmail(vehicledto.getEmail());
-//            vehicle.setOwnerName(dmtVehicle.getOwnerName());
-//            vehicle.setFuelType(dmtVehicle.getFuelType());
-//            vehicle.setVehicleType(dmtVehicle.getVehicleType());
-//            vehicle.setOwnerIcNumber(dmtVehicle.getOwnerIcNumber());
-//            vehicle.setChassisNumber(dmtVehicle.getChassisNumber());
-//            vehicle.setOwnerLog(registeredLog);
-//
-//            // Assign the fuel quota based on the vehicle type
-//            double fuelQuota = calculateFuelQuota(dmtVehicle.getVehicleType());
-//            vehicle.setFuelQuota(fuelQuota);
-//
-//            // Generate a QR code that includes vehicle number and fuel quota
-//            String qrCode = generateQrCode(vehicle.getVehicleNumber(), fuelQuota);
-//            vehicle.setQrCode(qrCode);
-//
-//            // Save the vehicle to the repository and return
-//            return vehicleRepository.save(vehicle);
-//        } catch (Exception e) {
-//            // Log the exception and rethrow
-//            System.err.println("Error registering vehicle: " + e.getMessage());
-//            throw new RuntimeException("Vehicle registration failed", e);
-//        }
-//    }
-
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
     private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -247,17 +182,6 @@ public class VehicleServiceImp implements VehicleService {
     }
 
     // Generates a QR code string containing the vehicle number and fuel quota.
-//    public String generateQrCode(String vehicleNumber, double fuelQuota) {
-//        try {
-//            String qrContent = String.format("VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            BitMatrix matrix = new MultiFormatWriter().encode(qrContent, BarcodeFormat.QR_CODE, 200, 200);
-//            MatrixToImageWriter.writeToStream(matrix, "PNG", baos);
-//            return Base64.getEncoder().encodeToString(baos.toByteArray());
-//        } catch (Exception e) {
-//            throw new RuntimeException("Error generating QR Code", e);
-//        }
-//    }
 
     public String generateQrCode(String qrCodeId) {
         try {
