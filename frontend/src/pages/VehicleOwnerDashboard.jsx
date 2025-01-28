@@ -106,7 +106,7 @@ function VehicleOwnerDashboard() {
                       <strong>Fuel Quota:</strong> {ownerDetails?.fuelQuota || "Not Available"} liters
                     </p>
                     <p className="card-text">
-                      <strong>Pumped Fuel:</strong> {latestTransaction?.amount || "Not Available"} liters
+                      <strong>Recent Pumped Fuel:</strong> {latestTransaction?.amount || "Not Available"} liters
                     </p>
                     <p className="card-text">
                       <strong>Balance Fuel:</strong> {ownerDetails?.remainingQuota || "Not Available"} liters

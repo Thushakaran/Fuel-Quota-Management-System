@@ -28,13 +28,14 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(
-                                "/api/auth/**",
+                                        "/api/auth/**",
                                         "/api/fuel-station/**",
                                         "/api/owner/**",
                                         "/api/v1/**",
                                         "/api/admin/**",
                                         "/api/transactions/**",
-                                        "/api/vehicles/**")
+                                        "/api/vehicles/**",
+                                        "/api/transactions/updateFuelQuota")
                                 .permitAll()
 //                                .requestMatchers("api/fuel-station/**").hasAuthority("station")
 //                                .requestMatchers("api/owner/**").hasAuthority("stationowner")

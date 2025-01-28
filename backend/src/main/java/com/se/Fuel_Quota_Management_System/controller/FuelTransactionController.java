@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
-
 import java.util.List;
 
 @RestController
@@ -18,8 +17,7 @@ import java.util.List;
 public class FuelTransactionController {
 
     @Autowired
-   private FuelTransactionServiceImpl fuelTransactionService;
-
+    private FuelTransactionServiceImpl fuelTransactionService;
 
 
     @PostMapping("/startTransaction")
@@ -30,8 +28,6 @@ public class FuelTransactionController {
         FuelTransaction transaction = fuelTransactionService.startTransaction(qrCodeId, amount, stationId);
         return ResponseEntity.ok(transaction);
     }
-
-
 
 
     // get all transactions for a specific vehicle
@@ -47,23 +43,22 @@ public class FuelTransactionController {
     }
 
 
-
-
-
-
     @PostMapping("/updateFuelQuota")
     public ResponseEntity<String> updateFuelInventory(@RequestBody FuelQuotaUpdateRequest request) {
+
+        System.out.println(request.getStationId());
+        System.out.println(request.getAmount());
+        System.out.println(request.getQrCodeId());
         try {
             // Call the service method to update the fuel inventory
             fuelTransactionService.DeductFuelQuotaWhenPumpFuel(request.getStationId(), request.getAmount(), request.getQrCodeId());
+
             return ResponseEntity.ok("Fuel updated successfully.");
         } catch (Exception e) {
             // Handle any exceptions and return an error response
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
-
-
 
 
 }
