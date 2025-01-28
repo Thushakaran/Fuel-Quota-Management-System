@@ -23,7 +23,7 @@ public interface VehicleService {
 
     String getFuelTypeByVehicleId(Long vehicleId);
 
-    public void updateVehicleFuelQuota(Long vehicleId, double amount);
+    public void updateVehicleFuelQuota(String qrCodeId, double amount);
 
 
     Vehicle findVehicleByOwnerLog(Long loginid);

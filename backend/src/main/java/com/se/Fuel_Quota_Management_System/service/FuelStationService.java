@@ -174,13 +174,14 @@ public class FuelStationService {
 
     //to update Fuel Inventory
     @Transactional
-    public void updateFuelInventory(Long stationId, double amount, Long vehicleId) {
+    public void updateFuelInventory(Long stationId, double amount, String qrCodeId) {
+        // Retrieve the vehicle entity by qrCodeId
+        Vehicle vehicle = vehicleRepository.findByQrCodeId(qrCodeId)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found with QR Code ID: " + qrCodeId));
 
-//        String vehicleFuelType = String.valueOf(vehicleRepository.findFuelTypeByVehicleId(vehicleId));
-        // Retrieve the fuel station entity by station ID
-        Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new RuntimeException("Fuel Type not Found"));
         String vehicleFuelType = vehicle.getFuelType();
+
+        // Retrieve the fuel station entity by station ID
         FuelStation fuelStation = fuelStationRepository.findById(stationId)
                 .orElseThrow(() -> new RuntimeException("Fuel Station not found with ID: " + stationId));
 
@@ -206,6 +207,7 @@ public class FuelStationService {
         fuelStation.setFuelInventory(fuelInventory);
         fuelStationRepository.save(fuelStation);
     }
+
 
 
     public FuelStation saveEditDetails(Long id, FuelStation fuelStation) {
