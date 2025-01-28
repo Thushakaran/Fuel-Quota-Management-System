@@ -26,8 +26,10 @@ public class FuelTransaction {
 
     private LocalDateTime transactionDate;
 
+    private Long savedstationId;
+
     @ManyToOne
-    @JoinColumn(name = "station_id")
+    @JoinColumn(name = "station_id", nullable = true) // Allow station_id to be NULL
     private FuelStation station;
 
     public FuelTransaction() {

@@ -18,20 +18,18 @@ public interface VehicleService {
 
     double calculateFuelQuota(String vehicleType);
 
-    String generateQrCode(String vehicleNumber, double fuelQuota);
-
+    public String generateQrCode(String qrCodeId);
 
 
     String getFuelTypeByVehicleId(Long vehicleId);
 
-    public void updateVehicleFuelQuota(Long vehicleId,double amount);
-
-
+    public void updateVehicleFuelQuota(String qrCodeId, double amount);
 
 
     Vehicle findVehicleByOwnerLog(Long loginid);
 
     Optional<Vehicle> getVehicleById(Long vehicleId);
 
-   public List<FuelTransaction> getFuelTransactions(Long vehicleId);
+    public List<FuelTransaction> getFuelTransactions(Long vehicleId);
+
 }

@@ -24,9 +24,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+
+import java.util.UUID;
+
+import java.security.SecureRandom;
+
 
 @Service
 public class VehicleServiceImp implements VehicleService {
@@ -49,6 +55,74 @@ public class VehicleServiceImp implements VehicleService {
     // Registers a vehicle by validating its details from the DMT mock database,
     // ensuring the vehicle is not already registered, assigning a fuel quota, and generating a QR code.
     // @return The registered vehicle with all necessary details set.
+
+//    @Transactional
+//    public Vehicle registerVehicle(VehicleOwnerLogDTO vehicledto) {
+//        try {
+//            // Validate the vehicle details in the DMT mock database
+//            DmtVehicle dmtVehicle = dmtVehicleRepository
+//                    .findByVehicleNumber(vehicledto.getVehicleNumber())
+//                    .orElseThrow(() -> new VehicleNotFoundException("Vehicle details not found in the Department of Motor Traffic database"));
+//
+//            // Ensure the vehicle is not already registered in the system
+//            vehicleRepository.findByVehicleNumber(vehicledto.getVehicleNumber())
+//                    .ifPresent(v -> {
+//                        throw new VehicleAlreadyRegisteredException("Vehicle already registered");
+//                    });
+//
+//            // Verify that the owner name matches the DMT record
+//            if (!dmtVehicle.getOwnerName().equals(vehicledto.getOwnerName())) {
+//                throw new RuntimeException("Owner details do not match");
+//            }
+//
+//            // Ensure the role exists
+//            Role role = roleRepository.findByName("vehicle")
+//                    .orElseThrow(() -> new RuntimeException("Role Not Found"));
+//
+//            // Register the vehicle owner in the authentication system
+//            RegisterRequest vehicleLog = new RegisterRequest();
+//            vehicleLog.setUserName(vehicledto.getUserName());
+//            vehicleLog.setPassword(vehicledto.getPassword());
+//            vehicleLog.setRole(role.getName());
+//
+//            ResponseEntity<?> registerResponse = authController.register(vehicleLog);
+//            if (!registerResponse.getStatusCode().is2xxSuccessful()) {
+//                throw new RuntimeException("Error registering user");
+//            }
+//
+//            UserLog registeredLog = (UserLog) registerResponse.getBody();
+//
+//            // Create and populate the Vehicle object
+//            Vehicle vehicle = new Vehicle();
+//            vehicle.setVehicleNumber(vehicledto.getVehicleNumber());
+//            vehicle.setPhoneNumber(vehicledto.getPhoneNumber());
+//            vehicle.setEmail(vehicledto.getEmail());
+//            vehicle.setOwnerName(dmtVehicle.getOwnerName());
+//            vehicle.setFuelType(dmtVehicle.getFuelType());
+//            vehicle.setVehicleType(dmtVehicle.getVehicleType());
+//            vehicle.setOwnerIcNumber(dmtVehicle.getOwnerIcNumber());
+//            vehicle.setChassisNumber(dmtVehicle.getChassisNumber());
+//            vehicle.setOwnerLog(registeredLog);
+//
+//            // Assign the fuel quota based on the vehicle type
+//            double fuelQuota = calculateFuelQuota(dmtVehicle.getVehicleType());
+//            vehicle.setFuelQuota(fuelQuota);
+//
+//            // Generate a QR code that includes vehicle number and fuel quota
+//            String qrCode = generateQrCode(vehicle.getVehicleNumber(), fuelQuota);
+//            vehicle.setQrCode(qrCode);
+//
+//            // Save the vehicle to the repository and return
+//            return vehicleRepository.save(vehicle);
+//        } catch (Exception e) {
+//            // Log the exception and rethrow
+//            System.err.println("Error registering vehicle: " + e.getMessage());
+//            throw new RuntimeException("Vehicle registration failed", e);
+//        }
+//    }
+
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     @Transactional
     public Vehicle registerVehicle(VehicleOwnerLogDTO vehicledto) {
@@ -98,12 +172,20 @@ public class VehicleServiceImp implements VehicleService {
             vehicle.setChassisNumber(dmtVehicle.getChassisNumber());
             vehicle.setOwnerLog(registeredLog);
 
+
             // Assign the fuel quota based on the vehicle type
             double fuelQuota = calculateFuelQuota(dmtVehicle.getVehicleType());
             vehicle.setFuelQuota(fuelQuota);
 
-            // Generate a QR code that includes vehicle number and fuel quota
-            String qrCode = generateQrCode(vehicle.getVehicleNumber(), fuelQuota);
+            // Set remainingQuota equal to fuelQuota
+            vehicle.setRemainingQuota(fuelQuota);
+
+            // Generate a unique 8-character QR Code ID
+            String qrCodeId = generateQrCodeId(8);
+            vehicle.setQrCodeId(qrCodeId); // Store in the vehicle entity
+
+            // Generate QR code using the unique QR Code ID instead of the vehicle number
+            String qrCode = generateQrCode(qrCodeId);
             vehicle.setQrCode(qrCode);
 
             // Save the vehicle to the repository and return
@@ -113,6 +195,15 @@ public class VehicleServiceImp implements VehicleService {
             System.err.println("Error registering vehicle: " + e.getMessage());
             throw new RuntimeException("Vehicle registration failed", e);
         }
+    }
+
+    // Method to generate an 8-character QR Code ID with letters, numbers, and special characters
+    private String generateQrCodeId(int length) {
+        StringBuilder qrCodeId = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            qrCodeId.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
+        }
+        return qrCodeId.toString();
     }
 
     // Retrieves a vehicle by its vehicle number from the repository.
@@ -156,9 +247,21 @@ public class VehicleServiceImp implements VehicleService {
     }
 
     // Generates a QR code string containing the vehicle number and fuel quota.
-    public String generateQrCode(String vehicleNumber, double fuelQuota) {
+//    public String generateQrCode(String vehicleNumber, double fuelQuota) {
+//        try {
+//            String qrContent = String.format("VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            BitMatrix matrix = new MultiFormatWriter().encode(qrContent, BarcodeFormat.QR_CODE, 200, 200);
+//            MatrixToImageWriter.writeToStream(matrix, "PNG", baos);
+//            return Base64.getEncoder().encodeToString(baos.toByteArray());
+//        } catch (Exception e) {
+//            throw new RuntimeException("Error generating QR Code", e);
+//        }
+//    }
+
+    public String generateQrCode(String qrCodeId) {
         try {
-            String qrContent = String.format("VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
+            String qrContent = String.format("QR Code ID:%s", qrCodeId);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             BitMatrix matrix = new MultiFormatWriter().encode(qrContent, BarcodeFormat.QR_CODE, 200, 200);
             MatrixToImageWriter.writeToStream(matrix, "PNG", baos);
@@ -167,6 +270,7 @@ public class VehicleServiceImp implements VehicleService {
             throw new RuntimeException("Error generating QR Code", e);
         }
     }
+
 
     @Override
     public Vehicle findVehicleByOwnerLog(Long loginid) {
@@ -228,35 +332,21 @@ public class VehicleServiceImp implements VehicleService {
     //To calculate and save remaining quota for the vehicle
     @Override
     @Transactional
-    public void updateVehicleFuelQuota(Long vehicleId, double amount) {
+    public void updateVehicleFuelQuota(String qrCodeId, double amount) {
 
-        Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found"));
+        // Retrieve the vehicle entity using the qrCodeId
+        Vehicle vehicle = vehicleRepository.findByQrCodeId(qrCodeId)
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with QR Code ID: " + qrCodeId));
+
+        // Check if the amount is valid and if the vehicle has sufficient quota
         if (amount > 0 && vehicle.getRemainingQuota() >= amount) {
-            // Proceed with transaction
-            vehicle.setRemainingQuota((vehicle.getRemainingQuota() - amount));
-            vehicleRepository.save(vehicle);
-
-
+            // Deduct the amount from the remaining quota
+            vehicle.setRemainingQuota(vehicle.getRemainingQuota() - amount);
+            vehicleRepository.save(vehicle); // Save the updated vehicle entity
         } else {
-            throw new InsufficientQuotaException("Quota exceeded!");
+            throw new InsufficientQuotaException("Quota exceeded or invalid amount!");
         }
     }
-
-
-
-
-//    // Reset remaining fuel quota every week (Sunday at midnight)
-//    @Scheduled(cron = "0 0 0 * * SUN")
-//    public void resetWeeklyFuelQuota() {
-//        List<Vehicle> vehicles = vehicleRepository.findAll(); // Fetch all vehicles
-//
-//        vehicles.forEach(vehicle -> vehicle.setRemainingQuota(vehicle.getFuelQuota())); // Reset remaining quota
-//
-//        vehicleRepository.saveAll(vehicles); // Save updated vehicles to the database
-//
-//        System.out.println("Weekly fuel quota reset for all vehicles.");
-//    }
 
 
     // Reset remaining fuel quota every week (Sunday at midnight)
@@ -273,7 +363,6 @@ public class VehicleServiceImp implements VehicleService {
         vehicleRepository.saveAll(vehicles); // Save updated vehicles to the database
         System.out.println("Weekly fuel quota reset for all vehicles.");
     }
-
 
 
 }

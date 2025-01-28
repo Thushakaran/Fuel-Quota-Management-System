@@ -70,10 +70,6 @@ function VehicleOwnerDashboard() {
     );
   }
 
-  if (!ownerDetails || fuelInfo.length === 0) {
-    return <p className="text-center mt-5">Loading...</p>;
-  }
-
   // Extract latest fuel transaction
   const latestTransaction = fuelInfo[0] || {}; // Take the first transaction if exists
 
@@ -82,7 +78,7 @@ function VehicleOwnerDashboard() {
       <VehicleOwnerNavbar />
       <div className="container mt-5">
         <h2 className="text-center mb-5 text-primary">
-          <i className="fas fa-car-side"></i> Vehicle Owner Dashboard
+          <i className="fas fa-car-side"></i> Vehicle Dashboard
         </h2>
         <div className="row justify-content-center">
           {/* Merged Owner Details and Fuel Information Card */}

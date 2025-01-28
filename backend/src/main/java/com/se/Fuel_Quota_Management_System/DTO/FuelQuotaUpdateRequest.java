@@ -7,10 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class FuelQuotaUpdateRequest {
     private Long stationId;
-    private Long vehicleId;
     private double amount;
+    private String qrCodeId;
 }

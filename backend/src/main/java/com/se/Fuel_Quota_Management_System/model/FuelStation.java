@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -27,7 +28,7 @@ public class FuelStation {
     private String location;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "loginid" , nullable = false)
+    @JoinColumn(name = "loginid", nullable = false)
     @JsonIgnore
     private UserLog stationLog;
 
@@ -36,12 +37,16 @@ public class FuelStation {
     @JoinColumn(name = "owner_id")
     private FuelStationOwner owner;
 
-// Repeat for other fields
+    // Repeat for other fields
     @ElementCollection
     @CollectionTable(name = "fuel_station_inventory", joinColumns = @JoinColumn(name = "fuel_station_id"))
     @MapKeyColumn(name = "fuel_type")
     @Column(name = "available_fuel")
     private Map<String, Double> fuelInventory; // Key: Fuel type (e.g., Petrol, Diesel), Value: Quantity available
+
+    @OneToMany(mappedBy = "station", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    @JsonIgnore
+    private List<FuelTransaction> transactions;
 
 
 }
