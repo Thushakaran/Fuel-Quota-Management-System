@@ -60,6 +60,28 @@ export const addFuel = (stationId, fuels) => {
   );
 };
 
+export const editStationDetails  = (stationId,station) => {
+ const token = localStorage.getItem("token");
+ return axios.put(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/saveDetails/${stationId}`,station, {
+   headers: {
+     "Content-Type": "application/json",
+     Authorization: `Bearer ${token}`,
+   }
+ });
+
+};
+
+export const getStationDetailById  = (stationId) => {
+ const token = localStorage.getItem("token");
+ return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findDetail/${stationId}`, {
+   headers: {
+     "Content-Type": "application/json",
+     Authorization: `Bearer ${token}`,
+   }
+ });
+
+};
 
 
+//
 

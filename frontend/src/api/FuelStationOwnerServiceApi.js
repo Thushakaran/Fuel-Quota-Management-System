@@ -50,7 +50,7 @@ export const getdetailbyid = (id) => {
 
 export const editdetails = (id,ownerData) => {
   const token = localStorage.getItem("token");
-  return axios.post(`${REST_API_BASE_URL}${OWNER_CASE}/saveDetails/${id}`,ownerData,{
+  return axios.put(`${REST_API_BASE_URL}${OWNER_CASE}/saveDetails/${id}`,ownerData,{
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
