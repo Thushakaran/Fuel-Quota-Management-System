@@ -328,20 +328,22 @@ public class VehicleServiceImp implements VehicleService {
     //To calculate and save remaining quota for the vehicle
     @Override
     @Transactional
-    public void updateVehicleFuelQuota(Long vehicleId, double amount) {
+    public void updateVehicleFuelQuota(String qrCodeId, double amount) {
 
-        Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found"));
+        // Retrieve the vehicle entity using the qrCodeId
+        Vehicle vehicle = vehicleRepository.findByQrCodeId(qrCodeId)
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with QR Code ID: " + qrCodeId));
+
+        // Check if the amount is valid and if the vehicle has sufficient quota
         if (amount > 0 && vehicle.getRemainingQuota() >= amount) {
-            // Proceed with transaction
-            vehicle.setRemainingQuota((vehicle.getRemainingQuota() - amount));
-            vehicleRepository.save(vehicle);
-
-
+            // Deduct the amount from the remaining quota
+            vehicle.setRemainingQuota(vehicle.getRemainingQuota() - amount);
+            vehicleRepository.save(vehicle); // Save the updated vehicle entity
         } else {
-            throw new InsufficientQuotaException("Quota exceeded!");
+            throw new InsufficientQuotaException("Quota exceeded or invalid amount!");
         }
     }
+
 
 
     // Reset remaining fuel quota every week (Sunday at midnight)

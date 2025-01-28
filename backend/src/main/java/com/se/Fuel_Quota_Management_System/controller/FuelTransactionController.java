@@ -22,28 +22,24 @@ public class FuelTransactionController {
 
 
 
-    //initiate a new fuel transaction
-    @PostMapping("/start")
-   public ResponseEntity<FuelTransaction> startTransaction(@RequestParam Long vehicleId,
-                                                           @RequestParam Double amount,
-                                                           @RequestParam Long stationId) {
-       try {
-           FuelTransaction fuelTransaction = fuelTransactionService.startTransaction(vehicleId, amount, stationId);
-           return ResponseEntity.ok(fuelTransaction);
-       } catch (IllegalArgumentException e) {
-           return ResponseEntity.badRequest().body(null);
-       }
-   }
+    @PostMapping("/startTransaction")
+    public ResponseEntity<FuelTransaction> startTransaction(
+            @RequestParam String qrCodeId,
+            @RequestParam double amount,
+            @RequestParam Long stationId) throws IllegalArgumentException, RuntimeException {
+        FuelTransaction transaction = fuelTransactionService.startTransaction(qrCodeId, amount, stationId);
+        return ResponseEntity.ok(transaction);
+    }
 
 
 
 
     // get all transactions for a specific vehicle
     @Transactional
-    @GetMapping("/vehicle/{vehicleId}")
-    public ResponseEntity<List<FuelTransactionDTO>> getTransactionsByVehicleId(@PathVariable Long vehicleId) {
+    @GetMapping("/vehicle/qrCode/{qrCodeId}")
+    public ResponseEntity<List<FuelTransactionDTO>> getTransactionsByQrCodeId(@PathVariable String qrCodeId) {
         try {
-            List<FuelTransactionDTO> transactions = fuelTransactionService.getTransactionsByVehicleId(vehicleId);
+            List<FuelTransactionDTO> transactions = fuelTransactionService.getTransactionsByQrCodeId(qrCodeId);
             return ResponseEntity.ok(transactions);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
@@ -54,11 +50,12 @@ public class FuelTransactionController {
 
 
 
+
     @PostMapping("/updateFuelQuota")
     public ResponseEntity<String> updateFuelInventory(@RequestBody FuelQuotaUpdateRequest request) {
         try {
             // Call the service method to update the fuel inventory
-            fuelTransactionService.DeductFuelQuotaWhenPumpFuel(request.getStationId(), request.getAmount(), request.getVehicleId());
+            fuelTransactionService.DeductFuelQuotaWhenPumpFuel(request.getStationId(), request.getAmount(), request.getQrCodeId());
             return ResponseEntity.ok("Fuel updated successfully.");
         } catch (Exception e) {
             // Handle any exceptions and return an error response
