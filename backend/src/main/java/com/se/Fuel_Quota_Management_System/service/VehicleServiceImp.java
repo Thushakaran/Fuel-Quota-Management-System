@@ -47,7 +47,8 @@ public class VehicleServiceImp implements VehicleService {
     private FuelTransactionRepository fuelTransactionRepository;
 
     // Registers a vehicle by validating its details from the DMT mock database,
-    // ensuring the vehicle is not already registered, assigning a fuel quota, and generating a QR code.
+    // ensuring the vehicle is not already registered, assigning a fuel quota, and
+    // generating a QR code.
     // @return The registered vehicle with all necessary details set.
 
     @Transactional
@@ -56,7 +57,8 @@ public class VehicleServiceImp implements VehicleService {
             // Validate the vehicle details in the DMT mock database
             DmtVehicle dmtVehicle = dmtVehicleRepository
                     .findByVehicleNumber(vehicledto.getVehicleNumber())
-                    .orElseThrow(() -> new VehicleNotFoundException("Vehicle details not found in the Department of Motor Traffic database"));
+                    .orElseThrow(() -> new VehicleNotFoundException(
+                            "Vehicle details not found in the Department of Motor Traffic database"));
 
             // Ensure the vehicle is not already registered in the system
             vehicleRepository.findByVehicleNumber(vehicledto.getVehicleNumber())
@@ -158,7 +160,7 @@ public class VehicleServiceImp implements VehicleService {
     // Generates a QR code string containing the vehicle number and fuel quota.
     public String generateQrCode(String vehicleNumber, double fuelQuota) {
         try {
-            String qrContent = String.format("VehicleNumber:%s|FuelQuota:%.2f", vehicleNumber, fuelQuota);
+            String qrContent = String.format(qrCodeId);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             BitMatrix matrix = new MultiFormatWriter().encode(qrContent, BarcodeFormat.QR_CODE, 200, 200);
             MatrixToImageWriter.writeToStream(matrix, "PNG", baos);
@@ -182,7 +184,6 @@ public class VehicleServiceImp implements VehicleService {
     public List<FuelTransaction> getFuelTransactions(Long vehicleId) {
         return fuelTransactionRepository.findByVehicleId(vehicleId);
     }
-
 
     // Update vehicle details in the system
     public Vehicle updateVehicle(Vehicle vehicle) {
@@ -217,15 +218,13 @@ public class VehicleServiceImp implements VehicleService {
         return vehicleRepository.save(existingVehicle);
     }
 
-
     @Override
     public String getFuelTypeByVehicleId(Long vehicleId) {
         return vehicleRepository.findFuelTypeByVehicleId(vehicleId)
                 .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with id: " + vehicleId));
     }
 
-
-    //To calculate and save remaining quota for the vehicle
+    // To calculate and save remaining quota for the vehicle
     @Override
     @Transactional
     public void updateVehicleFuelQuota(Long vehicleId, double amount) {
@@ -237,27 +236,23 @@ public class VehicleServiceImp implements VehicleService {
             vehicle.setRemainingQuota((vehicle.getRemainingQuota() - amount));
             vehicleRepository.save(vehicle);
 
-
         } else {
             throw new InsufficientQuotaException("Quota exceeded!");
         }
     }
 
-
-
-
-//    // Reset remaining fuel quota every week (Sunday at midnight)
-//    @Scheduled(cron = "0 0 0 * * SUN")
-//    public void resetWeeklyFuelQuota() {
-//        List<Vehicle> vehicles = vehicleRepository.findAll(); // Fetch all vehicles
-//
-//        vehicles.forEach(vehicle -> vehicle.setRemainingQuota(vehicle.getFuelQuota())); // Reset remaining quota
-//
-//        vehicleRepository.saveAll(vehicles); // Save updated vehicles to the database
-//
-//        System.out.println("Weekly fuel quota reset for all vehicles.");
-//    }
-
+    // // Reset remaining fuel quota every week (Sunday at midnight)
+    // @Scheduled(cron = "0 0 0 * * SUN")
+    // public void resetWeeklyFuelQuota() {
+    // List<Vehicle> vehicles = vehicleRepository.findAll(); // Fetch all vehicles
+    //
+    // vehicles.forEach(vehicle ->
+    // vehicle.setRemainingQuota(vehicle.getFuelQuota())); // Reset remaining quota
+    //
+    // vehicleRepository.saveAll(vehicles); // Save updated vehicles to the database
+    //
+    // System.out.println("Weekly fuel quota reset for all vehicles.");
+    // }
 
     // Reset remaining fuel quota every week (Sunday at midnight)
     @Scheduled(cron = "0 0 0 * * SUN")
@@ -273,7 +268,5 @@ public class VehicleServiceImp implements VehicleService {
         vehicleRepository.saveAll(vehicles); // Save updated vehicles to the database
         System.out.println("Weekly fuel quota reset for all vehicles.");
     }
-
-
 
 }
