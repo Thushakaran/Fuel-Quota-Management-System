@@ -10,11 +10,11 @@ import java.util.List;
 public interface FuelTransactionService {
 
 
-  public FuelTransaction startTransaction(Long vehicleId, double amount, Long stationId);
+  public FuelTransaction startTransaction(String qrCodeId, double amount, Long stationId);
 
-public List<FuelTransactionDTO> getTransactionsByVehicleId(Long vehicleId);
+  public List<FuelTransactionDTO> getTransactionsByQrCodeId(String qrCodeId);
 
-public void DeductFuelQuotaWhenPumpFuel(Long stationId, double amount, Long vehicleId);
+  public void DeductFuelQuotaWhenPumpFuel(Long stationId, double amount, String qrCodeId);
 
 
 
