@@ -1,5 +1,5 @@
 import { CameraView } from "expo-camera";
-import { Stack } from "expo-router";
+import { useRouter, Stack } from "expo-router";
 import {
   AppState,
   Linking,
@@ -11,15 +11,19 @@ import {
   View,
   Text,
   Button,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
+import axois from "axios";
 
-export default function Home() {
+export default function Scanner() {
   const qrLock = useRef(false);
   const appState = useRef(AppState.currentState);
-  const [scannedData, setScannedData] = useState(null); // State to hold scanned QR data
+  const [scannedData, setScannedData] = useState(""); // State to hold scanned QR data
   const [liters, setLiters] = useState(""); // State to hold liters input
   const [fuelStationId, setFuelStationId] = useState(""); // State to hold fuel station ID
+  const router = useRouter();
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
@@ -37,7 +41,7 @@ export default function Home() {
     };
   }, []);
 
-  const handleBarcodeScanned = ({ data }) => {
+  const handleBarcodeScanned = async ({ data }: { data: string }) => {
     if (data && !qrLock.current) {
       qrLock.current = true;
       setScannedData(data); // Store the scanned data
@@ -45,7 +49,6 @@ export default function Home() {
   };
 
   const handleConfirm = async () => {
-
     if (!scannedData || !liters || !fuelStationId) {
       alert("Please make sure all fields are filled.");
       return;
@@ -54,74 +57,74 @@ export default function Home() {
     console.log("Liters pumped:", liters);
     console.log("Fuel Station ID:", fuelStationId);
 
-
     try {
-      const response = await fetch("http://your-backend-url/api/transactions/updateFuelQuota", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          stationId: fuelStationId,
-          amount: liters,
-          vehicleId: scannedData, // Assuming scannedData contains the vehicleId
-        }),
-      });
+      const response = await axois.post(
+        "http://172.19.73.11:8080/api/transactions/updateFuelQuota",
+        {
+          qrCodeId : scannedData,
+          amount : liters,
+          stationId : fuelStationId
+          
+          });
+        
+      
 
-       const data = await response.json();
+      const data = await response.data;
 
-    if (response.ok) {
-      alert("Fuel updated successfully!");
-      setLiters("");
-      setFuelStationId("");
-      setScannedData(null);
-      qrLock.current = false;
-    } else {
-      alert(`Error: ${data.message}`);
+      if (response.status === 200) {
+        alert("Fuel updated successfully!");
+        setLiters("");
+        setFuelStationId("");
+        setScannedData("");
+        qrLock.current = false;
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error while updating fuel quota:", error);
+      alert("Something went wrong. Please try again.");
     }
-  } catch (error) {
-    console.error("Error while updating fuel quota:", error);
-    alert("Something went wrong. Please try again.");
-  }
-};
-  
+  };
 
   return (
-    <SafeAreaView style={StyleSheet.absoluteFillObject}>
-      <Stack.Screen
-        options={{
-          title: "Overview",
-          headerShown: false,
-        }}
-      />
-      {Platform.OS === "android" ? <StatusBar hidden /> : null}
-      <CameraView
-        style={StyleSheet.absoluteFillObject}
-        facing="back"
-        onBarcodeScanned={handleBarcodeScanned}
-      />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={StyleSheet.absoluteFillObject}>
+        <Stack.Screen
+          options={{
+            title: "Overview",
+            headerShown: false,
+          }}
+        />
+        {Platform.OS === "android" ? <StatusBar hidden /> : null}
+        <CameraView
+          style={StyleSheet.absoluteFillObject}
+          facing="back"
+          onBarcodeScanned={handleBarcodeScanned}
+        />
 
-      {scannedData && (
-        <View style={styles.overlay}>
-          <Text style={styles.label}>Enter Liters Pumped</Text>
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            placeholder="Enter liters"
-            value={liters}
-            onChangeText={setLiters}
-          />
-          <Text style={styles.label}>Enter Fuel Station ID</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter fuel station ID"
-            value={fuelStationId}
-            onChangeText={setFuelStationId}
-          />
-          <Button title="Confirm" onPress={handleConfirm} />
-        </View>
-      )}
-    </SafeAreaView>
+        {scannedData && (
+          <View style={styles.overlay}>
+            <Text style={styles.label}>Enter Liters Pumped</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              placeholder="Enter liters"
+              value={liters}
+              onChangeText={setLiters}
+            />
+            <Text style={styles.label}>Enter Fuel Station ID</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              placeholder="Enter fuel station ID"
+              value={fuelStationId}
+              onChangeText={setFuelStationId}
+            />
+            <Button title="Confirm" onPress={handleConfirm} />
+          </View>
+        )}
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
