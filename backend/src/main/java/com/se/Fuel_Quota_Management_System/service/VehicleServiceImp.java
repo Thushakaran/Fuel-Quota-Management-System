@@ -185,7 +185,7 @@ public class VehicleServiceImp implements VehicleService {
 
     public String generateQrCode(String qrCodeId) {
         try {
-            String qrContent = String.format("QR Code ID:%s", qrCodeId);
+            String qrContent = String.format(qrCodeId);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             BitMatrix matrix = new MultiFormatWriter().encode(qrContent, BarcodeFormat.QR_CODE, 200, 200);
             MatrixToImageWriter.writeToStream(matrix, "PNG", baos);
