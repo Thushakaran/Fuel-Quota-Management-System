@@ -55,31 +55,29 @@ const StationHomePage = () => {
         <h1 className="fw-bold">{name.toLocaleUpperCase()}</h1>
       </header>
       <main className="container my-4 homepage">
-        <h2 className="fw-bold mb-4">Fuel Inventory</h2>
+        <h2 className="fw-bold mb-4 text-center">Fuel Inventory</h2>
 
         {lowFuelAlerts.length > 0 && (
-          <div className="toast show align-items-center text-bg-danger mb-4" role="alert">
-            <div className="d-flex">
-              <div className="toast-body">
-                {lowFuelAlerts.map((fuel, index) => (
-                  <p key={index}>⚠️ Low Fuel: {fuel.fuelType} is below 250 liters.</p>
-                ))}
-              </div>
-              <button
-                type="button"
-                className="btn-close me-2 m-auto"
-                data-bs-dismiss="toast"
-                aria-label="Close"
-              ></button>
+          <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
+            <div className="me-auto">
+              {lowFuelAlerts.map((fuel, index) => (
+                <p key={index} className="mb-1">⚠️ Low Fuel: {fuel.fuelType} is below 250 liters.</p>
+              ))}
             </div>
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
           </div>
         )}
 
-        <div className="row g-3 ">
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {fuels.length > 0 ? (
             fuels.map((fuel, index) => (
-              <div className="col-md-4" key={index}>
-                <div className="card shadow-sm">
+              <div className="col" key={index}>
+                <div className="card shadow-sm h-100">
                   <div className="card-header text-white bg-dark fw-bold text-center">
                     {fuel.fuelType}
                   </div>
@@ -100,7 +98,9 @@ const StationHomePage = () => {
               </div>
             ))
           ) : (
-            <p>Loading fuels...</p>
+            <div className="text-center w-100">
+              <p className="text-muted">Loading fuels...</p>
+            </div>
           )}
         </div>
       </main>
