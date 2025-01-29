@@ -14,10 +14,10 @@ public class RoleSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (roleRepository.count() == 0) {
-            roleRepository.save(new Role(null, "admin"));
-            roleRepository.save(new Role(null, "station"));
-            roleRepository.save(new Role(null, "stationowner"));
-            roleRepository.save(new Role(null, "vehicle"));
+            roleRepository.save(new Role(null, "ADMIN"));
+            roleRepository.save(new Role(null, "STATION"));
+            roleRepository.save(new Role(null, "STATIONOWNER"));
+            roleRepository.save(new Role(null, "VEHICLE"));
         }
     }
 }
