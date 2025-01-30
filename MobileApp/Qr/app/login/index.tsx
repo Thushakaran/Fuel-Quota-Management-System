@@ -14,7 +14,7 @@ export default function Login() {
     try {
       console.log("gm")
       const response = await axios.post(
-        "http://172.20.97.13:8080/api/auth/login",
+        "http://172.19.45.60:8080/api/auth/login",
         {
           userName: email,
           password : password,
@@ -25,9 +25,10 @@ export default function Login() {
       
 
       const data = await response.data;
-      console.log(response)
+      console.log(data["stationId"])
       if (response.status === 200) {
-        await AsyncStorage.setItem("userToken", "dummy-token");
+        await AsyncStorage.setItem("userToken", data["token"]);
+        await AsyncStorage.setItem("stationId", data["stationId"].toString());
           router.replace("/(tabs)/scanner");
     } 
 
