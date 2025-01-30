@@ -94,6 +94,7 @@ const VehicleRegistration = () => {
       localStorage.setItem("token", response.data.token);
       resetForm();
     } catch (error) {
+      console.error(error)
       const errorMessage =
         error.response?.data?.message;
       setErrorMessages({ general: errorMessage });

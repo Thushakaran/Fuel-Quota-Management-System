@@ -89,6 +89,7 @@ const FuelOwnerRegistration = () => {
           navigate(`/owner/${id}`);
         })
         .catch((error) => {
+          console.log(error);
           toast.error('Error registering owner:', error);
         });
     }
