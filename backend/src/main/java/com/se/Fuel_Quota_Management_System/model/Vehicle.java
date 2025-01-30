@@ -1,5 +1,6 @@
 package com.se.Fuel_Quota_Management_System.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,19 +35,23 @@ public class Vehicle {
 
     private double fuelQuota;
 
-    private double remainingQuota;
-
-    @Column(length = 1024)
+    @Column(length = 512)
     private String qrCode;
-
-    @Column(unique = true, nullable = false)
-    private String qrCodeId;
 
     private String phoneNumber;
 
     private String email;
 
-    @OneToOne(cascade = CascadeType.MERGE) // Avoid accidental deletion of UserLog
+
+    private double remainingQuota;
+
+    @Column(unique = true)
+    private String qrCodeId;
+
+
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "loginid", nullable = false)
     private UserLog ownerLog;
+
+
 }

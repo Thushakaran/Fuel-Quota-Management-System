@@ -1,5 +1,6 @@
 package com.se.Fuel_Quota_Management_System.repository;
 
+import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 //import com.se.Fuel_Quota_Management_System.model.VehicleOwner;
 import org.springframework.data.jpa.repository.JpaRepository;
