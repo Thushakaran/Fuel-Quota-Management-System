@@ -21,17 +21,16 @@ public class TwilioOTPService {
         Twilio.init(twilioConfig.getAccountSid(), twilioConfig.getAuthToken());
     }
 
-    public String sendSMS(String phoneNumber) {
-        String messageBody = "The vehicle has registered."; // Predefined message
+    public String sendSMS(String phoneNumber, String predefinedMessage) {
 
         try {
             System.out.println(new PhoneNumber(phoneNumber));
             System.out.println(new PhoneNumber(twilioConfig.getTrialNumber()));
-            System.out.println(messageBody);
+            System.out.println(predefinedMessage);
             Message message = Message.creator(
                     new PhoneNumber(phoneNumber), // To
                     new PhoneNumber(twilioConfig.getTrialNumber()), // From
-                    messageBody // Predefined message
+                    predefinedMessage// Predefined message
             ).create();
 
             log.info("Message sent successfully. SID: {}", message.getSid());
