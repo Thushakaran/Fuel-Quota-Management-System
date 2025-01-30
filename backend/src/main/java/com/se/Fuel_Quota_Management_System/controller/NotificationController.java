@@ -43,7 +43,7 @@ public class NotificationController {
         String predefinedMessage = "Your vehicle has been registered successfully.";
         System.out.println("Sending SMS to: " + formattedPhoneNumber);
         try {
-            // Call the service to send SMS
+
             String response = twilioOTPService.sendSMS(formattedPhoneNumber, predefinedMessage);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class NotificationController {
         String predefinedMessage = "Your are registered successfully as a fuel station owner.";
         System.out.println("Sending SMS to: " + formattedPhoneNumber);
         try {
-            // Call the service to send SMS
+
             String response = twilioOTPService.sendSMS(formattedPhoneNumber, predefinedMessage);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -82,16 +82,16 @@ public class NotificationController {
         }
         String formattedPhoneNumber = phoneNumberService.formatPhoneNumber(phoneNumber);
 
-        // Predefined message
+
         String predefinedMessage = "Your fuel stations were registered successfully.";
         System.out.println("Sending SMS to: " + formattedPhoneNumber); // Log the formatted phone number
 
         try {
-            // Call the service to send SMS
+
             String response = twilioOTPService.sendSMS(formattedPhoneNumber, predefinedMessage);
             return ResponseEntity.ok("SMS sent successfully: " + response);
         } catch (Exception e) {
-            // Log the exception and return error response
+
             System.err.println("Failed to send SMS for owner ID " + id + ": " + e.getMessage());
             return ResponseEntity.status(500).body("Failed to send SMS: " + e.getMessage());
         }
@@ -119,16 +119,15 @@ public class NotificationController {
         // Get the current time formatted as "dd-MM-yyyy HH:mm:ss"
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
 
-        // Construct the message
+
         String message = "Fuel transaction successful. " + fuelAmount + " liters have been pumped at " + currentTime + ".";
         System.out.println("Sending SMS to: " + formattedPhoneNumber); // Log the formatted phone number
 
         try {
-            // Call the service to send SMS
             String response = twilioOTPService.sendSMS(formattedPhoneNumber, message);
             return ResponseEntity.ok("SMS sent successfully: " + response);
         } catch (Exception e) {
-            // Log the exception and return error response
+
             System.err.println("Failed to send SMS for vehicle ID " + vehicleId + ": " + e.getMessage());
             return ResponseEntity.status(500).body("Failed to send SMS: " + e.getMessage());
         }
