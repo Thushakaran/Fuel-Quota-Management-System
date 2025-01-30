@@ -24,6 +24,7 @@ const OwnerHomePage = () => {
           }),
       ])
           .catch((error) => {
+            console.log(error)
               toast.error(`Error: ${error.message || "Unknown error"}`);
           })
           .finally(() => {

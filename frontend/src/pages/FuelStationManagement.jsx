@@ -19,7 +19,7 @@ const FuelStationManagement = () => {
   const loadFuelStations = () => {
     setLoading(true);
     axios
-      .get("/admin/station")
+      .get("/admin/stations")
       .then((response) => {
         setFuelStations(response.data || []);
         setLoading(false);

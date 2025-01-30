@@ -1,8 +1,7 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
-import com.se.Fuel_Quota_Management_System.DTO.FuelStationLogDTO;
+import com.se.Fuel_Quota_Management_System.DTO.logs.FuelStationLogDTO;
 import com.se.Fuel_Quota_Management_System.model.FuelStation;
-import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.security.JwtUtil;
 import com.se.Fuel_Quota_Management_System.service.FuelStationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +13,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("/api/fuel-station")
 public class FuelStationController {
+
+
+    private static final String ERROR_STATUS = "error";
+    private static final String MESSAGE_KEY = "message";
+
     @Autowired
     private FuelStationService fuelStationService;
 
@@ -30,102 +32,103 @@ public class FuelStationController {
     @PostMapping("/register")
     public ResponseEntity<?> registerFuelStation(@Validated @RequestBody FuelStationLogDTO request) {
         try {
-            // Register the fuel station
+            //register the fuel station
             FuelStation registeredStation = fuelStationService.registerFuelStation(request);
 
-            // Generate JWT token for the registered fuel station
+            //generate JWT token for the registered fuel station
             String token = jwtUtil.generateToken(registeredStation.getStationLog().getUserName());
-
-            // Return the response with the station ID and token
             return ResponseEntity.ok(Map.of("id", registeredStation.getId(), "token", token));
         } catch (Exception e) {
-            // Log the error
-            System.err.println("Error during registration: " + e.getMessage());
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            return handleException(e, "Error during fuel station registration");
         }
     }
 
-
-    //pump fuel to station 
-    @PreAuthorize("station")
+    //pump fuel to station
+    @PreAuthorize("hasRole('STATION')")
     @PostMapping("/addFuel/{id}")
     public ResponseEntity<?> addFuel(@PathVariable("id") Long id, @RequestBody Map<String, Double> fuelDetails) {
         try {
             return fuelStationService.addFuels(id, fuelDetails);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            return handleException(e, "Error adding fuel to station");
         }
     }
 
 
     //find is any Fuel station registered on this RegisteredNumber
-    @PreAuthorize("hasAuthority('station')")
-    @GetMapping("{regNum}")
+    @PreAuthorize("hasRole('STATION')")
+    @GetMapping("/exists/{regNum}")
     public boolean existsByRegistrationNumber(@PathVariable("regNum") String registrationNumber) {
         return fuelStationService.existsByRegistrationNumber(registrationNumber);
     }
 
 
     // find station by login id
-    @PreAuthorize("hasAuthority('station')")
     @GetMapping("/findByLoginId/{id}")
-    public ResponseEntity<?> getIdByLoginId(@PathVariable("id") Long loginid) {
+    public ResponseEntity<?> getIdByLoginId(@PathVariable("id") Long loginId) {
         try {
-            FuelStation station = fuelStationService.findFuelStationByStationLog(loginid);
+            FuelStation station = fuelStationService.findFuelStationByStationLog(loginId);
             return ResponseEntity.ok(station.getId());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            return handleException(e, "Error finding station by login ID");
         }
     }
 
-    //find fuels in the fuelStation by id  
-    @PreAuthorize(("hasAuthority('stationowner')"))
+    //find fuels in the fuelStation by id
     @GetMapping("/findFuels/{id}")
     public ResponseEntity<?> getFuels(@PathVariable("id") Long stationId) {
         try {
             Map<String, Double> availableFuel = fuelStationService.getFuelInventory(stationId);
             return ResponseEntity.ok(availableFuel);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            return handleException(e, "Error finding fuels in station");
         }
     }
 
     // find station name by station id
-    @PreAuthorize("hasAuthority('station')")
     @GetMapping("/findName/{id}")
-    public ResponseEntity<?> getNameById(@PathVariable("id") Long stationid) {
+    public ResponseEntity<?> getNameById(@PathVariable("id") Long stationId) {
         try {
-            Optional<FuelStation> station = fuelStationService.findFuelStationById(stationid);
-            return ResponseEntity.ok(station.get().getStationName());
+            FuelStation station = findFuelStationById(stationId);
+            return ResponseEntity.ok(station.getStationName());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            return handleException(e, "Error finding station name by ID");
         }
     }
 
     // find station name by station id
-    @PreAuthorize("hasAuthority('station')")
-    @GetMapping("findDetail/{id}")
-    public ResponseEntity<?> getDetailsbyId(@PathVariable Long id){
+    @PreAuthorize("hasRole('STATION')")
+    @GetMapping("/findDetail/{id}")
+    public ResponseEntity<?> getDetailsById(@PathVariable Long id) {
         try {
-            FuelStation fuelStation = fuelStationService.findFuelStationById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Station not found"));
+            FuelStation fuelStation = findFuelStationById(id);
             return ResponseEntity.ok(fuelStation);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
+            return handleException(e, "Error finding station details by ID");
         }
     }
 
-    // find station name by station id
-    @PreAuthorize("hasAuthority('station')")
-    @PutMapping("saveDetails/{id}")
-    public ResponseEntity<?> saveEditDetails(@PathVariable("id") Long id, @RequestBody FuelStation fuelStation){
+    // Save edited station details
+    @PreAuthorize("hasRole('STATION')")
+    @PutMapping("/saveDetails/{id}")
+    public ResponseEntity<?> saveEditDetails(@PathVariable("id") Long id, @RequestBody FuelStation fuelStation) {
         try {
-            System.out.println(fuelStation);
-            FuelStation station = fuelStationService.saveEditDetails(id,fuelStation);
-            return ResponseEntity.ok("sucess");
+            fuelStationService.saveEditDetails(id, fuelStation);
+            return ResponseEntity.ok("success");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
+            return handleException(e, "Error saving station details");
         }
     }
 
+    //method to find a fuel station by ID
+    private FuelStation findFuelStationById(Long id) {
+        return fuelStationService.findFuelStationById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Station not found"));
+    }
+
+    //method to handle exceptions consistently
+    private ResponseEntity<?> handleException(Exception e, String errorMessage) {
+        System.err.println(errorMessage + ": " + e.getMessage());
+        return ResponseEntity.badRequest().body(Map.of(ERROR_STATUS, ERROR_STATUS, MESSAGE_KEY, e.getMessage()));
+    }
 }
