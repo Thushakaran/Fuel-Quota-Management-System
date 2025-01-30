@@ -1,6 +1,6 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
-import com.se.Fuel_Quota_Management_System.DTO.FuelStationOwnerLogDTO;
+import com.se.Fuel_Quota_Management_System.DTO.logs.FuelStationOwnerLogDTO;
 import com.se.Fuel_Quota_Management_System.model.FuelStation;
 import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.security.JwtUtil;
@@ -16,12 +16,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("api/owner")
 public class FuelStationOwnerController {
+
+    private static final String ERROR_STATUS = "error";
+    private static final String MESSAGE_KEY = "message";
+
     @Autowired
     private FuelStationOwnerService fuelStationOwnerService;
 
@@ -31,95 +33,82 @@ public class FuelStationOwnerController {
     @Autowired
     private JwtUtil jwtUtil;
 
-
-    // for register StationOwner
     @PostMapping("/register")
     public ResponseEntity<?> registerOwner(@Validated @RequestBody FuelStationOwnerLogDTO request) {
         try {
-            // Register the fuel stationOwner
             FuelStationOwner registeredStationOwner = fuelStationOwnerService.registerOwner(request);
-
-            // Generate JWT token for the registered fuel station
             String token = jwtUtil.generateToken(registeredStationOwner.getOwnerLog().getUserName());
-
-            // Return the response with the station ID and token
             return ResponseEntity.ok(Map.of("id", registeredStationOwner.getId(), "token", token));
-        }
-        catch (Exception e) {
-            System.err.println("Error during registration: " + e.getMessage());
-            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
+        } catch (Exception e) {
+            return handleException(e, "Error during registration");
         }
     }
 
-
-
-    // find owner name by Id
-    @PreAuthorize("hasAuthority('stationowner')")
+    @PreAuthorize("hasRole('STATIONOWNER')")
     @GetMapping("/findName/{id}")
     public ResponseEntity<?> getOwnerById(@PathVariable("id") Long id) {
         try {
-            FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
+            FuelStationOwner owner = findOwnerById(id);
             return ResponseEntity.ok(owner.getName());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
+            return handleException(e, "Error finding owner by ID");
         }
     }
 
+    private FuelStationOwner findOwnerById(Long id) {
+        return fuelStationOwnerService.findFuelStationOwnerById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
+    }
 
-    // find owner details by Id
-    @PreAuthorize("hasAuthority('stationowner')")
-    @GetMapping("findDetail/{id}")
-    public ResponseEntity<?> getDetailsbyId(@PathVariable Long id){
+    @PreAuthorize("hasRole('STATIONOWNER')")
+    @GetMapping("/findDetail/{id}")
+    public ResponseEntity<?> getDetailsById(@PathVariable Long id) {
         try {
-            FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found"));
+            FuelStationOwner owner = findOwnerById(id);
             return ResponseEntity.ok(owner);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
+            return handleException(e, "Error finding owner details by ID");
         }
     }
 
-
-    // find fuel stations owned by owner through owner id
-    @PreAuthorize("hasAuthority('stationowner')")
-    @GetMapping("findStations/{id}")
-    public ResponseEntity<?> getStationsById(@PathVariable("id") Long id){
+    @PreAuthorize("hasRole('STATIONOWNER')")
+    @GetMapping("/findStations/{id}")
+    public ResponseEntity<?> getStationsById(@PathVariable("id") Long id) {
         try {
-            List<FuelStation> fuelStation = fuelStationService.getByOwnerId(id);
-            if (fuelStation.isEmpty()){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("status", "error", "message", "No fuel stations found"));
+            List<FuelStation> fuelStations = fuelStationService.getByOwnerId(id);
+            if (fuelStations.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("status", ERROR_STATUS, MESSAGE_KEY, "No fuel stations found"));
             }
-            return ResponseEntity.ok(fuelStation);
+            return ResponseEntity.ok(fuelStations);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
+            return handleException(e, "Error finding fuel stations by owner ID");
         }
     }
 
 
-    // find owner by login Id
-    @PreAuthorize("hasAuthority('stationowner')")
     @GetMapping("/findByLoginId/{id}")
-    public ResponseEntity<?> getIdByLoginId(@PathVariable("id") Long loginid){
+    public ResponseEntity<?> getIdByLoginId(@PathVariable("id") Long loginId) {
         try {
-            FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerByOwnerLog(loginid);
+            FuelStationOwner owner = fuelStationOwnerService.findFuelStationOwnerByOwnerLog(loginId);
             return ResponseEntity.ok(owner.getId());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
+            return handleException(e, "Error finding owner by login ID");
         }
     }
 
-
-    // save details when update profile
-    @PreAuthorize("hasAuthority('stationowner')")
-    @PutMapping("saveDetails/{id}")
-    public ResponseEntity<?> saveEditDetails(@PathVariable("id") Long id, @RequestBody FuelStationOwner fuelStationOwner){
+    @PreAuthorize("hasRole('STATIONOWNER')")
+    @PutMapping("/saveDetails/{id}")
+    public ResponseEntity<?> saveEditDetails(@PathVariable("id") Long id, @RequestBody FuelStationOwner fuelStationOwner) {
         try {
-            FuelStationOwner owner = fuelStationOwnerService.saveEditDetails(id,fuelStationOwner);
-            return ResponseEntity.ok("sucess");
+            fuelStationOwnerService.saveEditDetails(id, fuelStationOwner);
+            return ResponseEntity.ok("success");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("status", "error", "message", e.getMessage()));
+            return handleException(e, "Error saving owner details");
         }
     }
 
+    private ResponseEntity<?> handleException(Exception e, String errorMessage) {
+        System.err.println(errorMessage + ": " + e.getMessage());
+        return ResponseEntity.badRequest().body(Map.of("status", ERROR_STATUS, MESSAGE_KEY, e.getMessage()));
+    }
 }

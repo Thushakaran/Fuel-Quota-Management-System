@@ -13,6 +13,7 @@ import com.se.Fuel_Quota_Management_System.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin")
-//@PreAuthorize("hasRole('ADMIN')") // Ensure only admins can access
+@PreAuthorize("hasRole('ADMIN')") // Ensure only admins can access
 public class AdminController {
 
     @Autowired
@@ -82,7 +83,7 @@ public class AdminController {
     }
 
 
-    @GetMapping("/station")
+    @GetMapping("/stations")
     public List<FuelStation> getAllFuelStation() {
         return adminService.getAllFuelStation();
     }

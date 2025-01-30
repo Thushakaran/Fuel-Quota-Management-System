@@ -1,6 +1,6 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
-import com.se.Fuel_Quota_Management_System.DTO.VehicleOwnerLogDTO;
+import com.se.Fuel_Quota_Management_System.DTO.logs.VehicleOwnerLogDTO;
 import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
@@ -32,7 +32,7 @@ public class VehicleController {
     }
 
     // find vehicle by login Id
-    @PreAuthorize("hasAuthority('vehicle')")
+    @PreAuthorize("hasAuthority('VEHICLE')")
     @GetMapping("/findbyloginid/{id}")
     public ResponseEntity<?> getidbyloginid(@PathVariable("id") Long loginid) {
         try {
@@ -76,7 +76,6 @@ public class VehicleController {
 
         // If the vehicle exists, update it
         if (existingVehicle != null) {
-            // Update only the fields you want to modify (example: owner name, vehicle type, etc.)
 //            existingVehicle.setOwnerName(updatedVehicle.getOwnerName());
             existingVehicle.setVehicleType(updatedVehicle.getVehicleType());
             existingVehicle.setFuelType(updatedVehicle.getFuelType());
