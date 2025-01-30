@@ -1,10 +1,8 @@
 package com.se.Fuel_Quota_Management_System.service;
 
-import com.se.Fuel_Quota_Management_System.DTO.VehicleOwnerLogDTO;
+import com.se.Fuel_Quota_Management_System.DTO.logs.VehicleOwnerLogDTO;
 import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
-
-import java.util.List;
 
 import java.util.List;
 import java.util.Optional;

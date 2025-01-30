@@ -1,22 +1,21 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
-import com.se.Fuel_Quota_Management_System.DTO.VehicleOwnerLogDTO;
-import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
+import com.se.Fuel_Quota_Management_System.DTO.logs.VehicleOwnerLogDTO;
+import com.se.Fuel_Quota_Management_System.exception.ResourceNotFoundException;
 import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
 import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.se.Fuel_Quota_Management_System.service.VehicleService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vehicles")
@@ -24,43 +23,37 @@ public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
 
-    // Register a new vehicle
+    //register a new vehicle
     @PostMapping("/register")
-    public ResponseEntity<Vehicle> registerVehicle(@RequestBody VehicleOwnerLogDTO vehicleOwnerLogDTO) {
+    public ResponseEntity<Vehicle> registerVehicle(@Validated @RequestBody VehicleOwnerLogDTO vehicleOwnerLogDTO) {
         Vehicle registeredVehicle = vehicleService.registerVehicle(vehicleOwnerLogDTO);
         return ResponseEntity.ok(registeredVehicle);
     }
 
     // find vehicle by login Id
-    @PreAuthorize("hasAuthority('vehicle')")
+    @PreAuthorize("hasRole('VEHICLE')")
     @GetMapping("/findbyloginid/{id}")
-    public ResponseEntity<?> getidbyloginid(@PathVariable("id") Long loginid) {
+    public ResponseEntity<?> getIdByLoginId(@PathVariable("id") Long loginId) {
         try {
-            Vehicle vehicle = vehicleService.findVehicleByOwnerLog(loginid);
+            Vehicle vehicle = vehicleService.findVehicleByOwnerLog(loginId);
             return ResponseEntity.ok(vehicle.getId());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 
-
-    // Get vehicle details by vehicle number
-    @GetMapping("/{vehicleNumber}")
-    public ResponseEntity<Vehicle> getVehicle(@PathVariable String vehicleNumber) {
+    //get vehicle details by vehicle number
+    @GetMapping("/by-number/{vehicleNumber}")
+    public ResponseEntity<Vehicle> getVehicleByNumber(@PathVariable String vehicleNumber) {
         Vehicle vehicle = vehicleService.getVehicleByNumber(vehicleNumber);
         return ResponseEntity.ok(vehicle);
     }
 
-    @GetMapping("/dashboard/{vehicleId}")
-    @Transactional
-    public ResponseEntity<Vehicle> getVehicle(@PathVariable Long vehicleId) {
-        Optional<Vehicle> vehicleOptional = vehicleService.getVehicleById(vehicleId);
-
-        if (vehicleOptional.isPresent()) {
-            return ResponseEntity.ok(vehicleOptional.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/by-id/{vehicleId}")
+    public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long vehicleId) {
+        return vehicleService.getVehicleById(vehicleId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/dashboard/transactions/{vehicleId}")
@@ -73,27 +66,22 @@ public class VehicleController {
     @PutMapping("/{vehicleNumber}")
     public ResponseEntity<Vehicle> updateVehicle(@PathVariable String vehicleNumber, @RequestBody Vehicle updatedVehicle) {
         Vehicle existingVehicle = vehicleService.getVehicleByNumber(vehicleNumber);
-
-        // If the vehicle exists, update it
-        if (existingVehicle != null) {
-            // Update only the fields you want to modify (example: owner name, vehicle type, etc.)
-//            existingVehicle.setOwnerName(updatedVehicle.getOwnerName());
-            existingVehicle.setVehicleType(updatedVehicle.getVehicleType());
-            existingVehicle.setFuelType(updatedVehicle.getFuelType());
-            existingVehicle.setFuelQuota(updatedVehicle.getFuelQuota());
-
-            // Save the updated vehicle
-            Vehicle savedVehicle = vehicleService.updateVehicle(existingVehicle);
-            return ResponseEntity.ok(savedVehicle);
+        if (existingVehicle == null) {
+            throw new ResourceNotFoundException("Vehicle not found with number: " + vehicleNumber);
         }
-
-        // If vehicle does not exist, return 404
-        return ResponseEntity.notFound().build();
+        existingVehicle.setVehicleType(updatedVehicle.getVehicleType());
+        existingVehicle.setFuelType(updatedVehicle.getFuelType());
+        existingVehicle.setFuelQuota(updatedVehicle.getFuelQuota());
+        Vehicle savedVehicle = vehicleService.updateVehicle(existingVehicle);
+        return ResponseEntity.ok(savedVehicle);
     }
 
     @GetMapping("/qr/{vehicleNumber}")
     public ResponseEntity<byte[]> getQrCode(@PathVariable String vehicleNumber) {
         Vehicle vehicle = vehicleService.getVehicleByNumber(vehicleNumber);
+        if (vehicle == null || vehicle.getQrCode() == null) {
+            return ResponseEntity.notFound().build();
+        }
         byte[] qrCodeBytes = Base64.getDecoder().decode(vehicle.getQrCode());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vehicle_qr.png")
