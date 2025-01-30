@@ -1,13 +1,17 @@
 package com.se.Fuel_Quota_Management_System.service;
 
-
-import com.se.Fuel_Quota_Management_System.DTO.FuelTransactionDTO;
-import com.se.Fuel_Quota_Management_System.model.*;
-import com.se.Fuel_Quota_Management_System.repository.*;
+import com.se.Fuel_Quota_Management_System.DTO.fuel.FuelTransactionDTO;
+import com.se.Fuel_Quota_Management_System.model.FuelStation;
+import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
+import com.se.Fuel_Quota_Management_System.model.Vehicle;
+import com.se.Fuel_Quota_Management_System.repository.FuelStationRepository;
+import com.se.Fuel_Quota_Management_System.repository.FuelTransactionRepository;
+import com.se.Fuel_Quota_Management_System.repository.VehicleRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class FuelTransactionServiceImpl implements FuelTransactionService {
+
+    private static final Logger logger = LoggerFactory.getLogger(FuelTransactionServiceImpl.class);
 
     @Autowired
     private FuelTransactionRepository fuelTransactionRepository;
@@ -28,30 +34,48 @@ public class FuelTransactionServiceImpl implements FuelTransactionService {
     @Autowired
     private FuelStationService fuelStationService;
 
-
     @Autowired
     private VehicleService vehicleService;
 
+    // Validates if the provided amount is valid (greater than zero).
+    private void validateAmount(double amount) {
+        if (amount <= 0) {
+            logger.error("Invalid amount: {}", amount);
+            throw new IllegalArgumentException("Amount must be greater than zero.");
+        }
+    }
 
-    // Method to initiate a new fuel transaction
+    // Retrieves a vehicle by its QR Code ID.
+    private Vehicle getVehicleByQrCodeId(String qrCodeId) {
+        logger.info("Fetching vehicle with QR Code ID: {}", qrCodeId);
+        return vehicleRepository.findByQrCodeId(qrCodeId)
+                .orElseThrow(() -> {
+                    logger.error("Vehicle not found with QR Code ID: {}", qrCodeId);
+                    return new IllegalArgumentException("Vehicle not found with QR Code ID: " + qrCodeId);
+                });
+    }
+
+    //Retrieves a fuel station by its ID.
+    private FuelStation getFuelStationById(Long stationId) {
+        logger.info("Fetching fuel station with ID: {}", stationId);
+        return fuelStationRepository.findById(stationId)
+                .orElseThrow(() -> {
+                    logger.error("Fuel Station not found with ID: {}", stationId);
+                    return new IllegalArgumentException("Fuel Station not found with ID: " + stationId);
+                });
+    }
+
+    // Starts a fuel transaction after validating input data.
     @Override
     @Transactional
     public FuelTransaction startTransaction(String qrCodeId, double amount, Long stationId) {
+        logger.info("Starting transaction for vehicle with QR Code ID: {}, amount: {}, station ID: {}", qrCodeId, amount, stationId);
 
-        // Check if the amount in liters is valid
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than zero.");
-        }
+        validateAmount(amount);
 
-        // Retrieve the vehicle entity by its QR Code ID
-        Vehicle vehicle = vehicleRepository.findByQrCodeId(qrCodeId)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found with QR Code ID: " + qrCodeId));
+        Vehicle vehicle = getVehicleByQrCodeId(qrCodeId);
+        FuelStation station = getFuelStationById(stationId);
 
-        // Retrieve the fuel station entity by its ID
-        FuelStation station = fuelStationRepository.findById(stationId)
-                .orElseThrow(() -> new RuntimeException("Fuel Station not found with ID: " + stationId));
-
-        // Create a new FuelTransaction object
         FuelTransaction fuelTransaction = new FuelTransaction();
         fuelTransaction.setVehicle(vehicle);
         fuelTransaction.setStation(station);
@@ -59,28 +83,27 @@ public class FuelTransactionServiceImpl implements FuelTransactionService {
         fuelTransaction.setAmount(amount);
         fuelTransaction.setSavedstationId(stationId);
 
+        logger.info("Transaction created successfully: {}", fuelTransaction);
         return fuelTransactionRepository.save(fuelTransaction);
     }
 
-
-
-    // Method to fetch details of a specific transaction
-
+    // Fetches all fuel transactions related to a specific vehicle.
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<FuelTransactionDTO> getTransactionsByQrCodeId(String qrCodeId) {
-        // Retrieve the vehicle entity by its QR Code ID
-        Vehicle vehicle = vehicleRepository.findByQrCodeId(qrCodeId)
-                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found with QR Code ID: " + qrCodeId));
+        logger.info("Fetching transactions for vehicle with QR Code ID: {}", qrCodeId);
 
-        // Fetch transactions using the vehicle's ID
+        Vehicle vehicle = getVehicleByQrCodeId(qrCodeId);
+
         List<FuelTransaction> transactions = fuelTransactionRepository.findByVehicleId(vehicle.getId());
 
         if (transactions.isEmpty()) {
+            logger.warn("No transactions found for vehicle with QR Code ID: {}", qrCodeId);
             throw new IllegalArgumentException("No transactions found for vehicle with QR Code ID: " + qrCodeId);
         }
 
-        // Map entities to DTOs
+        logger.info("Found {} transactions for vehicle with QR Code ID: {}", transactions.size(), qrCodeId);
+
         return transactions.stream()
                 .map(tx -> new FuelTransactionDTO(
                         tx.getId(),
@@ -92,26 +115,26 @@ public class FuelTransactionServiceImpl implements FuelTransactionService {
                 .collect(Collectors.toList());
     }
 
+    // Deducts fuel quota from the vehicle and station and records the transaction.
+    @Override
+    @Transactional
+    public void deductFuelQuotaWhenPumpingFuel(Long stationId, double amount, String qrCodeId) {
+        logger.info("Deducting fuel quota when pumping fuel for vehicle with QR Code ID: {}, amount: {}, station ID: {}", qrCodeId, amount, stationId);
 
-    public void DeductFuelQuotaWhenPumpFuel(Long stationId, double amount, String qrCodeId) {
-        // Deduct from the fuel inventory of the station
-        fuelStationService.updateFuelInventory(stationId, amount, qrCodeId);
+        validateAmount(amount);
 
-        // Deduct from the vehicle's remaining quota
-        vehicleService.updateVehicleFuelQuota(qrCodeId, amount);
+        try {
+            // Deduct fuel from the fuel station and vehicle
+            fuelStationService.updateFuelInventory(stationId, amount, qrCodeId);
+            vehicleService.updateVehicleFuelQuota(qrCodeId, amount);
 
-        // Start a fuel transaction
-        startTransaction(qrCodeId, amount, stationId);
+            // Start the transaction only after the quota deduction is successful
+            startTransaction(qrCodeId, amount, stationId);
+
+            logger.info("Fuel quota deducted and transaction recorded successfully.");
+        } catch (Exception e) {
+            logger.error("Error occurred during fuel deduction or transaction: {}", e.getMessage());
+            throw e; // Re-throw the exception after logging it
+        }
     }
-
-
 }
-
-
-
-
-
-
-
-
-

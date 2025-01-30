@@ -3,7 +3,7 @@ package com.se.Fuel_Quota_Management_System.controller;
 //import com.se.Fuel_Quota_Management_System.model.Admin;
 
 import com.se.Fuel_Quota_Management_System.DTO.DashboardData;
-import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
+import com.se.Fuel_Quota_Management_System.DTO.auth.RegisterRequest;
 import com.se.Fuel_Quota_Management_System.model.FuelStation;
 
 import com.se.Fuel_Quota_Management_System.model.FuelTransaction;
@@ -13,6 +13,7 @@ import com.se.Fuel_Quota_Management_System.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin")
-//@PreAuthorize("hasRole('ADMIN')") // Ensure only admins can access
+@PreAuthorize("hasRole('ADMIN')") // Ensure only admins can access
 public class AdminController {
 
     @Autowired
@@ -49,9 +50,7 @@ public class AdminController {
         return ResponseEntity.ok(vehicle);
     }
 
-    /**
-     * Get vehicles by type.
-     */
+    // Get vehicles by type.
 
 
     @GetMapping("/vehicles/type/{vehicleType}")
@@ -60,9 +59,7 @@ public class AdminController {
         return ResponseEntity.ok(vehicles);
     }
 
-    /**
-     * Get vehicles by owner name.
-     */
+    //Get vehicles by owner name.
     @GetMapping("/vehicles/owner/{ownerName}")
     public ResponseEntity<Optional<Vehicle>> getVehiclesByOwner(@PathVariable String ownerName) {
         Optional<Vehicle> vehicles = adminService.getVehiclesByOwner(ownerName);
@@ -70,18 +67,15 @@ public class AdminController {
     }
 
 
-    /**
-     * Update vehicle details by ID.
-     */
+    // Update vehicle details by ID.
+
     @PutMapping("/vehicles/{id}")
     public ResponseEntity<Vehicle> updateVehicle(@PathVariable Long id, @RequestBody Vehicle updatedVehicle) {
         Vehicle vehicle = adminService.updateVehicle(id, updatedVehicle);
         return ResponseEntity.ok(vehicle);
     }
 
-    /**
-     * Delete a vehicle by ID.
-     */
+    // Delete a vehicle by ID.
     @DeleteMapping("/vehicles/{id}")
     public ResponseEntity<String> deleteVehicle(@PathVariable Long id) {
         adminService.deleteVehicle(id);
@@ -89,7 +83,7 @@ public class AdminController {
     }
 
 
-    @GetMapping("/station")
+    @GetMapping("/stations")
     public List<FuelStation> getAllFuelStation() {
         return adminService.getAllFuelStation();
     }

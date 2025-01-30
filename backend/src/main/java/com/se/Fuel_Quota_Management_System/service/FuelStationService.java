@@ -1,13 +1,14 @@
 package com.se.Fuel_Quota_Management_System.service;
 
-
-import com.se.Fuel_Quota_Management_System.DTO.FuelStationLogDTO;
-import com.se.Fuel_Quota_Management_System.DTO.RegisterRequest;
+import com.se.Fuel_Quota_Management_System.DTO.logs.FuelStationLogDTO;
+import com.se.Fuel_Quota_Management_System.DTO.auth.RegisterRequest;
 import com.se.Fuel_Quota_Management_System.controller.AuthController;
 import com.se.Fuel_Quota_Management_System.exception.CustomException;
 import com.se.Fuel_Quota_Management_System.model.*;
 import com.se.Fuel_Quota_Management_System.repository.*;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
 @Service
 public class FuelStationService {
+
+    private static final Logger logger = LoggerFactory.getLogger(FuelStationService.class);
+
     @Autowired
     private FuelStationRepository fuelStationRepository;
+
     @Autowired
     private CPST_StationsRepository cpstStationsRepository;
 
@@ -40,61 +44,77 @@ public class FuelStationService {
     private AuthController authController;
 
     @Transactional
-    public FuelStation registerFuelStation(FuelStationLogDTO request) throws Exception {
-        // Check registration number in the CPST repository or already rgistered
+    public FuelStation registerFuelStation(FuelStationLogDTO request) throws CustomException {
+        logger.info("Attempting to register Fuel Station with registration number: {}", request.getRegistrationNumber());
+        // Check registration number in the CPST repository or already
         validateRegistrationNumber(request.getRegistrationNumber());
 
         // Check if username already exists
         validateUserName(request.getUserName());
 
         // Fetch the owner
-        FuelStationOwner owner = ownerRepository.findById(request.getOwnerId())
-                .orElseThrow(() -> new CustomException("Owner not found with ID: " + request.getOwnerId()));
+        FuelStationOwner owner = getOwner(request.getOwnerId());
 
         //check details are same
-        checkDetails(request.getStationName(),request.getRegistrationNumber(),request.getLocation());
+        validateStationDetails(request);
 
         // Create FuelStation entity
+        FuelStation fuelStation = buildFuelStation(request, owner);
+        UserLog registeredLog = registerStationLog(request.getUserName(), request.getPassword());
+
+        // Create and validate StationLog registration request
+        fuelStation.setStationLog(registeredLog);
+        FuelStation savedFuelStation = fuelStationRepository.save(fuelStation);
+
+        logger.info("Fuel Station registered successfully with ID: {}", savedFuelStation.getId());
+        return savedFuelStation;
+    }
+
+    // check owner already registered or not
+    private FuelStationOwner getOwner(Long ownerId) throws CustomException {
+        return ownerRepository.findById(ownerId)
+                .orElseThrow(() -> new CustomException("Owner not found with ID: " + ownerId));
+    }
+
+    //check detail match with our database
+    private void validateStationDetails(FuelStationLogDTO request) throws CustomException {
+        CPST_Stations cpstStation = cpstStationsRepository.findByRegistrationNumber(request.getRegistrationNumber());
+        if (!request.getStationName().equalsIgnoreCase(cpstStation.getStationName()) ||
+                !request.getLocation().equalsIgnoreCase(cpstStation.getLocation())) {
+            throw new CustomException("Details do not match with CPST station");
+        }
+    }
+
+    private FuelStation buildFuelStation(FuelStationLogDTO request, FuelStationOwner owner) {
         FuelStation fuelStation = new FuelStation();
         fuelStation.setStationName(request.getStationName());
         fuelStation.setRegistrationNumber(request.getRegistrationNumber());
         fuelStation.setLocation(request.getLocation());
         fuelStation.setOwner(owner);
-        fuelStation.setFuelInventory(request.getFuelTypes()); // Assuming getFuelTypes() returns Map<String, Double>
+        fuelStation.setFuelInventory(request.getFuelTypes());
+        return fuelStation;
+    }
 
-        // Create and validate StationLog registration request
-        Optional<Role> roleOptional = roleRepository.findByName("station");
-        if (roleOptional.isEmpty()) {
-            throw new CustomException("Invalid role name: station");
-        }
+    private UserLog registerStationLog(String userName, String password) throws CustomException {
+        Role role = roleRepository.findByName("STATION")
+                .orElseThrow(() -> new CustomException("Invalid role name: station"));
 
         RegisterRequest stationLog = new RegisterRequest();
-        stationLog.setUserName(request.getUserName());
-        stationLog.setPassword(request.getPassword());
-        stationLog.setRole(roleOptional.get().getName());
+        stationLog.setUserName(userName);
+        stationLog.setPassword(password);
+        stationLog.setRole(role.getName());
 
         ResponseEntity<?> registerResponse = authController.register(stationLog);
         if (!registerResponse.getStatusCode().is2xxSuccessful()) {
+            logger.error("Failed to register station log: {}", registerResponse.getBody());
             throw new CustomException("Failed to register station log: " + registerResponse.getBody());
         }
 
-        UserLog registeredLog = (UserLog) registerResponse.getBody();
-        fuelStation.setStationLog(registeredLog);
-        FuelStation registeredfuelStation = fuelStationRepository.save(fuelStation);
-
-        // Save to database
-        return registeredfuelStation;
+        return (UserLog) registerResponse.getBody();
     }
 
-    private void checkDetails(String stationName, String registrationNumber, String location) {
-        CPST_Stations cpstStation = cpstStationsRepository.findByRegistrationNumber(registrationNumber);
-        if((!stationName.equalsIgnoreCase(cpstStation.getStationName())) ||
-                !location.equalsIgnoreCase(cpstStation.getLocation())){
-            throw new CustomException("Details do not match");
-        }
-    }
-
-    private void validateRegistrationNumber(String registrationNumber) {
+    // check fuelstation registration number
+    private void validateRegistrationNumber(String registrationNumber) throws CustomException {
         if (!cpstStationsRepository.existsByRegistrationNumber(registrationNumber)) {
             throw new CustomException("Registration number does not exist in the CPST repository");
         }
@@ -103,7 +123,7 @@ public class FuelStationService {
         }
     }
 
-    private void validateUserName(String userName) {
+    private void validateUserName(String userName) throws CustomException {
         if (userLogRepository.existsByUserName(userName)) {
             throw new CustomException("Username already exists");
         }
@@ -117,78 +137,63 @@ public class FuelStationService {
         return fuelStationRepository.getByOwnerId(id);
     }
 
-    public FuelStation findFuelStationByStationLog(Long loginid) {
-        return fuelStationRepository.findFuelStationOwnerByStationLogId(loginid);
+    public FuelStation findFuelStationByStationLog(Long loginId) {
+        return fuelStationRepository.findFuelStationOwnerByStationLogId(loginId);
     }
 
-    public Map<String, Double> getFuelInventory(Long stationId) {
-        Optional<FuelStation> fuelStation = fuelStationRepository.findById(stationId);
-        if (fuelStation.isPresent()) {
-            return fuelStation.get().getFuelInventory();
-        }
-        throw new CustomException("Fuel Inventory not Found");
+    public Map<String, Double> getFuelInventory(Long stationId) throws CustomException {
+        return fuelStationRepository.findById(stationId)
+                .map(FuelStation::getFuelInventory)
+                .orElseThrow(() -> new CustomException("Fuel Inventory not Found"));
     }
 
-    public Optional<FuelStation> findFuelStationById(Long stationid) {
-        return fuelStationRepository.findById(stationid);
+    public Optional<FuelStation> findFuelStationById(Long stationId) {
+        return fuelStationRepository.findById(stationId);
     }
 
-    public ResponseEntity<?> addFuels(Long id, Map<String, Double> fuelDetails) {
-        try {
-            //find fuel station by station ID
-            FuelStation fuelStation = fuelStationRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Fuel Station not found"));
-
-            //validate the fuel quantity
-            String fuelType = fuelDetails.keySet().iterator().next();
-            Double quantityToAdd = fuelDetails.get(fuelType);
-
-            if (quantityToAdd == null || quantityToAdd < 0) {
-                return ResponseEntity.badRequest().body(Map.of("message", "Invalid quantity for fuel type: " + fuelType));
-            }
-
-            //update the fuel for the provided type
-            Map<String, Double> inventory = fuelStation.getFuelInventory();
-            if (inventory.containsKey(fuelType)) {
-                //add the quantity
-                Double currentQuantity = inventory.get(fuelType);
-                inventory.put(fuelType, currentQuantity + quantityToAdd);
-            } else {
-                //if fuel type doesn't exist, return error
-                return ResponseEntity.badRequest().body(Map.of("message", "Fuel type " + fuelType + " not found in inventory"));
-            }
-
-            //save the updated fuel station
-            fuelStationRepository.save(fuelStation);
-
-            //return
-            return ResponseEntity.ok(Map.of("message", "Fuel added successfully"));
-
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        }
-    }
-
-
-
-
-    //to update Fuel Inventory
     @Transactional
-    public void updateFuelInventory(Long stationId, double amount, String qrCodeId) {
+    public ResponseEntity<?> addFuels(Long id, Map<String, Double> fuelDetails) throws CustomException {
+        FuelStation fuelStation = fuelStationRepository.findById(id)
+                .orElseThrow(() -> new CustomException("Fuel Station not found"));
+
+        String fuelType = getFuelTypeFromDetails(fuelDetails);
+        Double quantityToAdd = fuelDetails.get(fuelType);
+
+        validateFuelQuantity(fuelType, quantityToAdd);
+
+        Map<String, Double> inventory = fuelStation.getFuelInventory();
+        inventory.put(fuelType, inventory.get(fuelType) + quantityToAdd);
+
+        fuelStationRepository.save(fuelStation);
+        return ResponseEntity.ok(Map.of("message", "Fuel added successfully"));
+    }
+
+    private String getFuelTypeFromDetails(Map<String, Double> fuelDetails) {
+        return fuelDetails.keySet().iterator().next();
+    }
+
+    private void validateFuelQuantity(String fuelType, Double quantityToAdd) throws CustomException {
+        if (quantityToAdd == null || quantityToAdd < 0) {
+            throw new CustomException("Invalid quantity for fuel type: " + fuelType);
+        }
+    }
+
+    @Transactional
+    public void updateFuelInventory(Long stationId, double amount, String qrCodeId) throws CustomException {
         // Retrieve the vehicle entity by qrCodeId
         Vehicle vehicle = vehicleRepository.findByQrCodeId(qrCodeId)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found with QR Code ID: " + qrCodeId));
-
-        String vehicleFuelType = vehicle.getFuelType();
+                .orElseThrow(() -> new CustomException("Vehicle not found with QR Code ID: " + qrCodeId));
 
         // Retrieve the fuel station entity by station ID
         FuelStation fuelStation = fuelStationRepository.findById(stationId)
-                .orElseThrow(() -> new RuntimeException("Fuel Station not found with ID: " + stationId));
+                .orElseThrow(() -> new CustomException("Fuel Station not found with ID: " + stationId));
 
         // Check if the fuelInventory map contains the vehicle's fuel type
         Map<String, Double> fuelInventory = fuelStation.getFuelInventory();
+        String vehicleFuelType = vehicle.getFuelType();
+
         if (!fuelInventory.containsKey(vehicleFuelType)) {
-            throw new RuntimeException("Fuel type " + vehicleFuelType + " is not available at this station.");
+            throw new CustomException("Fuel type " + vehicleFuelType + " is not available at this station.");
         }
 
         // Get the available fuel for the specified fuel type
@@ -196,24 +201,18 @@ public class FuelStationService {
 
         // Check if the station has enough fuel to pump
         if (availableFuel < amount) {
-            throw new RuntimeException("Insufficient fuel available for type " + vehicleFuelType + ". Available: " + availableFuel);
+            throw new CustomException("Insufficient fuel available for type " + vehicleFuelType);
         }
 
         // Deduct the pumped amount from the available fuel
-        double remainingFuel = availableFuel - amount;
-        fuelInventory.put(vehicleFuelType, remainingFuel);
-
-        // Save the updated fuel station entity back to the repository
-        fuelStation.setFuelInventory(fuelInventory);
+        fuelInventory.put(vehicleFuelType, availableFuel - amount);
         fuelStationRepository.save(fuelStation);
     }
 
-
-
-    public FuelStation saveEditDetails(Long id, FuelStation fuelStation) {
-        // Fetch the existing FuelStation entity from the database
+    @Transactional
+    public void saveEditDetails(Long id, FuelStation fuelStation) throws CustomException {
         FuelStation existing = fuelStationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Fuel Station with ID " + id + " not found"));
+                .orElseThrow(() -> new CustomException("Fuel Station with ID " + id + " not found"));
 
         // Update fields only if the new values are not null
         if (fuelStation.getStationName() != null) {
@@ -225,18 +224,12 @@ public class FuelStationService {
         if (fuelStation.getLocation() != null) {
             existing.setLocation(fuelStation.getLocation());
         }
-
         if (fuelStation.getFuelInventory() != null) {
-            // Merge the existing fuelInventory with the new values
-            Map<String, Double> updatedInventory = existing.getFuelInventory();
-            updatedInventory.putAll(fuelStation.getFuelInventory()); // Overwrite existing or add new fuel types
-            existing.setFuelInventory(updatedInventory);
+            existing.getFuelInventory().putAll(fuelStation.getFuelInventory());
         }
 
-        // Save and return the updated FuelStation entity
-        return fuelStationRepository.save(existing);
+        FuelStation updatedFuelStation = fuelStationRepository.save(existing);
+        logger.info("Fuel Station updated successfully with ID: {}", updatedFuelStation.getId());
     }
 
 }
-
-

@@ -59,16 +59,16 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image, No
       localStorage.setItem("token", token);
 
       switch (role) {
-        case "admin":
+        case "ADMIN":
           navigate("/adminDashboard");
           break;
-        case "stationowner":
+        case "STATIONOWNER":
           await fetchOwnerDetails(loginId);
           break;
-        case "station":
+        case "STATION":
           await fetchStationDetails(loginId);
           break;
-        case "vehicle":
+        case "VEHICLE":
           await fetchVehicleDetails(loginId);
           break;
         default:
@@ -165,7 +165,6 @@ export const StationLogin = () => (
   <LoginComponent
     heading="FuelStation Login"
     image={fuelStationImage}
-    Notregistered="Not registered yet? "
   />
 );
 
