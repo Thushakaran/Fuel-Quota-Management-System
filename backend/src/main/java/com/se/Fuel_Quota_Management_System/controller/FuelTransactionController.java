@@ -11,11 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
 public class FuelTransactionController {
+
 
 
     @Autowired
@@ -37,7 +39,10 @@ public class FuelTransactionController {
         }
     }
 
-    //Retrieves all transactions for a specific vehicle.
+
+
+    // get all transactions for a specific vehicle
+
     @Transactional
     @GetMapping("/vehicle/qrCode/{qrCodeId}")
     public ResponseEntity<?> getTransactionsByQrCodeId(@PathVariable String qrCodeId) {
@@ -49,11 +54,19 @@ public class FuelTransactionController {
         }
     }
 
+
     //Updates fuel quota after a fuel transaction.
+
     @PostMapping("/updateFuelQuota")
     public ResponseEntity<String> updateFuelInventory(@RequestBody FuelQuotaUpdateRequest request) {
+
+        System.out.println(request.getStationId());
+        System.out.println(request.getAmount());
+        System.out.println(request.getQrCodeId());
         try {
+
             fuelTransactionService.deductFuelQuotaWhenPumpingFuel(request.getStationId(), request.getAmount(), request.getQrCodeId());
+
             return ResponseEntity.ok("Fuel updated successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
@@ -61,4 +74,5 @@ public class FuelTransactionController {
             return ResponseEntity.internalServerError().body("Unexpected error: " + e.getMessage());
         }
     }
+
 }

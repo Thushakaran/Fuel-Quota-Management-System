@@ -26,17 +26,18 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/auth/**",
-                                "/api/fuel-station/**",
-                                "/api/owner/**",
-                                "/api/v1/**",
-                                "/api/admin/**",
-                                "/api/transactions/**",
-                                "/api/vehicles/**").permitAll()  //open authentication endpoints
+                                 "/api/auth/**",
+                                        "/api/fuel-station/**",
+                                        "/api/owner/**",
+                                        "/api/v1/**",
+                                        "/api/admin/**",
+                                        "/api/transactions/**",
+                                        "/api/vehicles/**").permitAll()  //open authentication endpoints
 //                        .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Only admins can access
 //                        .requestMatchers("/api/owner/**").hasRole("STATION_OWNER") // Only station owners
 //                        .requestMatchers("/api/fuel-station/**").hasRole("STATION") // Fuel stations
                         .anyRequest().authenticated()) // Any other request requires authentication
+
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessions (JWT stateless)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

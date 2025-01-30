@@ -46,6 +46,11 @@ public class VehicleServiceImp implements VehicleService {
     private FuelTransactionRepository fuelTransactionRepository;
 
 
+    // Registers a vehicle by validating its details from the DMT mock database,
+    // ensuring the vehicle is not already registered, assigning a fuel quota, and generating a QR code.
+    // @return The registered vehicle with all necessary details set.
+
+
     @Transactional
 
     public Vehicle registerVehicle(VehicleOwnerLogDTO vehicleOwnerLogDTO) {
@@ -109,6 +114,7 @@ public class VehicleServiceImp implements VehicleService {
                     return new RuntimeException("Role Not Found");
                 });
     }
+
 
     private UserLog registerUser(VehicleOwnerLogDTO vehicleOwnerLogDTO, Role role) {
         RegisterRequest vehicleLog = new RegisterRequest();
@@ -255,7 +261,8 @@ public class VehicleServiceImp implements VehicleService {
         vehicleRepository.saveAll(vehicleRepository.findAll());
         logger.info("Weekly fuel quota reset completed for all vehicles.");
     }
-
+          
+    // Generates a QR code string containing the vehicle number and fuel quota.
     private String generateQrCodeId(int length) {
         logger.info("Generating QR Code ID with length: {}", length);
 
