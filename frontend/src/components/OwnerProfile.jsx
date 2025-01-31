@@ -3,57 +3,76 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { editdetails, getdetailbyid } from "../api/FuelStationOwnerServiceApi";
 
-const OwnerProfile = () => {
-  const [owner, setOwner] = useState({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    nicNo: "",
-    address: "",
-  });
+const ProfileInput = ({ label, value, field, isEditing, onChange, readOnly }) => (
+  <div className="mb-3">
+    <label htmlFor={field} className="form-label">{label}</label>
+    <input
+      type="text"
+      id={field}
+      className={`form-control ${!isEditing && "bg-light"}`}
+      value={value}
+      onChange={onChange}
+      readOnly={readOnly || !isEditing}
+    />
+  </div>
+);
 
+const OwnerProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false);
+  
+  const [owner, setOwner] = useState({
+    name: "", email: "", phoneNumber: "", nicNo: "", address: ""
+  });
   const [originalOwner, setOriginalOwner] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchOwnerData = async () => {
-    try {
-      const response = await getdetailbyid(id);
-      setOwner(response.data);
-    } catch (error) {
-      console.error("Error fetching owner details:", error);
-      setError("Failed to fetch owner details.");
-    }
-  };
-
   useEffect(() => {
+    const fetchOwnerData = async () => {
+      try {
+        const response = await getdetailbyid(id);
+        setOwner(response.data);
+        setOriginalOwner(response.data);
+      } catch (error) {
+        console.error("Error fetching owner details:", error);
+        setError("Failed to fetch owner details.");
+      }
+    };
     fetchOwnerData();
   }, [id]);
 
-  const handleEditClick = () => {
-    setOriginalOwner({ ...owner });
-    setIsEditing(true);
+  const handleEditClick = () => setIsEditing(true);
+  const handleCancelClick = () => {
+    setOwner({ ...originalOwner });
+    setIsEditing(false);
+  };
+
+  const validateInputs = () => {
+    const nicRegex = /^\d{10}(\d{2})?$/;
+    const phoneRegex = /^\d{10}$/;
+
+    if (!owner.name || !owner.email || !owner.phoneNumber || !owner.nicNo) {
+      return "All fields must be filled.";
+    }
+    if (!nicRegex.test(owner.nicNo)) {
+      return "NIC Number must be 10 or 12 digits.";
+    }
+    if (!phoneRegex.test(owner.phoneNumber)) {
+      return "Phone Number must be exactly 10 digits.";
+    }
+    return null;
   };
 
   const handleSaveClick = async () => {
-    if (!owner.name || !owner.email || !owner.phoneNumber || !owner.nicNo) {
-      alert("Please fill in all fields before saving.");
+    const validationError = validateInputs();
+    if (validationError) {
+      alert(validationError);
       return;
     }
 
-    //check NIC number in 10 or 12 digits
-    const nicRegex = /^\d{10}(\d{2})?$/;
-    if (!nicRegex.test(owner.nicNo)) {
-      alert("NIC Number must be either 10 or 12 digits.");
-      return;
-    }
-
-    //check Phone Number in 10 digits
-    const phoneRegex = /^\d{10}$/;
-    if (!phoneRegex.test(owner.phoneNumber)) {
-      alert("Phone Number must be exactly 10 digits.");
+    if (JSON.stringify(owner) === JSON.stringify(originalOwner)) {
+      alert("No changes detected.");
       return;
     }
 
@@ -61,6 +80,7 @@ const OwnerProfile = () => {
       try {
         await editdetails(id, owner);
         alert("Profile updated successfully!");
+        setOriginalOwner({ ...owner });
         setIsEditing(false);
       } catch (error) {
         console.error("Error updating profile:", error);
@@ -68,13 +88,6 @@ const OwnerProfile = () => {
       }
     }
   };
-
-  const handleCancelClick = () => {
-    setOwner({ ...originalOwner });
-    setIsEditing(false);
-  };
-
-  const isSaveDisabled = JSON.stringify(owner) === JSON.stringify(originalOwner);
 
   return (
     <div className="container mt-5">
@@ -94,27 +107,21 @@ const OwnerProfile = () => {
 
               <form>
                 {[
-                  { label: "Name", value: owner.name, field: "name" },
-                  { label: "Email", value: owner.email, field: "email" },
-                  { label: "Phone", value: owner.phoneNumber, field: "phoneNumber" },
-                  { label: "NIC Number", value: owner.nicNo, field: "nicNo" },
-                  { label: "Address", value: owner.address, field: "address" },
-                ].map(({ label, value, field }) => (
-                  <div className="mb-3" key={field}>
-                    <label htmlFor={field} className="form-label">
-                      {label}
-                    </label>
-                    <input
-                      type="text"
-                      id={field}
-                      className={`form-control ${!isEditing && "bg-light"}`}
-                      value={value}
-                      onChange={(e) =>
-                        setOwner({ ...owner, [field]: e.target.value })
-                      }
-                      readOnly={field === "nicNo" || !isEditing}
-                    />
-                  </div>
+                  { label: "Name", field: "name" },
+                  { label: "Email", field: "email" },
+                  { label: "Phone", field: "phoneNumber" },
+                  { label: "NIC Number", field: "nicNo", readOnly: true },
+                  { label: "Address", field: "address" },
+                ].map(({ label, field, readOnly }) => (
+                  <ProfileInput
+                    key={field}
+                    label={label}
+                    value={owner[field]}
+                    field={field}
+                    isEditing={isEditing}
+                    readOnly={readOnly}
+                    onChange={(e) => setOwner({ ...owner, [field]: e.target.value })}
+                  />
                 ))}
 
                 <div className="mt-4">
@@ -124,7 +131,6 @@ const OwnerProfile = () => {
                         type="button"
                         className="btn btn-success w-100 mb-2"
                         onClick={handleSaveClick}
-                        disabled={isSaveDisabled}
                       >
                         Save Changes
                       </button>

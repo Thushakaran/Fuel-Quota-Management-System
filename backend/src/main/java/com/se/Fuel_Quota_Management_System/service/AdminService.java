@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
@@ -48,6 +47,7 @@ public class AdminService {
     @Autowired
     private FuelTransactionRepository fuelTransactionRepository;
 
+/** ------------------------Vehicle Related ------------------*/
     public List<Vehicle> getAllVehicles() {
         logger.info("Fetching all vehicles.");
         return vehicleRepository.findAll();
@@ -97,6 +97,12 @@ public class AdminService {
         return vehicleRepository.save(existingVehicle);
     }
 
+    public Vehicle vehicleActiveStatus(Long vehicleId) {
+        Vehicle vehicle = getVehicleById(vehicleId);
+        vehicle.setActive(!vehicle.isActive());
+        return vehicleRepository.save(vehicle); // Save updated status
+    }
+
     public void deleteVehicle(Long id) {
         logger.info("Attempting to delete vehicle with ID: {}", id);
         if (!vehicleRepository.existsById(id)) {
@@ -107,6 +113,8 @@ public class AdminService {
         vehicleRepository.deleteById(id);
         logger.info("Vehicle with ID: {} deleted successfully.", id);
     }
+
+/** ------------------------ fuelStation Related ----------------*/
 
     public List<FuelStation> getAllFuelStation() {
         logger.info("Fetching all fuel stations.");
@@ -158,6 +166,17 @@ public class AdminService {
                 });
     }
 
+    public FuelStation stationActiveStatus(Long stationId) {
+        FuelStation station = getFuelStationById(stationId);
+        station.setActive(!station.isActive());
+        return fuelStationRepository.save(station); // Save updated status
+    }
+
+    public boolean isActive(Long stationId) {
+        return fuelStationRepository.findById(stationId)
+                .map(FuelStation::isActive)
+                .orElse(false);
+    }
     public FuelStation updateFuelStation(Long id, FuelStation updatedFuelStation) {
         logger.info("Updating fuel station with ID: {}", id);
         FuelStation existingFuelStation = getFuelStationById(id);
@@ -198,6 +217,7 @@ public class AdminService {
         return data;
     }
 
+/** ------------------------ Admin Register ----------------------*/
     public ResponseEntity<?> registerAdmin(RegisterRequest registerRequest) {
         logger.info("Registering new admin.");
         ResponseEntity<?> registerResponse = authController.register(registerRequest);
@@ -212,6 +232,8 @@ public class AdminService {
 
         return ResponseEntity.ok(adminLog.getId());
     }
+
+/** ------------------------Transaction Related ---------------*/
 
     public List<FuelTransaction> getFuelTransactions() {
         logger.info("Fetching all fuel transactions.");

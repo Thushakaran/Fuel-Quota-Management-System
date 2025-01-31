@@ -1,4 +1,4 @@
-const FuelStationTable = ({ fuelStations, onDelete, onEdit }) => {
+const FuelStationTable = ({ fuelStations, onDelete, onEdit, onToggleStatus }) => {
     return (
         <table className="table table-striped table-bordered table-hover">
             <thead className="table-dark">
@@ -8,6 +8,7 @@ const FuelStationTable = ({ fuelStations, onDelete, onEdit }) => {
                     <th>Station Name</th>
                     <th>Registration Number</th>
                     <th>Fuel Inventory</th>
+                    <th>Status</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
@@ -15,7 +16,7 @@ const FuelStationTable = ({ fuelStations, onDelete, onEdit }) => {
             <tbody>
                 {fuelStations.length === 0 ? (
                     <tr>
-                        <td colSpan="7">No fuel stations found</td>
+                        <td colSpan="8">No fuel stations found</td>
                     </tr>
                 ) : (
                     fuelStations.map((station) => (
@@ -33,11 +34,19 @@ const FuelStationTable = ({ fuelStations, onDelete, onEdit }) => {
                                     ))
                                     : "No data"}
                             </td>
+                            {console.log(station.active)}
                             <td>
                                 <button
-                                    className="btn btn-primary btn-sm"
-                                    onClick={() => onEdit(station)}
+                                    className={`btn btn-sm ${station.active ? "btn-success" : "btn-secondary"}`}
+                                    onClick={() => onToggleStatus(station.id)}
                                 >
+                                    {station.active ? "Active" : "Deactive"}
+                                </button>
+                            </td>
+
+
+                            <td>
+                                <button className="btn btn-primary btn-sm" onClick={() => onEdit(station)}>
                                     Edit
                                 </button>
                             </td>

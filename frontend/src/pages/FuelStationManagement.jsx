@@ -22,6 +22,7 @@ const FuelStationManagement = () => {
       .get("/admin/stations")
       .then((response) => {
         setFuelStations(response.data || []);
+        console.log(response.data)
         setLoading(false);
       })
       .catch(() => {
@@ -48,6 +49,27 @@ const FuelStationManagement = () => {
         setLoading(false);
       });
   };
+
+const changeActiveStatus = (fuelStationId) => {
+  setLoading(true);
+  axios
+    .put(`/admin/changeStationStatus/${fuelStationId}`)
+    .then((response) => {
+      setFuelStations((prevStations) =>
+        prevStations.map((station) =>
+          station.id === fuelStationId
+            ? { ...station, active: response.data.active }
+            : station
+        )
+      );
+      setLoading(false);
+      alert("Fuel station status updated successfully");
+    })
+    .catch(() => {
+      setError("Failed to update fuel station status");
+      setLoading(false);
+    });
+};
 
   // Delete a fuel station
   const deleteFuelStation = (fuelStationId) => {
@@ -79,6 +101,7 @@ const FuelStationManagement = () => {
           fuelStations={fuelStations}
           onDelete={deleteFuelStation}
           onEdit={setEditingStation} // Pass edit handler to the table
+          onToggleStatus={changeActiveStatus}
         />
         {editingStation && (
           <EditFuelStationModal
