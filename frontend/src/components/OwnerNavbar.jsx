@@ -68,7 +68,7 @@ const OwnerNavbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to={`/owner/${id}/stationreg`} className="dropdown-item">
+                  <Link to={`/owner/${id}/station-reg`} className="dropdown-item">
                     Register Station
                   </Link>
                 </li>

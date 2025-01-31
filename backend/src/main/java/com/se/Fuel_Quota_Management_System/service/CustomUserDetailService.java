@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.List;
 
 @Service
 public class CustomUserDetailService implements UserDetailsService {
@@ -18,21 +18,21 @@ public class CustomUserDetailService implements UserDetailsService {
     @Autowired
     private  UserLogRepository userlogRepository;
 
-
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserLog user = userlogRepository.findByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User Name Not Found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        // Wrap the single role in a SimpleGrantedAuthority
+        if (user.getRole() == null || user.getRole().getName() == null) {
+            throw new UsernameNotFoundException("User " + username + " has no assigned role.");
+        }
+
         GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUserName(),
                 user.getPassword(),
-                Collections.singletonList(authority) // Use a single-element list
+                List.of(authority) // Immutable list
         );
     }
 }
-

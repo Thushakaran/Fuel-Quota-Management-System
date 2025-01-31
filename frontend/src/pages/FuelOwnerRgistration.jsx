@@ -89,9 +89,11 @@ const FuelOwnerRegistration = () => {
           navigate(`/owner/${id}`);
         })
         .catch((error) => {
-          toast.error('Error registering owner:', error);
+          // Check for the structure of the error response
+          const errorMessage = error.response?.data?.details || "An unexpected error occurred.";
+          toast.error("Registration failed : "+errorMessage); // Display the error message from backend
         });
-    }
+      }
   };
 
   return (

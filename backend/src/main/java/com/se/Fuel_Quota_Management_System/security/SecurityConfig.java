@@ -1,6 +1,5 @@
 package com.se.Fuel_Quota_Management_System.security;
 
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,29 +22,26 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(@NotNull HttpSecurity http)
-            throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(
-                                        "/api/auth/**",
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                 "/api/auth/**",
                                         "/api/fuel-station/**",
                                         "/api/owner/**",
                                         "/api/v1/**",
                                         "/api/admin/**",
                                         "/api/transactions/**",
                                         "/api/vehicles/**",
-                                        "/api/transactions/updateFuelQuota")
-                                .permitAll()
-//                                .requestMatchers("api/fuel-station/**").hasAuthority("station")
-//                                .requestMatchers("api/owner/**").hasAuthority("stationowner")
-//                                .requestMatchers("/api/admin/**").hasRole("admin")
-                                .anyRequest().authenticated())
+                                        "/api/fuel-filling/**").permitAll()  //open authentication endpoints
+//                        .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Only admins can access
+//                        .requestMatchers("/api/owner/**").hasRole("STATION_OWNER") // Only station owners
+//                        .requestMatchers("/api/fuel-station/**").hasRole("STATION") // Fuel stations
+                        .anyRequest().authenticated()) // Any other request requires authentication
+
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy
-                                (SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessions (JWT stateless)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -55,8 +51,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager
-            (@NotNull AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 }

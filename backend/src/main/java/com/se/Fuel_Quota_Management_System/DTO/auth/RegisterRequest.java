@@ -1,4 +1,4 @@
-package com.se.Fuel_Quota_Management_System.DTO;
+package com.se.Fuel_Quota_Management_System.DTO.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
