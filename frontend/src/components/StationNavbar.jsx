@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { getstationStatus } from "../api/FuelStationServiceApi.js";
 
 const StationNavbar = () => {
   const { id } = useParams();  // Accessing the id from URL params
   const navigate = useNavigate(); // Hook for navigation in React Router v6
+  const [active, setActive] = useState(true); // Track station active status
+
+  //get station active status
+  useEffect(() => {
+    getstationStatus(id)
+      .then((response) => {
+        setActive(response.data);
+      })
+      .catch((error) => {
+        toast.error(`Error fetching station data: ${error.message || "Unknown error"}`);
+      });
+  }, [id]);
 
   // Logout function to clear token and navigate to home page with confirmation
   const handleLogout = () => {
@@ -19,6 +31,12 @@ const StationNavbar = () => {
     } else {
       toast.error("Logout canceled");
     }
+  };
+
+  // Handle click on Profile or Add Fuel when station is inactive
+  const handleInactiveClick = (e, message) => {
+    e.preventDefault(); // Prevent navigation
+    toast.error(message); // Show error message
   };
 
   return (
@@ -61,16 +79,36 @@ const StationNavbar = () => {
               className="dropdown-menu dropdown-menu-end"
               aria-labelledby="profileDropdown"
             >
-              <li>
-                <Link to={`/station/${id}/profile`} className="dropdown-item">
-                  Profile
-                </Link>
-              </li>
-              <li>
-                <Link to={`/station/${id}/addfuel`} className="dropdown-item">
-                  StationFill
-                </Link>
-              </li>
+
+              {active ? (
+                <>
+                  <li>
+                    <Link to={`/station/${id}/profile`} className="dropdown-item">
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to={`/station/${id}/addfuel`} className="dropdown-item">
+                      StationFill
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <button onClick={(e) => handleInactiveClick(e, "This station is inactive, profile cannot be accessed.")}
+                            className="dropdown-item">
+                      Profile
+                    </button>
+                  </li>
+                  <li>
+                    <button onClick={(e) => handleInactiveClick(e, "This station is inactive, fuel filling cannot be performed.")}
+                            className="dropdown-item">
+                      StationFill
+                    </button>
+                  </li>
+                </>
+              )}
               <li>
                 <hr className="dropdown-divider" />
               </li>
@@ -80,6 +118,8 @@ const StationNavbar = () => {
                 </button>
               </li>
             </ul>
+
+
           </div>
         </div>
       </div>

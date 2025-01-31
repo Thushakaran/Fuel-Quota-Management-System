@@ -32,7 +32,8 @@ public class SecurityConfig {
                                         "/api/v1/**",
                                         "/api/admin/**",
                                         "/api/transactions/**",
-                                        "/api/vehicles/**").permitAll()  //open authentication endpoints
+                                        "/api/vehicles/**",
+                                        "/api/fuel-filling/**").permitAll()  //open authentication endpoints
 //                        .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Only admins can access
 //                        .requestMatchers("/api/owner/**").hasRole("STATION_OWNER") // Only station owners
 //                        .requestMatchers("/api/fuel-station/**").hasRole("STATION") // Fuel stations

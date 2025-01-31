@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { addFuel } from '../api/FuelStationServiceApi';
+import { addFuel, getFuelTransactions } from '../api/FuelStationServiceApi';
 import {ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,6 +15,20 @@ const AddFuelForm = ({ setFuels }) => {
   const [quantity, setQuantity] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [fuelTransactions, setFuelTransactions] = useState([]);
+
+  useEffect(() => {
+    // Fetch fuel transactions for the station when the component mounts
+    getFuelTransactions(id)
+      .then(response => {
+        console.log(response.data)
+        setFuelTransactions(response.data); // Assuming the API response contains the transactions
+      })
+      .catch(error => {
+        console.log(id);
+        toast.error("Failed to fetch fuel transactions.");
+      });
+  }, [id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,7 +56,7 @@ const AddFuelForm = ({ setFuels }) => {
         }, 2000);
       })
       .catch((error) => {
-        const errorMessage = error.response?.data?.message || "Failed to add fuel.";
+        const errorMessage = error.response?.data?.details || "Failed to add fuel.";
         toast.error(errorMessage);
         setError(errorMessage);
       })
@@ -96,6 +110,31 @@ const AddFuelForm = ({ setFuels }) => {
             {isLoading ? 'Adding...' : 'Add Fuel'}
           </button>
         </form>
+
+        <hr />
+        <h3 className="text-center mt-4">Fuel Transactions</h3>
+        {fuelTransactions.length === 0 ? (
+          <p className="text-center">No Fuel tTransactions Yet After Registration.</p>
+        ) : (
+          <table className="table table-striped mt-3">
+            <thead>
+              <tr>
+                <th>Fuel Type</th>
+                <th>Quantity Added (Liters)</th>
+                <th>Filling Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fuelTransactions.map((transaction) => (
+                <tr key={transaction.id}>
+                  <td>{transaction.fuelType}</td>
+                  <td>{transaction.quantityAdded}</td>
+                  <td>{new Date(transaction.fillingTime).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

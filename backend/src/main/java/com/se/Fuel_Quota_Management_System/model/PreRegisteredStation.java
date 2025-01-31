@@ -10,7 +10,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class CPST_Stations {
+public class PreRegisteredStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

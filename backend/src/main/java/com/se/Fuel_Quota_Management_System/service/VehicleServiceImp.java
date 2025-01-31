@@ -141,6 +141,7 @@ public class VehicleServiceImp implements VehicleService {
         vehicle.setOwnerIcNumber(dmtVehicle.getOwnerIcNumber());
         vehicle.setChassisNumber(dmtVehicle.getChassisNumber());
         vehicle.setOwnerLog(registeredLog);
+        vehicle.setActive(true);
 
         // Assign fuel quota and remaining quota
         double fuelQuota = calculateFuelQuota(dmtVehicle.getVehicleType());

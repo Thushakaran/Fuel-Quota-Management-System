@@ -109,6 +109,14 @@ public class FuelStationOwnerController {
 
     private ResponseEntity<?> handleException(Exception e, String errorMessage) {
         System.err.println(errorMessage + ": " + e.getMessage());
-        return ResponseEntity.badRequest().body(Map.of("status", ERROR_STATUS, MESSAGE_KEY, e.getMessage()));
+
+        Map<String, Object> response = Map.of(
+                "status", "error",
+                "message", errorMessage,
+                "details", e.getMessage()
+        );
+
+        return ResponseEntity.badRequest().body(response);
     }
+
 }

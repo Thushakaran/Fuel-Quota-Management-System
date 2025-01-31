@@ -47,7 +47,7 @@ function App() {
           <Route path="owner/:id" element={<OwnerHomePage />} />
 
 
-          <Route path="/owner/:id/stationreg" element={<FuelStationRegistration />} />
+          <Route path="/owner/:id/station-reg" element={<FuelStationRegistration />} />
           <Route path="owner/:id/profile" element={<OwnerProfile/>} />
           
 
