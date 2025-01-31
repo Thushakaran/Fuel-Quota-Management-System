@@ -11,7 +11,6 @@ import com.se.Fuel_Quota_Management_System.model.Vehicle;
 import com.se.Fuel_Quota_Management_System.security.JwtUtil;
 import com.se.Fuel_Quota_Management_System.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -73,6 +72,12 @@ public class AdminController {
     public ResponseEntity<Vehicle> updateVehicle(@PathVariable Long id, @RequestBody Vehicle updatedVehicle) {
         Vehicle vehicle = adminService.updateVehicle(id, updatedVehicle);
         return ResponseEntity.ok(vehicle);
+    }
+
+    @PutMapping("/changeVehicleStatus/{vehicleId}")
+    public ResponseEntity<Vehicle> changeActiveStatus(@PathVariable Long vehicleId) {
+        Vehicle updatedVehicle = adminService.vehicleActiveStatus(vehicleId);
+        return ResponseEntity.ok(updatedVehicle);
     }
 
     // Delete a vehicle by ID.
@@ -151,6 +156,11 @@ public class AdminController {
         return ResponseEntity.ok("FuelStation with ID " + id + " deleted successfully.");
     }
 
+    @PutMapping("/changeStationStatus/{stationId}")
+    public ResponseEntity<FuelStation> changeStationStatus(@PathVariable Long stationId) {
+        FuelStation updatedStation = adminService.stationActiveStatus(stationId);
+        return ResponseEntity.ok(updatedStation);
+    }
 
     @GetMapping("/dashboard-data")
     public DashboardData getDashboardData() {
@@ -190,6 +200,7 @@ public class AdminController {
         FuelTransaction fuelTransaction = adminService.updateFuelTransaction(id, updatedFuelTransaction);
         return ResponseEntity.ok(fuelTransaction);
     }
+
 }
 
 

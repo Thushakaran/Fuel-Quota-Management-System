@@ -35,7 +35,7 @@ public class Vehicle {
 
     private double fuelQuota;
 
-    @Column(length = 512)
+    @Column(length = 1024)
     private String qrCode;
 
     private String phoneNumber;
@@ -51,7 +51,12 @@ public class Vehicle {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "loginid", nullable = false)
+    @JsonIgnore
     private UserLog ownerLog;
+
+    //to track station status
+    @Column(nullable = false)
+    private boolean isActive = true; // Default to active
 
 
 }

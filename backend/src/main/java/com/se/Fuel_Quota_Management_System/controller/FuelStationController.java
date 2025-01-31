@@ -120,6 +120,18 @@ public class FuelStationController {
         }
     }
 
+    // find station status by station id
+    @PreAuthorize("hasRole('STATION')")
+    @GetMapping("/findStatus/{id}")
+    public ResponseEntity<?> getStatusById(@PathVariable Long id) {
+        try {
+            FuelStation fuelStation = findFuelStationById(id);
+            return ResponseEntity.ok(fuelStation.isActive());
+        } catch (Exception e) {
+            return handleException(e, "Error finding station status by ID");
+        }
+    }
+
     //method to find a fuel station by ID
     private FuelStation findFuelStationById(Long id) {
         return fuelStationService.findFuelStationById(id)
@@ -128,7 +140,17 @@ public class FuelStationController {
 
     //method to handle exceptions consistently
     private ResponseEntity<?> handleException(Exception e, String errorMessage) {
+
         System.err.println(errorMessage + ": " + e.getMessage());
-        return ResponseEntity.badRequest().body(Map.of(ERROR_STATUS, ERROR_STATUS, MESSAGE_KEY, e.getMessage()));
+
+
+        Map<String, Object> response = Map.of(
+                "status", "error",
+                "message", errorMessage,
+                "details", e.getMessage()
+        );
+
+        return ResponseEntity.badRequest().body(response);
     }
+
 }

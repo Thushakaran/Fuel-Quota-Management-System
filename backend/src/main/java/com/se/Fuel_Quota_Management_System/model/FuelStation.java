@@ -35,6 +35,7 @@ public class FuelStation {
     // fuel station have only one owner
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @JsonIgnore
     private FuelStationOwner owner;
 
     // Repeat for other fields
@@ -48,5 +49,8 @@ public class FuelStation {
     @JsonIgnore
     private List<FuelTransaction> transactions;
 
+    //to track station status
+    @Column(nullable = false)
+    private boolean isActive = true; // Default to active
 
 }

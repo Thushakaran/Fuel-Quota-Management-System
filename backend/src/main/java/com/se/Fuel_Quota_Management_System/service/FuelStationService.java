@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +28,7 @@ public class FuelStationService {
     private FuelStationRepository fuelStationRepository;
 
     @Autowired
-    private CPST_StationsRepository cpstStationsRepository;
+    private PreRegisteredStationRepository preregisteredStationsRepository;
 
     @Autowired
     private UserLogRepository userLogRepository;
@@ -39,6 +41,9 @@ public class FuelStationService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private FuelFillingRepository fuelFillingRepository;
 
     @Autowired
     private AuthController authController;
@@ -78,7 +83,7 @@ public class FuelStationService {
 
     //check detail match with our database
     private void validateStationDetails(FuelStationLogDTO request) throws CustomException {
-        CPST_Stations cpstStation = cpstStationsRepository.findByRegistrationNumber(request.getRegistrationNumber());
+        PreRegisteredStation cpstStation = preregisteredStationsRepository.findByRegistrationNumber(request.getRegistrationNumber());
         if (!request.getStationName().equalsIgnoreCase(cpstStation.getStationName()) ||
                 !request.getLocation().equalsIgnoreCase(cpstStation.getLocation())) {
             throw new CustomException("Details do not match with CPST station");
@@ -90,6 +95,7 @@ public class FuelStationService {
         fuelStation.setStationName(request.getStationName());
         fuelStation.setRegistrationNumber(request.getRegistrationNumber());
         fuelStation.setLocation(request.getLocation());
+        fuelStation.setActive(true);
         fuelStation.setOwner(owner);
         fuelStation.setFuelInventory(request.getFuelTypes());
         return fuelStation;
@@ -115,7 +121,7 @@ public class FuelStationService {
 
     // check fuelstation registration number
     private void validateRegistrationNumber(String registrationNumber) throws CustomException {
-        if (!cpstStationsRepository.existsByRegistrationNumber(registrationNumber)) {
+        if (!preregisteredStationsRepository.existsByRegistrationNumber(registrationNumber)) {
             throw new CustomException("Registration number does not exist in the CPST repository");
         }
         if (fuelStationRepository.existsByRegistrationNumber(registrationNumber)) {
@@ -156,17 +162,50 @@ public class FuelStationService {
         FuelStation fuelStation = fuelStationRepository.findById(id)
                 .orElseThrow(() -> new CustomException("Fuel Station not found"));
 
-        String fuelType = getFuelTypeFromDetails(fuelDetails);
-        Double quantityToAdd = fuelDetails.get(fuelType);
+        if (!fuelStation.isActive()) {
+            throw new CustomException("Station is Not Active");
+        }
 
+        String fuelType = getFuelTypeFromDetails(fuelDetails);
+
+        if (!fuelDetails.containsKey(fuelType) || fuelDetails.get(fuelType) == null) {
+            throw new CustomException("Fuel quantity is missing or invalid.");
+        }
+
+        Double quantityToAdd = fuelDetails.get(fuelType);
         validateFuelQuantity(fuelType, quantityToAdd);
 
+        // Ensure inventory is initialized
         Map<String, Double> inventory = fuelStation.getFuelInventory();
-        inventory.put(fuelType, inventory.get(fuelType) + quantityToAdd);
+        if (inventory == null) {
+            inventory = new HashMap<>();
+            fuelStation.setFuelInventory(inventory);
+        }
 
+        // Ensure fuel type exists in inventory
+        inventory.put(fuelType, inventory.getOrDefault(fuelType, 0.0) + quantityToAdd);
+
+        // Save updated station inventory
         fuelStationRepository.save(fuelStation);
-        return ResponseEntity.ok(Map.of("message", "Fuel added successfully"));
+
+        // ✅ Save fuel filling details directly
+        fuelFillingRepository.save(saveFuelFillingDetails(fuelStation, fuelType, quantityToAdd));
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Fuel added successfully",
+                "updatedInventory", inventory
+        ));
     }
+
+    public FuelFilling saveFuelFillingDetails(FuelStation fuelStation, String fuelType, Double quantityToAdd) {
+        return new FuelFilling(
+                fuelStation,
+                fuelType,
+                quantityToAdd,
+                LocalDateTime.now()
+        );
+    }
+
 
     private String getFuelTypeFromDetails(Map<String, Double> fuelDetails) {
         return fuelDetails.keySet().iterator().next();
