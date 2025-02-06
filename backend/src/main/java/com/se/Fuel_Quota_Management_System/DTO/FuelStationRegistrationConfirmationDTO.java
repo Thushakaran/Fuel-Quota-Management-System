@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FuelStationRegistrationRequestDTO {
+public class FuelStationRegistrationConfirmationDTO {
     private Long id;
 }
