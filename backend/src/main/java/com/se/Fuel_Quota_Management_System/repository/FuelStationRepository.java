@@ -21,12 +21,12 @@ public interface FuelStationRepository extends JpaRepository<FuelStation, Long> 
 
     boolean existsByRegistrationNumber(String registrationNumber);
 
-    Optional <FuelStation> findByStationName(String stationName);
+    Optional<FuelStation> findByStationName(String stationName);
 
     Optional<FuelStation> findByRegistrationNumber(String registrationNumber);
 
     @Query("SELECT o FROM FuelStation o WHERE o.stationLog.id = :loginId")
-    FuelStation findFuelStationOwnerByStationLogId(@Param("loginId") Long loginId);
+    FuelStation findFuelStationByStationLogId(@Param("loginId") Long loginId);
 
     @Override
     Optional<FuelStation> findById(Long id);
