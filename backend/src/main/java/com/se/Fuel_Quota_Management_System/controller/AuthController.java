@@ -1,9 +1,14 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
 import com.se.Fuel_Quota_Management_System.DTO.auth.AuthResponse;
+import com.se.Fuel_Quota_Management_System.DTO.auth.MobileAuthResponse;
 import com.se.Fuel_Quota_Management_System.DTO.auth.RegisterRequest;
+import com.se.Fuel_Quota_Management_System.model.FuelStation;
+import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.model.Role;
 import com.se.Fuel_Quota_Management_System.model.UserLog;
+import com.se.Fuel_Quota_Management_System.repository.FuelStationOwnerRepository;
+import com.se.Fuel_Quota_Management_System.repository.FuelStationRepository;
 import com.se.Fuel_Quota_Management_System.repository.RoleRepository;
 import com.se.Fuel_Quota_Management_System.repository.UserLogRepository;
 import com.se.Fuel_Quota_Management_System.security.JwtUtil;
@@ -30,10 +35,10 @@ public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
-    private  AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    private  JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
 
     @Autowired
     private UserLogRepository userLogRepository;
@@ -44,6 +49,11 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private FuelStationRepository fuelStationRepository;
+
+//    @Autowired
+//    private FuelStationOwnerRepository fuelStationOwnerRepository;
 
 
     //register user
@@ -87,15 +97,46 @@ public class AuthController {
             //get user from database
             UserLog user = userLogRepository.findByUserName(loginRequest.getUserName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
-
             // Generate JWT token
             String token = jwtUtil.generateToken(user.getUserName());
 
+//            FuelStation fuelStation = fuelStationRepository.findByOwnerId(fuelStationOwner.getId())
+//                    .orElseThrow(() -> new RuntimeException("Fuel station not found with owner id: " + fuelStationOwner.getId()));
+
             // Create response
-            AuthResponse authResponse = new AuthResponse(token, user.getRole(),user.getId());
+            AuthResponse authResponse = new AuthResponse(token, user.getRole(), user.getId());
 
             logger.info("User logged in successfully: {}", loginRequest.getUserName());
             return ResponseEntity.ok(authResponse);
+        } catch (BadCredentialsException e) {
+            logger.error("Invalid login attempt for username: {}", loginRequest.getUserName());
+            return ResponseEntity.badRequest().body("Invalid username or password");
+        }
+    }
+
+    //station login in mobile
+    @PostMapping("/mobilelogin")
+    public ResponseEntity<?> mobileLogin(@RequestBody UserLog loginRequest) {
+        logger.info("Received login request for username: {}", loginRequest.getUserName());
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword())
+            );
+
+            //get user from database
+            UserLog user = userLogRepository.findByUserName(loginRequest.getUserName())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            // Generate JWT token
+            String token = jwtUtil.generateToken(user.getUserName());
+
+            // get station Id
+            FuelStation fuelStation = fuelStationRepository.findFuelStationByStationLogId(user.getId());
+
+            // Create response
+            MobileAuthResponse mobileauthResponse = new MobileAuthResponse(token, user.getRole(), user.getId(), fuelStation.getId());
+
+            logger.info("User logged in successfully: {}", loginRequest.getUserName());
+            return ResponseEntity.ok(mobileauthResponse);
         } catch (BadCredentialsException e) {
             logger.error("Invalid login attempt for username: {}", loginRequest.getUserName());
             return ResponseEntity.badRequest().body("Invalid username or password");
