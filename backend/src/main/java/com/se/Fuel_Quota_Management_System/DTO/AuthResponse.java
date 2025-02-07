@@ -13,5 +13,4 @@ public class AuthResponse {
 
     private Long id;
 
-    private Long stationId;
 }
