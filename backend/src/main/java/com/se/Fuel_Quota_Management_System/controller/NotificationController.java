@@ -1,6 +1,6 @@
 package com.se.Fuel_Quota_Management_System.controller;
 
-import com.se.Fuel_Quota_Management_System.DTO.FuelStationRegistrationRequestDTO;
+import com.se.Fuel_Quota_Management_System.DTO.FuelStationRegistrationConfirmationDTO;
 import com.se.Fuel_Quota_Management_System.DTO.FuelTransactionRegistrationRequestDTO;
 import com.se.Fuel_Quota_Management_System.model.FuelStationOwner;
 import com.se.Fuel_Quota_Management_System.model.SMSSendRequest;
@@ -68,7 +68,7 @@ public class NotificationController {
         }
     }
     @PostMapping("/FuelStationRegistration")
-    public ResponseEntity<String> sendFuelStationRegistrationSMS(@RequestBody FuelStationRegistrationRequestDTO request) {
+    public ResponseEntity<String> sendFuelStationRegistrationSMS(@RequestBody FuelStationRegistrationConfirmationDTO request) {
         // Fetch the owner's phone number using the ownerId
         Long id = request.getId();
 
