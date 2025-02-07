@@ -32,6 +32,17 @@ export const getstationname = (stationId) => {
   });
 }
 
+// function to get station status
+export const getstationStatus = (stationId) => {
+  const token = localStorage.getItem("token");
+  return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findStatus/${stationId}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    }
+  });
+}
+
 //function to get fuelTypes
 export const getfuelInventory = (stationId) => {
   const token = localStorage.getItem("token");
@@ -60,6 +71,39 @@ export const addFuel = (stationId, fuels) => {
   );
 };
 
+export const editStationDetails  = (stationId,station) => {
+ const token = localStorage.getItem("token");
+ return axios.put(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/saveDetails/${stationId}`,station, {
+   headers: {
+     "Content-Type": "application/json",
+     Authorization: `Bearer ${token}`,
+   }
+ });
+
+};
+
+export const getStationDetailById  = (stationId) => {
+ const token = localStorage.getItem("token");
+ return axios.get(`${REST_API_BASE_URL}${FUEL_STATION_BASE}/findDetail/${stationId}`, {
+   headers: {
+     "Content-Type": "application/json",
+     Authorization: `Bearer ${token}`,
+   }
+ });
+
+};
+
+export const getFuelTransactions = (stationId) => {
+  const token = localStorage.getItem("token");
+ return axios.get(`${REST_API_BASE_URL}/api/fuel-filling/fuelFillingByStationId/${stationId}`, {
+   headers: {
+     "Content-Type": "application/json",
+     Authorization: `Bearer ${token}`,
+   }
+ });
+}
 
 
+
+//
 

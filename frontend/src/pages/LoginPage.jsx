@@ -59,16 +59,16 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image, No
       localStorage.setItem("token", token);
 
       switch (role) {
-        case "admin":
+        case "ADMIN":
           navigate("/adminDashboard");
           break;
-        case "stationowner":
+        case "STATIONOWNER":
           await fetchOwnerDetails(loginId);
           break;
-        case "station":
+        case "STATION":
           await fetchStationDetails(loginId);
           break;
-        case "vehicle":
+        case "VEHICLE":
           await fetchVehicleDetails(loginId);
           break;
         default:
@@ -84,7 +84,7 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image, No
       <Navbar />
       <ToastContainer position="top-center" autoClose={10000} />
       <div className="container d-flex justify-content-center align-items-center min-vh-100">
-        <div className="card shadow-lg border-0 col-md-8 col-lg-6 p-4">
+        <div className="card shadow-lg border-0 col-md-10 col-lg-8 p-5">
           <div className="row g-0">
             <div
               className="col-md-6 d-none d-md-block"
@@ -95,10 +95,10 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image, No
                 borderRadius: "10px 0 0 10px",
               }}
             ></div>
-            <div className="col-md-6 p-4">
+            <div className="col-md-6 p-5">
               <h2 className="text-center mb-4">{heading}</h2>
               <form onSubmit={handleSubmit}>
-                <div className="mb-3">
+                <div className="mb-4">
                   <label htmlFor="userName" className="form-label">
                     <i className="fas fa-user me-2"></i>Username
                   </label>
@@ -113,7 +113,7 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image, No
                     className="form-control rounded-pill"
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-4">
                   <label htmlFor="password" className="form-label">
                     <i className="fas fa-lock me-2"></i>Password
                   </label>
@@ -130,13 +130,13 @@ const LoginComponent = ({ heading, registrationLink, registrationText, image, No
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-primary w-100 py-2 rounded-pill shadow-sm"
+                  className="btn btn-primary w-100 py-3 rounded-pill shadow-sm"
                 >
                   Login
                 </button>
               </form>
               {Notregistered && (
-                <p className="mt-3 text-center">
+                <p className="mt-4 text-center">
                   {Notregistered}
                   <Link to={registrationLink} className="text-primary fw-bold">
                     {registrationText}
@@ -165,9 +165,6 @@ export const StationLogin = () => (
   <LoginComponent
     heading="FuelStation Login"
     image={fuelStationImage}
-    Notregistered="Not registered yet? "
-    registrationLink="/stationreg"
-    registrationText="Register as Station"
   />
 );
 

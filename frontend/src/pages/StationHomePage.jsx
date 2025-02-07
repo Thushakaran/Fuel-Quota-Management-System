@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import StationNavbar from '../components/StationNavbar';
-import Footer from '../components/Footer';
-import '../css/Layout.css'
-import { getfuelInventory, getstationname } from '../api/FuelStationServiceApi.js';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import StationNavbar from "../components/StationNavbar";
+import Footer from "../components/Footer";
+import "../css/Layout.css";
+import { getfuelInventory, getstationname , getstationStatus} from "../api/FuelStationServiceApi.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 
 const StationHomePage = () => {
   const { id } = useParams();
   const [fuels, setFuels] = useState([]);
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
+  const [active, setActive] = useState(true); // Track station active status
   const [lowFuelAlerts, setLowFuelAlerts] = useState([]);
-  const MAX_FUEL_CAPACITY = 5000; // Set the maximum fuel balance to 5,000 liters
+  const MAX_FUEL_CAPACITY = 5000;
 
   const fetchData = () => {
     getfuelInventory(id)
@@ -28,17 +28,24 @@ const StationHomePage = () => {
         setLowFuelAlerts(lowFuel);
       })
       .catch((error) => {
-        toast.error(`Error fetching fuel inventory: ${error.response?.data?.message || error.message || 'Unknown error'}`);
+        toast.error(`Error fetching fuel inventory: ${error.response?.data?.message || error.message || "Unknown error"}`);
       });
-      
 
     getstationname(id)
       .then((response) => {
         setName(response.data);
       })
       .catch((error) => {
-        toast.error(`Error fetching station name: ${error.message || 'Unknown error'}`);
+        toast.error(`Error fetching station name: ${error.message || "Unknown error"}`);
       });
+
+    getstationStatus(id)
+      .then((response) => {
+        setActive(response.data);
+      })
+      .catch((error) => {
+        toast.error(`Error fetching station status: ${error.message || "Unknown error"}`);
+      });      
   };
 
   useEffect(() => {
@@ -51,35 +58,38 @@ const StationHomePage = () => {
     <>
       <StationNavbar />
       <ToastContainer position="top-center" autoClose={5000} />
-      <header className="bg-primary text-white text-center py-4">
-        <h1 className="fw-bold">{name.toLocaleUpperCase()}</h1>
-      </header>
-      <main className="container my-4 homepage">
-        <h2 className="fw-bold mb-4">Fuel Inventory</h2>
 
+      {/* Fixed Alert if the Station is Inactive */}
+      {!active && (
+        <div className="alert alert-danger text-center " role="alert">
+          ⚠️ This station is currently inactive. Please contact the administrator for reactivation.
+        </div>
+      )}
+      <header className="bg-primary text-white text-center py-4" >
+        <h1 className="fw-bold">{name.toUpperCase()}</h1>
+      </header>
+
+      <main className="container my-4 homepage">
+        <h2 className="fw-bold mb-4 text-center">Fuel Inventory</h2>
+
+        {/* Low Fuel Alerts */}
         {lowFuelAlerts.length > 0 && (
-          <div className="toast show align-items-center text-bg-danger mb-4" role="alert">
-            <div className="d-flex">
-              <div className="toast-body">
-                {lowFuelAlerts.map((fuel, index) => (
-                  <p key={index}>⚠️ Low Fuel: {fuel.fuelType} is below 250 liters.</p>
-                ))}
-              </div>
-              <button
-                type="button"
-                className="btn-close me-2 m-auto"
-                data-bs-dismiss="toast"
-                aria-label="Close"
-              ></button>
+          <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
+            <div className="me-auto">
+              {lowFuelAlerts.map((fuel, index) => (
+                <p key={index} className="mb-1">⚠️ Low Fuel: {fuel.fuelType} is below 250 liters.</p>
+              ))}
             </div>
+            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
         )}
 
-        <div className="row g-3 ">
+        {/* Fuel Inventory */}
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {fuels.length > 0 ? (
             fuels.map((fuel, index) => (
-              <div className="col-md-4" key={index}>
-                <div className="card shadow-sm">
+              <div className="col" key={index}>
+                <div className="card shadow-sm h-100">
                   <div className="card-header text-white bg-dark fw-bold text-center">
                     {fuel.fuelType}
                   </div>
@@ -87,7 +97,7 @@ const StationHomePage = () => {
                     <h5 className="card-title text-center">{fuel.quantity} Liters</h5>
                     <div className="progress">
                       <div
-                        className={`progress-bar ${fuel.quantity > 250 ? 'bg-success' : 'bg-danger'}`}
+                        className={`progress-bar ${fuel.quantity > 250 ? "bg-success" : "bg-danger"}`}
                         role="progressbar"
                         style={{ width: `${(fuel.quantity / MAX_FUEL_CAPACITY) * 100}%` }}
                         aria-valuenow={fuel.quantity}
@@ -100,11 +110,14 @@ const StationHomePage = () => {
               </div>
             ))
           ) : (
-            <p>Loading fuels...</p>
+            <div className="text-center w-100">
+              <p className="text-muted">Loading fuels...</p>
+            </div>
           )}
         </div>
       </main>
-      <footer style={{ position: 'relative', bottom: '0', width: '100%' }}>
+
+      <footer style={{ position: "relative", bottom: "0", width: "100%" }}>
         <Footer />
       </footer>
     </>

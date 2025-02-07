@@ -94,9 +94,9 @@ const VehicleRegistration = () => {
       localStorage.setItem("token", response.data.token);
       resetForm();
     } catch (error) {
+      console.error(error)
       const errorMessage =
-        error.response?.data?.message ||
-        "Failed to register vehicle. Please try again.";
+        error.response?.data?.message;
       setErrorMessages({ general: errorMessage });
     } finally {
       setLoading(false); // Reset loading state after request
@@ -113,7 +113,7 @@ const VehicleRegistration = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mt-5 bg-light p-4 rounded">
+      <div className="container-form bg-light p-4 rounded">
         <div className="header text-center mb-4 text-primary">
           <h2>Vehicle Registration</h2>
         </div>

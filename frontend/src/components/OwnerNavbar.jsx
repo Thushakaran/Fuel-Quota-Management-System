@@ -11,14 +11,14 @@ const OwnerNavbar = () => {
   const handleLogout = () => {
     const userConfirmed = window.confirm("Are you sure you want to log out?");
     if (userConfirmed) {
-      localStorage.removeItem("token"); // remove token from localStorage
-      toast.success("Logged out successfully!");
-      navigate("/"); //navigate to the home page
+      localStorage.removeItem("token");
+      navigate("/"); // Navigate first
+      toast.success("Logged out successfully!"); // Show toast after navigation
     } else {
       toast.info("Logout canceled.");
     }
   };
-
+  
   return (
     <>
       <ToastContainer position="top-center" autoClose={5000} />
@@ -68,7 +68,7 @@ const OwnerNavbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to={`/owner/${id}/stationreg`} className="dropdown-item">
+                  <Link to={`/owner/${id}/station-reg`} className="dropdown-item">
                     Register Station
                   </Link>
                 </li>

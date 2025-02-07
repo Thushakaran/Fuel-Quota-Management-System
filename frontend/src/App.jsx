@@ -19,10 +19,8 @@ import VehicleOwnerDashboard from "./pages/VehicleOwnerDashboard";
 
 
 import FuelStationManagement from "./pages/FuelStationManagement";
-// import OwnerProfile from "./components/OwnerProfile";
-
-import FuelStationManagement from "./components/FuelStationManagement";
-import OwnerProfile from "./components/OwnerProfile";
+ import OwnerProfile from "./components/OwnerProfile";
+import StationProfile from "./components/StationProfile";
 
 import AddFuelForm from "./components/AddFuelForm";
 import FuelTransactionManagement from "./pages/FuelTransactionManagement";
@@ -32,20 +30,14 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/vehicle-registration"
-            element={<VehicleRegistration />}
-          />
+          <Route path="/vehicle-registration" element={<VehicleRegistration />}/>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutUsPage />} />
           <Route path="/vehicleManagement" element={<VehicleManagement />} />
           <Route path="/transactionManagement" element={<FuelTransactionManagement />} />
           <Route path="/adminlogin" element={<AdminLogin/>}/>
           <Route path="/adminDashboard" element={<AdminDashboard />} />
-          <Route
-            path="/fuelStationManagement"
-            element={<FuelStationManagement />}
-          />
+          <Route path="/fuelStationManagement" element={<FuelStationManagement />}/>
 
           <Route path="/vehiclelogin" element={<VehicleLogin />} />
           <Route path="/vehicle/:id" element={<VehicleOwnerDashboard />} />
@@ -55,13 +47,14 @@ function App() {
           <Route path="owner/:id" element={<OwnerHomePage />} />
 
 
-          <Route path="/owner/:id/stationreg" element={<FuelStationRegistration />} />
+          <Route path="/owner/:id/station-reg" element={<FuelStationRegistration />} />
           <Route path="owner/:id/profile" element={<OwnerProfile/>} />
           
 
 
           <Route path="/stationlogin" element={<StationLogin />} />
           <Route path="station/:id" element={<StationHomePage />} />
+          <Route path="station/:id/profile" element={<StationProfile/>} />
           <Route path="station/:id/addfuel" element={<AddFuelForm />} />
         </Routes>
       </BrowserRouter>
