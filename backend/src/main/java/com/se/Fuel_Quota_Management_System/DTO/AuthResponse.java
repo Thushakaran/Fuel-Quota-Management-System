@@ -12,4 +12,6 @@ public class AuthResponse {
     private Role role;
 
     private Long id;
+
+    private Long stationId;
 }
