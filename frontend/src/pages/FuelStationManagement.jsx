@@ -101,7 +101,7 @@ const changeActiveStatus = (fuelStationId) => {
           fuelStations={fuelStations}
           onDelete={deleteFuelStation}
           onEdit={setEditingStation} // Pass edit handler to the table
-          onToggleStatus={changeActiveStatus}
+          // onToggleStatus={changeActiveStatus}
         />
         {editingStation && (
           <EditFuelStationModal
