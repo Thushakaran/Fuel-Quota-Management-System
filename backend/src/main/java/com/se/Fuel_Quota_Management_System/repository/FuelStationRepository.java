@@ -15,7 +15,8 @@ import java.util.Optional;
 public interface FuelStationRepository extends JpaRepository<FuelStation, Long> {
     Optional<FuelStation> findByOwnerId(Long owner_id);
 
-    List<FuelStation> getByOwnerId(Long id);
+    @Query("SELECT fs FROM FuelStation fs LEFT JOIN FETCH fs.fuelInventory WHERE fs.owner.id = :id")
+    List<FuelStation> getByOwnerId(@Param("id") Long id);
 
     Optional<FuelStation> findByLocation(String location);
 
@@ -30,6 +31,10 @@ public interface FuelStationRepository extends JpaRepository<FuelStation, Long> 
 
     @Override
     Optional<FuelStation> findById(Long id);
+
+    @Query("SELECT fs FROM FuelStation fs LEFT JOIN FETCH fs.fuelInventory WHERE fs.id = :id")
+    Optional<FuelStation> findByIdWithInventory(@Param("id") Long id);
+
 
 
 }
