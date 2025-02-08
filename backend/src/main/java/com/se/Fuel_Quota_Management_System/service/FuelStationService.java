@@ -145,7 +145,7 @@ public class FuelStationService {
     }
 
     public FuelStation findFuelStationByStationLog(Long loginId) {
-        return fuelStationRepository.findFuelStationOwnerByStationLogId(loginId);
+        return fuelStationRepository.findFuelStationByStationLogId(loginId);
     }
 
     @Transactional
