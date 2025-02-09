@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { sendNotificationToFuelStationReg } from '../api/Notification.js';
 
 const FuelStationRegistration = () => {
   const { id } = useParams();
@@ -110,6 +111,12 @@ const FuelStationRegistration = () => {
           localStorage.setItem("token", response.data.token);
           const stationId = response.data.id;
           toast.success('Fuel station registered successfully!');
+          sendNotificationToFuelStationReg(stationId)
+            .then((res)=>{
+              toast.success("Confirmation Message has been sent your phoneNumber");
+            }).catch((err)=>{
+              toast.error("Confirmation message will be sent your phoneNumber");
+            })
           navigate(`/station/${stationId}`);
         })
         .catch((error) => {
