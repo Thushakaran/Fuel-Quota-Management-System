@@ -8,6 +8,7 @@ import { FaUser, FaPhoneAlt, FaEnvelope, FaKey} from 'react-icons/fa';
 import { FaLocationDot } from "react-icons/fa6";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { sendNotificationToFuelStationOwnerReg } from '../api/Notification.js';
 
 const FuelOwnerRegistration = () => {
   const navigate = useNavigate();
@@ -86,6 +87,12 @@ const FuelOwnerRegistration = () => {
           const id = response.data.id;
           localStorage.setItem("token", response.data.token);
           toast.success('Fuel owner registered successfully!');
+          sendNotificationToFuelStationOwnerReg(ownerData.phoneNumber)
+           .then((res)=>{
+            toast.success("Confirmation Message has been sent your phoneNumber");
+           }).catch((err)=>{
+            toast.error("Confirmation Message will be sent your phoneNumber");
+           })
           navigate(`/owner/${id}`);
         })
         .catch((error) => {

@@ -3,6 +3,7 @@ import { registerVehicle } from "../api/vehicleApi";
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
 import "../css/VehicleRegistration.css"; // Import custom CSS
 import Navbar from "../components/Navbar";
+import { sendNotificationToVehicleReg } from "../api/Notification";
 
 // Reusable form input component
 const FormInput = ({ label, type, name, value, onChange, error }) => (
@@ -90,6 +91,12 @@ const VehicleRegistration = () => {
     try {
       const result = await registerVehicle(formData);
       setSuccessMessage("Vehicle registered successfully!");
+      sendNotificationToVehicleReg(result.phoneNumber)
+        .then((res)=>{
+         toast.success("Confirmation Message has been sent your phoneNumber");
+        }).catch((err)=>{
+         toast.error("Confirmation Message will be sent your phoneNumber")
+        })
       if (result.qrCode) setQrCode(result.qrCode);
       localStorage.setItem("token", response.data.token);
       resetForm();
