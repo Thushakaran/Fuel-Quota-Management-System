@@ -14,7 +14,7 @@ export default function Login() {
     try {
       console.log("gm")
       const response = await axios.post(
-        "http://172.19.45.60:8080/api/auth/login",
+        "http://172.19.96.152:8080/api/auth/mobilelogin",
         {
           userName: email,
           password : password,

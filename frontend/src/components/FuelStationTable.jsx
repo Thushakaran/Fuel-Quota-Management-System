@@ -1,4 +1,5 @@
-const FuelStationTable = ({ fuelStations, onDelete, onEdit, onToggleStatus }) => {
+// const FuelStationTable = ({ fuelStations, onDelete, onEdit, onToggleStatus }) 
+const FuelStationTable = ({ fuelStations, onDelete, onEdit})=> {
     return (
         <table className="table table-striped table-bordered table-hover">
             <thead className="table-dark">
@@ -9,7 +10,7 @@ const FuelStationTable = ({ fuelStations, onDelete, onEdit, onToggleStatus }) =>
                     <th>Registration Number</th>
                     <th>Fuel Inventory</th>
                     <th>Status</th>
-                    <th>Edit</th>
+                    {/* <th>Edit</th> */}
                     <th>Delete</th>
                 </tr>
             </thead>
@@ -35,14 +36,14 @@ const FuelStationTable = ({ fuelStations, onDelete, onEdit, onToggleStatus }) =>
                                     : "No data"}
                             </td>
                             {console.log(station.active)}
-                            <td>
+                            {/* <td>
                                 <button
                                     className={`btn btn-sm ${station.active ? "btn-success" : "btn-secondary"}`}
                                     onClick={() => onToggleStatus(station.id)}
                                 >
                                     {station.active ? "Active" : "Deactive"}
                                 </button>
-                            </td>
+                            </td> */}
 
 
                             <td>

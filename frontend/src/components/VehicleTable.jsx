@@ -1,6 +1,7 @@
 import React from "react";
 
-const VehicleTable = ({ vehicles, onEdit, onDelete , onToggleStatus }) => {
+// const VehicleTable = ({ vehicles, onEdit, onDelete , onToggleStatus }) =>
+const VehicleTable = ({ vehicles, onEdit, onDelete }) =>  {
     const vehicleList = Array.isArray(vehicles) ? vehicles : [];
 
     return (
@@ -14,7 +15,7 @@ const VehicleTable = ({ vehicles, onEdit, onDelete , onToggleStatus }) => {
                     <th>Fuel Quota</th>
                     <th>Chassis Number</th>
                     <th>Status</th>
-                    <th>Edit</th>
+                    {/* <th>Edit</th> */}
                     <th>Delete</th>
                 </tr>
             </thead>
@@ -33,14 +34,14 @@ const VehicleTable = ({ vehicles, onEdit, onDelete , onToggleStatus }) => {
                             <td>{vehicle.fuelQuota}</td>
                             <td>{vehicle.chassisNumber}</td>
                             {console.log(vehicle)}
-                            <td>
+                            {/* <td>
                                 <button
                                     className={`btn btn-sm ${vehicle.active ? "btn-success" : "btn-secondary"}`}
                                     onClick={() => onToggleStatus(vehicle.id)}
                                 >
                                     {vehicle.active ? "Active" : "Deactive"}
                                 </button>
-                            </td>
+                            </td> */}
 
                             <td>
                                 <button

@@ -139,19 +139,22 @@ public class FuelStationService {
         return fuelStationRepository.existsByRegistrationNumber(registrationNumber);
     }
 
+    @Transactional
     public List<FuelStation> getByOwnerId(Long id) {
         return fuelStationRepository.getByOwnerId(id);
     }
 
     public FuelStation findFuelStationByStationLog(Long loginId) {
-        return fuelStationRepository.findFuelStationOwnerByStationLogId(loginId);
+        return fuelStationRepository.findFuelStationByStationLogId(loginId);
     }
 
+    @Transactional
     public Map<String, Double> getFuelInventory(Long stationId) throws CustomException {
-        return fuelStationRepository.findById(stationId)
-                .map(FuelStation::getFuelInventory)
+        return fuelStationRepository.findByIdWithInventory(stationId)
+                .map(FuelStation::getFuelInventory) // Extract fuelInventory
                 .orElseThrow(() -> new CustomException("Fuel Inventory not Found"));
     }
+
 
     public Optional<FuelStation> findFuelStationById(Long stationId) {
         return fuelStationRepository.findById(stationId);
@@ -188,7 +191,7 @@ public class FuelStationService {
         // Save updated station inventory
         fuelStationRepository.save(fuelStation);
 
-        // ✅ Save fuel filling details directly
+        // Save fuel filling details directly
         fuelFillingRepository.save(saveFuelFillingDetails(fuelStation, fuelType, quantityToAdd));
 
         return ResponseEntity.ok(Map.of(

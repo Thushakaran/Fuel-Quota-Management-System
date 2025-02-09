@@ -113,7 +113,7 @@ const VehicleManagement = () => {
           vehicles={vehicles}
           onEdit={handleEdit} // Pass edit handler to table
           onDelete={deleteVehicle} // Pass delete handler to table
-          onToggleStatus ={changeActiveStatus}
+          // onToggleStatus ={changeActiveStatus}
         />
         {editingVehicle && (
           <EditVehicleModal
