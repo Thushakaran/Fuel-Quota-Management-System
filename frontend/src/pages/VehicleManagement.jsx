@@ -43,6 +43,28 @@ const VehicleManagement = () => {
     setEditingVehicle(null); // Close the modal
   };
 
+  const changeActiveStatus = (vehicleId) => {
+    setLoading(true);
+    axios
+      .put(`/admin/changeVehicleStatus/${vehicleId}`)
+      .then((response) => {
+        setVehicles((prevVehicles) =>
+          prevVehicles.map((vehicle) =>
+            vehicle.id === vehicleId
+              ? { ...vehicle, active: response.data.active }
+              : vehicle
+          )
+        );
+        setLoading(false);
+        alert("Vehicle status updated successfully");
+      })
+      .catch(() => {
+        setError("Failed to update Vehicle status");
+        setLoading(false);
+      });
+  };
+  
+
   const handleUpdate = (updatedVehicle) => {
     setLoading(true);
     axios
@@ -91,6 +113,7 @@ const VehicleManagement = () => {
           vehicles={vehicles}
           onEdit={handleEdit} // Pass edit handler to table
           onDelete={deleteVehicle} // Pass delete handler to table
+          // onToggleStatus ={changeActiveStatus}
         />
         {editingVehicle && (
           <EditVehicleModal

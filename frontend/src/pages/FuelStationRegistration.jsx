@@ -92,7 +92,7 @@ const FuelStationRegistration = () => {
       console.log('Validation Errors:', errors); // Debugging
       if (Object.keys(errors).length > 0) {
         setError(errors);
-        console.log(errors)
+        console.log(errors);
         return;
       }
       setPath(2);
@@ -103,20 +103,23 @@ const FuelStationRegistration = () => {
         return;
       }
       setError({});
+  
       fuelstationregister({ ...fuelStationData, ownerId: id })
         .then((response) => {
           console.log(response);
           localStorage.setItem("token", response.data.token);
-          const stationId = response.data.id;       
+          const stationId = response.data.id;
           toast.success('Fuel station registered successfully!');
           navigate(`/station/${stationId}`);
         })
         .catch((error) => {
-          const errorMessage = error.response?.data || "An unexpected error occurred.";
-          toast.error(errorMessage);
+          // Check for the structure of the error response
+          const errorMessage = error.response?.data?.details || "An unexpected error occurred.";
+          toast.error("Registration failed : "+errorMessage); // Display the error message from backend
         });
     }
   };
+  
   
 
   return (
