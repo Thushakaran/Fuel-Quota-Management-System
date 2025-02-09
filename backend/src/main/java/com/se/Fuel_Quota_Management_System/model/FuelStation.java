@@ -1,6 +1,7 @@
 package com.se.Fuel_Quota_Management_System.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -45,7 +46,7 @@ public class FuelStation {
     @Column(name = "available_fuel")
     private Map<String, Double> fuelInventory; // Key: Fuel type (e.g., Petrol, Diesel), Value: Quantity available
 
-    @OneToMany(mappedBy = "station", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    @OneToMany(mappedBy = "station", cascade = CascadeType.PERSIST)
     @JsonIgnore
     private List<FuelTransaction> transactions;
 

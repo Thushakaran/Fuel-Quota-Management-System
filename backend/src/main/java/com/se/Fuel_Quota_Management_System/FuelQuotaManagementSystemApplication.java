@@ -10,8 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 public class FuelQuotaManagementSystemApplication {
-	@Autowired
-	private TwilioConfig twilioConfig;
 
 	public static void main(String[] args) {
 		SpringApplication.run(FuelQuotaManagementSystemApplication.class, args);
